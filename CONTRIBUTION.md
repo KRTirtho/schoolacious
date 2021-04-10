@@ -10,9 +10,11 @@ The following is a set of guidelines for contributing to VESchool and its parts 
 
 [What should I know before I get started?](#what-should-i-know-before-i-get-started)
 
-- [Languages/Runtimes/Test Environment used in entire VESchool project](#languagesruntimestestenvironment)
+- [Languages/Runtimes/Test Environment used in entire VESchool project](#languagesruntimestest-environment)
 - [Tools & libraries used for VESchool Frontend](#frontend)
 - [Backend technologies & architecture of VESchool](#backend)
+
+[Places/Parts where you can't contribute](#placesparts-where-you-cant-contribute)
 
 [How Can I Contribute?](#how-can-i-contribute)
 
@@ -80,7 +82,18 @@ Nodejs based backend requires following packages to be familiar with to contribu
 
 - **MongoDB**: Mongodb is the no-sql database that is free to use & doesn't require licensing for commercial usa cases. Its the secondary database software of VESchool. Many of the non-relational & unstructured data will be stored in this. **Currently, there is no part for its use case in the project. It will be used in future if needed**
 
-> **Note**: If you don't know any of the language/library/framework its not a shame, don't hesitate to learn. As learning is the best thing you can do in you're life. You can read docs or learn from youtube/other learning method for specific packages. After all you don't need to know each of the technology **just knowing the part that you're intending to contribute is enough**
+> **Note**: If you don't know any of the language/library/framework its not a shame, don't hesitate to learn. As learning is the best thing you can do in you're life. Use the [Learning Materials](#learning-materials) that was provided for the tools that were used in this project. After all you don't need to know each of the technology **just knowing the part that you're intending to contribute is enough**
+
+## Places/Parts where you can't contribute
+
+Most of the contribution by any contributor is accepted but for some special cases any kind of contribution won't be accepted, any PR meting these conditions **(Contributors with write access are excluded)** will not be merged. Such kinds are listed below
+
+- Schema/ Data Structure modification of Database
+- Core Framework/Library replacement
+- Folder/Project Structure modification
+- Renaming of part of the project
+
+> **Important**: Above kind of contribution won't be accepted but **there should be no hesitation about suggesting any change to these parts of the project by an enhancement issue**. If the suggestion is applicable then the core developers or the owner (KRTirtho) might look into that enhancement & will add that feature/enhancement
 
 ## How Can I Contribute?
 
@@ -187,7 +200,7 @@ Please follow these steps to have your contribution considered by the maintainer
 
 While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
 
-> **Note**: Don't create tests after finishing the feature. Always create test before implementing any major feature and change according to development. This can mitigate the chances of having hidden bugs that get introduced after deployment
+> **Note**: Don't create tests after finishing writing the feature. Always create test before implementing any major/simple feature and change accordingly in development. This can mitigate the chances of having hidden bugs that get introduced after deployment
 
 ## Styleguides
 
@@ -201,6 +214,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
   - use `[zainul]` at the starting of the title to indicate **frontend**
   - use `[titumir]` at the starting of the title to indicate **backend**
 - Consider starting the commit message with an applicable emoji:
+
   - :art: `:art:` when improving the format/structure of the code
   - :racehorse: `:racehorse:` when improving performance
   - :non-potable_water: `:non-potable_water:` when plugging memory leaks
@@ -217,7 +231,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
   - :arrow_down: `:arrow_down:` when downgrading dependencies
   - :shirt: `:shirt:` when removing linter warnings
 
-  > Note: You can use multiple emojis to sub categorize some of the commits or to indicate this commit has upgrade on multiple branches
+  > Note: You can use multiple emojis to sub categorize some of the commits or to indicate this commit has upgrade on multiple parts of the project
 
 ### Typescript Styleguide
 
@@ -234,7 +248,8 @@ All Typescript code is linted with [Prettier](https://prettier.io/).
   class ClassName {}
   export default ClassName;
   ```
-- Forget about the `any` or `unknown` type, use types ever where possible. If needed use the `as` keyword to change type
+
+- Forget about the `any` or `unknown` type, use types where ever possible. If needed use the `as` keyword to change type if needed
 - Place requires in the following order:
   - Built in Node Modules (such as `path`)
   - Local Modules (using relative paths)
@@ -248,7 +263,7 @@ All Typescript code is linted with [Prettier](https://prettier.io/).
 - Include thoughtfully-worded, well-structured [Jest](https://jestjs.io/) tests in the `./test` folder of each separate part of the project.
 - Treat `describe` as a noun or situation.
 - Treat `test` as a statement about result or how an operation results.
-- Treat `expect` as a noun about expectation about certain operations
+- Treat `expect` as a noun about expectation about certain operation's behavior or result
 
 #### Example
 
@@ -290,26 +305,26 @@ Please open an issue on `KRTirtho/veschool` if you have suggestions for new labe
 
 #### Type of Issue and Issue State
 
-| Label name                     | `KRTirtho/veschool` :mag_right:                              | Description                                                                                                                                                        |
-| ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `zainul` (frontend) (required) | [search][search-veschool-repo-label-zainul]                      | Related to visual design.                                                                                                                                          |
-| `titumir` (backend) (required) | [search][search-veschool-repo-label-titumir]                     | Related to VESchool's public APIs.                                                                                                                                 |
-| `enhancement`                  | [search][search-veschool-repo-label-enhancement]             | Feature requests.                                                                                                                                                  |
-| `bug`                          | [search][search-veschool-repo-label-bug]                     | Confirmed bugs or reports that are very likely to be bugs.                                                                                                         |
-| `question`                     | [search][search-veschool-repo-label-question]                | Questions more than bug reports or feature requests (e.g. how do I do X).                                                                                          |
-| `feedback`                     | [search][search-veschool-repo-label-feedback]                | General feedback more than bug reports or feature requests.                                                                                                        |
-| `help-wanted`                  | [search][search-veschool-repo-label-help-wanted]             | The VESchool core team would appreciate help from the community in resolving these issues.                                                                         |
-| `beginner`                     | [search][search-veschool-repo-label-beginner]                | Less complex issues which would be good first issues to work on for users who want to contribute to VESchool.                                                      |
-| `more-information-needed`      | [search][search-veschool-repo-label-more-information-needed] | More information needs to be collected about these problems or feature requests (e.g. steps to reproduce).                                                         |
-| `needs-reproduction`           | [search][search-veschool-repo-label-needs-reproduction]      | Likely bugs, but haven't been reliably reproduced.                                                                                                                 |
-| `blocked`                      | [search][search-veschool-repo-label-blocked]                 | Issues blocked on other issues.                                                                                                                                    |
-| `duplicate`                    | [search][search-veschool-repo-label-duplicate]               | Issues which are duplicates of other issues, i.e. they have been reported before.                                                                                  |
-| `wontfix`                      | [search][search-veschool-repo-label-wontfix]                 | The VESchool core team has decided not to fix these issues for now, either because they're working as intended or for some other reason.                           |
-| `invalid`                      | [search][search-veschool-repo-label-invalid]                 | Issues which aren't valid (e.g. user errors).                                                                                                                      |
-| `documentation`                | [search][search-veschool-repo-label-documentation]           | Related to any type of documentation (e.g. [API documentation](https://veschool.io/docs/api/latest/) and the [flight manual](https://flight-manual.veschool.io/)). |
-| `performance`                  | [search][search-veschool-repo-label-performance]             | Related to performance.                                                                                                                                            |
-| `security`                     | [search][search-veschool-repo-label-security]                | Related to security.                                                                                                                                               |
-| `git`                          | [search][search-veschool-repo-label-git]                     | Related to Git functionality (e.g. problems with gitignore files or with showing the correct file status).                                                         |
+| Label name                     | `KRTirtho/veschool` :mag_right:                              | Description                                                                                                                              |
+| ------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `zainul` (frontend) (required) | [search][search-veschool-repo-label-zainul]                  | Related to visual design.                                                                                                                |
+| `titumir` (backend) (required) | [search][search-veschool-repo-label-titumir]                 | Related to VESchool's public APIs.                                                                                                       |
+| `enhancement`                  | [search][search-veschool-repo-label-enhancement]             | Feature requests.                                                                                                                        |
+| `bug`                          | [search][search-veschool-repo-label-bug]                     | Confirmed bugs or reports that are very likely to be bugs.                                                                               |
+| `question`                     | [search][search-veschool-repo-label-question]                | Questions more than bug reports or feature requests (e.g. how do I do X).                                                                |
+| `feedback`                     | [search][search-veschool-repo-label-feedback]                | General feedback more than bug reports or feature requests.                                                                              |
+| `help-wanted`                  | [search][search-veschool-repo-label-help-wanted]             | The VESchool core team would appreciate help from the community in resolving these issues.                                               |
+| `beginner`                     | [search][search-veschool-repo-label-beginner]                | Less complex issues which would be good first issues to work on for users who want to contribute to VESchool.                            |
+| `more-information-needed`      | [search][search-veschool-repo-label-more-information-needed] | More information needs to be collected about these problems or feature requests (e.g. steps to reproduce).                               |
+| `needs-reproduction`           | [search][search-veschool-repo-label-needs-reproduction]      | Likely bugs, but haven't been reliably reproduced.                                                                                       |
+| `blocked`                      | [search][search-veschool-repo-label-blocked]                 | Issues blocked on other issues.                                                                                                          |
+| `duplicate`                    | [search][search-veschool-repo-label-duplicate]               | Issues which are duplicates of other issues, i.e. they have been reported before.                                                        |
+| `wontfix`                      | [search][search-veschool-repo-label-wontfix]                 | The VESchool core team has decided not to fix these issues for now, either because they're working as intended or for some other reason. |
+| `invalid`                      | [search][search-veschool-repo-label-invalid]                 | Issues which aren't valid (e.g. user errors).                                                                                            |
+| `documentation`                | [search][search-veschool-repo-label-documentation]           | Related to any type of documentation                                                                                                     |
+| `performance`                  | [search][search-veschool-repo-label-performance]             | Related to performance.                                                                                                                  |
+| `security`                     | [search][search-veschool-repo-label-security]                | Related to security.                                                                                                                     |
+| `git`                          | [search][search-veschool-repo-label-git]                     | Related to Git functionality (e.g. problems with gitignore files or with showing the correct file status).                               |
 
 #### Pull Request Labels
 
@@ -320,6 +335,28 @@ Please open an issue on `KRTirtho/veschool` if you have suggestions for new labe
 | `under-review`     | [search][search-veschool-repo-label-under-review]     | Pull requests being reviewed by maintainers or VESchool core team.                         |
 | `requires-changes` | [search][search-veschool-repo-label-requires-changes] | Pull requests which need to be updated based on review comments and then reviewed again.   |
 | `needs-testing`    | [search][search-veschool-repo-label-needs-testing]    | Pull requests which need manual testing.                                                   |
+
+> **Final Note**: Before creating PR/Issue check which **part of the project that belongs** & assign label **zainul (frontend) or titumir (backend)** accordingly
+
+## Learning materials
+
+There is no shame for not knowing something. You can always learn the things that you don't know or refresh things that learned so many years before. Below are some free+good learning materials that might help you learn certain technologies used in this project. Optionally you can learn React/MongoDB/Nodejs/ExpressJS from other bootcamps like freecodecamp.org or codecademy.com
+
+| Technology Name | Docs/Sites                                                                     | Beginner Video courses                                                               | Full Video Courses/Playlist                                                                                                 |
+| --------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Nodejs          | https://nodejs.org/en/docs/guides/                                             | [**Dev Ed** 25min nodejs](https://www.youtube.com/watch?v=zQRrXTSkvfw)               | [**FreeCodeCamp** 2hrs Nodejs](https://www.youtube.com/watch?v=RLtyhwFtXQA)                                                 |
+| Typescript      | [Typescript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html) | [**Traversy Media** 46min typescript](https://www.youtube.com/watch?v=rAy_3SIqT-E)   | [ **Academind** 3hrs Typescript](https://www.youtube.com/watch?v=BwuLxPH8IDs)                                               |
+| Jest            | https://jestjs.io/docs/getting-started                                         | [**Traversy Media** Jest 1hr](https://www.youtube.com/watch?v=7r4xVDI2vho)           | N/A                                                                                                                         |
+| Rust            | [Rust-Lang Book](https://doc.rust-lang.org/book/)                              | [**Traversy Media** Rust 2hrs](https://www.youtube.com/watch?v=zF34dRivLOw)          | [Rust Playlist by **dcode**](https://www.youtube.com/playlist?list=PLVvjrrRCBy2JSHf9tGxGKJ-bYAN_uDCUL)                      |
+| React           | https://reactjs.org/docs/getting-started.html                                  | [**Traversy Media** React 2hrs](https://www.youtube.com/watch?v=w7ejDZ8SWv8&t=4165s) | [**FreeCodeCamp** 10hrs React Full Course](https://www.youtube.com/watch?v=4UZrsTqkcW4)                                     |
+| Grommet         | https://grommet.io                                                             | N/A                                                                                  | N/A                                                                                                                         |
+| React-Query     | https://react-query.tanstack.com/overview                                      | [**Maksim Ivanov** React-Query 30min](https://www.youtube.com/watch?v=GE-waX4jmdA)   | [React-Query palylist by **The Net Ninja**](https://www.youtube.com/playlist?list=PL4cUxeGkcC9jpi7Ptjl5b50p9gLjOFani)       |
+| formik          | https://formik.org/docs/overview                                               | [**Ben Awad** formik 40min](https://www.youtube.com/watch?v=FD50LPJ6bjE)             | N/A                                                                                                                         |
+| express         | https://expressjs.com                                                          | [**Traversy Media** ExpressJS 1.15hrs ](https://www.youtube.com/watch?v=L72fhGm1tfE) | [REST API with Express Playlist by **Academind**](https://www.youtube.com/playlist?list=PL55RiY5tL51q4D-B63KBnygU6opNPFk_q) |
+| NestJS          | https://docs.nestjs.com                                                        | [**Acade Mind** NestJS 1hr](https://www.youtube.com/watch?v=F_oOtaxb0L8)             | N/A                                                                                                                         |
+| TypeORM         | https://typeorm.io                                                             | [**Coder One** TypeORM 1hr](https://www.youtube.com/watch?v=Reb7ISQZCvA)             | [TypeORM with NestJS by **Marius Espejo**](https://www.youtube.com/watch?v=sNosL578ECo&t=4s)                                |
+| PostgreSQL      | https://www.postgresql.org/docs/current/                                       | N/A                                                                                  | [**FreeCodeCamp** PostgreSQL full 4hrs](https://www.youtube.com/watch?v=qw--VYLpxG4)                                        |
+| MongoDB         | https://docs.mongodb.com/manual/                                               | [**Traversy Media** MongoDB 36min](https://www.youtube.com/watch?v=-56x56UppqQ)      | N/A                                                                                                                         |
 
 [search-veschool-repo-label-enhancement]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Aenhancement
 [search-veschool-repo-label-bug]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Abug
@@ -348,5 +385,3 @@ Please open an issue on `KRTirtho/veschool` if you have suggestions for new labe
 [help-wanted]: https://github.com/search?q=is%3Aopen+is%3Aissue+label%3Ahelp-wanted+repo%3AKRTirtho%2Fveschool+sort%3Acomments-desc+-label%3Abeginner
 [zainul]: https://github.com/KRTirtho/veschool/tree/master/zainul
 [titumir]: https://github.com/KRTirtho/veschool/tree/master/titumir
-
-> **Final Note**: Before creating PR/Issue check which **part of the project that belongs** & assign label **zainul (frontend) or titumir (backend)** accordingly

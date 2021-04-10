@@ -1,8 +1,8 @@
-<center>
-  <h1>VESchool</h1>
-  <b>Virtual Electronic School</b>
-  <p>Bringing back the favorite teachers of the child</p>
-</center>
+<h1><p align="center">VESchool</p></h1>
+<p align="center"><b>Virtual Electronic School</b></p>
+<p align="center">Bringing back the favorite teachers of the child</p>
+
+<hr>
 
 VESchool is a platform which intends to bring back the old & gold **education, fun & amusement of Schools** which was a normal thing back before The Pandemic. VESchool gives the total power to each individual school & only holds the back/management
 

@@ -60,5 +60,6 @@
       "last 1 safari version"
     ]
   },
-  "license": "MIT"
+  "license": "MIT",
+  "proxy": "http://localhost:4000/"
 }

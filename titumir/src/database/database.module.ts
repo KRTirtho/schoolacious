@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import config from "ormconfig";
+import ormconfig from "../../ormconfig";
 import Class from "./entity/classes.entity";
 import Grade from "./entity/grades.entity";
 import School from "./entity/schools.entity";
@@ -11,7 +11,7 @@ import UsersToSections from "./entity/user_section.entity";
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      ...config,
+      ...ormconfig,
       entities: [User, Section, Grade, UsersToSections, Class, School],
     }),
   ],

@@ -9,6 +9,16 @@
       "database": "veschool",
       "username": "krtirtho",
       "password": "encrypt"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "VESchool Test",
+      "database": "veschool-test",
+      "username": "krtirtho",
+      "password": "encrypt"
     }
   ]
 }

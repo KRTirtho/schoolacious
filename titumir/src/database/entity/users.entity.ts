@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import Class from "./classes.entity";
 import UsersToSections from "./user_section.entity";
 
@@ -20,7 +26,7 @@ export default class User {
   @Column({ type: "varchar", length: 100, nullable: false, unique: true })
   email: string;
 
-  @Column("text", { nullable: false })
+  @Column("text", { nullable: false, select: false })
   password: string;
 
   @Column("varchar", { length: 50, nullable: false })
@@ -35,6 +41,10 @@ export default class User {
     nullable: true,
   })
   role?: USER_ROLE;
+
+  @Column()
+  @CreateDateColumn()
+  joined_on: Date;
 
   @OneToMany(() => UsersToSections, (usersToSection) => usersToSection.user)
   userToSections: UsersToSections[];

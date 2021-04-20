@@ -2,9 +2,11 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import Invitations_Joins from "./invitations_or_joins.entity";
 import User from "./users.entity";
 
 @Entity("schools")
@@ -18,7 +20,7 @@ export default class School {
   @Column("varchar", { length: 100, nullable: false, unique: true })
   email: string;
 
-  @Column({ nullable: false, unique: true })
+  @Column("int8", { nullable: false, unique: true })
   phone: number;
 
   @Column("text")
@@ -28,11 +30,20 @@ export default class School {
   @JoinColumn()
   admin: User;
 
+  @OneToOne(() => User, { nullable: true })
   @JoinColumn()
-  @OneToOne(() => User)
-  coAdmin1: string;
+  coAdmin1?: User;
 
+  @OneToOne(() => User, { nullable: true })
   @JoinColumn()
-  @OneToOne(() => User)
-  coAdmin2: string;
+  coAdmin2?: User;
+
+  @OneToMany(() => User, (user) => user.school, { nullable: true })
+  user?: User;
+
+  @OneToMany(
+    () => Invitations_Joins,
+    (invitations_joins) => invitations_joins.school
+  )
+  invitations_joins?: Invitations_Joins[];
 }

@@ -14,6 +14,7 @@ const ormconfig: PostgresConnectionOptions = {
   port: DATABASE_PORT,
   password: DATABASE_PASSWORD,
   uuidExtension: "uuid-ossp",
+  logging: true,
   migrations: ["./dist/veschool/migrations/*.js"],
   cli: {
     migrationsDir: "veschool/migrations",

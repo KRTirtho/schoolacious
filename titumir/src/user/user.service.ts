@@ -35,6 +35,13 @@ export class UserService {
     return this.userRepo.findOneOrFail(conditions, options);
   }
 
+  findUserUnsafe(
+    conditions: FindConditions<DeepPartial<SafeUser>>,
+    options?: FindOneOptions<User>
+  ) {
+    return this.userRepo.findOne(conditions, options);
+  }
+
   // a special query that returns entire User Object/Column
   // but with the `password` or any other hidden field defined in it
   private buildRawUser(
@@ -81,6 +88,7 @@ export class UserService {
   async findUserAndUpdate(_id: string, payload: DeepPartial<SafeUser>) {
     const user = await this.userRepo.findOneOrFail(_id);
     Object.assign(user, payload);
+    return this.userRepo.save(user);
   }
 
   // simple password changing method for user

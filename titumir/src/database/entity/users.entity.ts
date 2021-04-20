@@ -2,10 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import Class from "./classes.entity";
+import Invitations_Joins from "./invitations_or_joins.entity";
+import School from "./schools.entity";
 import UsersToSections from "./user_section.entity";
 
 export enum USER_ROLE {
@@ -46,9 +49,23 @@ export default class User {
   @CreateDateColumn()
   joined_on: Date;
 
-  @OneToMany(() => UsersToSections, (usersToSection) => usersToSection.user)
-  userToSections: UsersToSections[];
+  // available for both teacher & student
+  // but student can only join one section
+  @OneToMany(() => UsersToSections, (usersToSection) => usersToSection.user, {
+    nullable: true,
+  })
+  userToSections?: UsersToSections[];
 
-  @OneToMany(() => Class, (_class) => _class.host)
-  classes: Class[];
+  @OneToMany(() => Class, (_class) => _class.host, { nullable: true })
+  classes?: Class[];
+
+  @ManyToOne(() => School, (school) => school.user, { nullable: true })
+  school?: School;
+
+  @OneToMany(
+    () => Invitations_Joins,
+    (invitations_joins) => invitations_joins.user,
+    { nullable: true }
+  )
+  invitations_joins?: Invitations_Joins[];
 }

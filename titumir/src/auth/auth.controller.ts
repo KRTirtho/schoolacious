@@ -7,16 +7,17 @@ import {
   Req,
   Res,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
   NotAcceptableException,
   UnauthorizedException,
+  HttpStatus,
 } from "@nestjs/common";
 import { Request, Response } from "express";
+import { QueryFailedError } from "typeorm";
 import {
   CONST_ACCESS_TOKEN_HEADER,
   CONST_REFRESH_TOKEN_HEADER,
 } from "../../config";
+import { Public } from "../decorator/public.decorator";
 import { UserService } from "../user/user.service";
 import { AuthService, TokenUser } from "./auth.service";
 import SignupDTO from "./dto/signup.dto";
@@ -30,6 +31,7 @@ export class AuthController {
     private readonly userService: UserService
   ) {}
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post("login")
   async login(@Req() req: Request, @Res() res: Response) {
@@ -41,11 +43,15 @@ export class AuthController {
       res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
       return res.json(req.user);
     } catch (error) {
-      this.logger.error(error.message);
-      return res.json(error.message);
+      if (error instanceof QueryFailedError) {
+        return res
+          .status(HttpStatus.NOT_ACCEPTABLE)
+          .json({ error: (error as any).detail });
+      }
+      return res.status(HttpStatus.FORBIDDEN).json(error.message);
     }
   }
-
+  @Public()
   @Post("refresh")
   async refresh(@Headers() headers: Request["headers"], @Res() res: Response) {
     try {
@@ -61,12 +67,16 @@ export class AuthController {
       res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
       return res.json({ message: "Refreshed access_token" });
     } catch (error) {
-      this.logger.error(error.message);
-      return res.json({ error: error.message });
+      if (error instanceof QueryFailedError) {
+        return res
+          .status(HttpStatus.NOT_ACCEPTABLE)
+          .json({ error: (error as any).detail });
+      }
+      return res.status(HttpStatus.FORBIDDEN).json(error.message);
     }
   }
 
-  @UsePipes(new ValidationPipe())
+  @Public()
   @Post("signup")
   async signup(@Body() body: SignupDTO, @Res() res: Response) {
     try {
@@ -80,7 +90,12 @@ export class AuthController {
       return res.json({ ...user, email });
     } catch (error) {
       this.logger.error(error.message);
-      return res.json(error.message);
+      if (error instanceof QueryFailedError) {
+        return res
+          .status(HttpStatus.NOT_ACCEPTABLE)
+          .json({ error: (error as any).detail });
+      }
+      return res.status(HttpStatus.FORBIDDEN).json(error.message);
     }
   }
 }

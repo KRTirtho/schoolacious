@@ -1,10 +1,11 @@
-import { UnauthorizedException } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { NOT_A_SECRET } from "../../../config";
-import { USER_ROLE } from "../../database/entity/users.entity";
+import User from "../../database/entity/users.entity";
 import { UserService } from "../../user/user.service";
 
+@Injectable()
 export default class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly userService: UserService) {
     super({
@@ -14,9 +15,9 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ email }: { email: string; role: USER_ROLE | null }) {
+  async validate({ email }: Pick<User, "email" | "role">) {
     const user = await this.userService.findUser({ email });
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException("Invalid user");
     return user;
   }
 }

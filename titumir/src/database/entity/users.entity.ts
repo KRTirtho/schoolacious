@@ -1,3 +1,4 @@
+import { IsEnum } from "class-validator";
 import {
   Column,
   CreateDateColumn,
@@ -38,11 +39,8 @@ export default class User {
   @Column("varchar", { length: 50, nullable: false })
   last_name: string;
 
-  @Column("enum", {
-    enum: USER_ROLE,
-    enumName: "USER_ROLE",
-    nullable: true,
-  })
+  @IsEnum(USER_ROLE)
+  @Column("varchar", { length: 20, nullable: true })
   role?: USER_ROLE;
 
   @Column()

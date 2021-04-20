@@ -16,7 +16,10 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate({ email }: Pick<User, "email" | "role">) {
-    const user = await this.userService.findUser({ email });
+    const user = await this.userService.findUser(
+      { email },
+      { relations: ["school"] }
+    );
     if (!user) throw new UnauthorizedException("Invalid user");
     return user;
   }

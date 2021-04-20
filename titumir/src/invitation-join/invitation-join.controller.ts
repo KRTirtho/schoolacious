@@ -1,5 +1,14 @@
-import { Body, Controller, Delete, Logger, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Logger,
+  Post,
+} from "@nestjs/common";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
+import User, { USER_ROLE } from "../database/entity/users.entity";
+import { CurrentUser } from "../decorator/current-user.decorator";
 import CancelInvitationJoinDTO from "./dto/cancel-invitation-join.dto";
 import CompleteInvitationJoinDTO from "./dto/complete-invitation-join.dto";
 import InvitationJoinDTO from "./dto/invitation-join.dto";
@@ -11,12 +20,31 @@ export class InvitationJoinController {
   constructor(private readonly invitationJoinService: InvitationJoinService) {}
 
   @Post()
-  async inviteJoinUser(@Body() { type, ...body }: InvitationJoinDTO) {
+  async inviteJoinUser(
+    @Body() { type, ...body }: InvitationJoinDTO,
+    @CurrentUser() user: User
+  ) {
     try {
-      if (type === INVITATION_OR_JOIN_TYPE.invitation) {
-        return await this.invitationJoinService.invite(body);
+      if (
+        type === INVITATION_OR_JOIN_TYPE.invitation &&
+        body.user_id &&
+        [USER_ROLE.admin, USER_ROLE.coAdmin].includes(user.role)
+      ) {
+        delete body.school_id;
+        return await this.invitationJoinService.invite({
+          ...body,
+          user_id: body.user_id,
+          school: user.school,
+        });
+      } else if (type === INVITATION_OR_JOIN_TYPE.join && body.school_id) {
+        delete body.user_id;
+        return await this.invitationJoinService.join({
+          ...body,
+          school_id: body.school_id,
+          user,
+        });
       }
-      return await this.invitationJoinService.join(body);
+      throw new ForbiddenException("wrong credentials");
     } catch (error) {
       this.logger.error(error.message);
       throw error;
@@ -24,9 +52,12 @@ export class InvitationJoinController {
   }
 
   @Post("complete")
-  async completeInvitationJoin(@Body() body: CompleteInvitationJoinDTO) {
+  async completeInvitationJoin(
+    @CurrentUser() user: User,
+    @Body() body: CompleteInvitationJoinDTO
+  ) {
     try {
-      return await this.invitationJoinService.complete(body);
+      return await this.invitationJoinService.complete({ ...body, user });
     } catch (error) {
       this.logger.error(error.message);
       throw error;
@@ -34,9 +65,12 @@ export class InvitationJoinController {
   }
 
   @Delete()
-  async cancelInvitationJoin(@Body() body: CancelInvitationJoinDTO) {
+  async cancelInvitationJoin(
+    @Body() body: CancelInvitationJoinDTO,
+    @CurrentUser() user: User
+  ) {
     try {
-      return this.invitationJoinService.cancel(body);
+      return this.invitationJoinService.cancel({ ...body, user });
     } catch (error) {
       this.logger.error(error.message);
       throw error;

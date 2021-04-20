@@ -1,4 +1,4 @@
-import { IsEnum, IsUUID } from "class-validator";
+import { IsEnum, IsOptional, IsUUID } from "class-validator";
 import { INVITATION_OR_JOIN_ACTION } from "../invitation-join.service";
 
 export default class CompleteInvitationJoinDTO {

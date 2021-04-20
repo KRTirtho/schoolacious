@@ -1,3 +1,4 @@
+import { IsEnum } from "class-validator";
 import {
   Column,
   CreateDateColumn,
@@ -34,10 +35,7 @@ export default class UsersToSections {
   @CreateDateColumn()
   assigned_at: Date;
 
-  @Column("enum", {
-    enum: SECTION_ROLE,
-    nullable: false,
-    enumName: "SECTION_ROLE",
-  })
+  @IsEnum(SECTION_ROLE)
+  @Column("varchar", { length: 10 })
   role: SECTION_ROLE;
 }

@@ -3,11 +3,9 @@ import {
   Controller,
   Logger,
   Post,
-  UseGuards,
   NotAcceptableException,
 } from "@nestjs/common";
 import { DeepPartial } from "typeorm";
-import JwtAuthGuard from "../auth/guards/jwt-auth.guard";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";

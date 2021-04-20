@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotAcceptableException,
@@ -7,7 +7,6 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
-  DeleteResult,
   FindConditions,
   FindManyOptions,
   FindOneOptions,
@@ -17,14 +16,15 @@ import Invitations_Joins, {
   INVITATION_OR_JOIN_ROLE,
   INVITATION_OR_JOIN_TYPE,
 } from "../database/entity/invitations_or_joins.entity";
-import { USER_ROLE } from "../database/entity/users.entity";
+import School from "../database/entity/schools.entity";
+import User, { USER_ROLE } from "../database/entity/users.entity";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
 
 export interface InviteJoinPayload {
   role: INVITATION_OR_JOIN_ROLE;
-  school_id: string;
-  user_id: string;
+  school: School;
+  user: User;
   type: INVITATION_OR_JOIN_TYPE;
 }
 
@@ -44,18 +44,13 @@ export class InvitationJoinService {
 
   async create({
     role,
-    school_id,
+    school,
     type,
-    user_id,
+    user,
   }: InviteJoinPayload): Promise<Invitations_Joins> {
-    //automatically gonna throw error on no user found
-    const user = await this.userService.findUser({ _id: user_id });
     if (user.role !== null && user.school !== null) {
       throw new NotAcceptableException("user already has joined a school");
     }
-    //automatically throws error when no school was found
-    const school = await this.schoolService.findSchool({ _id: school_id });
-
     // checking if user/school already has sent invitation
     // or join requests
     const hasInvitationJoin = await this.invitationJoinRepo.findOne({
@@ -75,20 +70,30 @@ export class InvitationJoinService {
   }
 
   async invite(
-    payload: Omit<InviteJoinPayload, "type">
+    payload: Omit<InviteJoinPayload, "type" | "user"> & { user_id: string }
   ): Promise<Invitations_Joins> {
+    const user = await this.userService.findUserUnsafe({
+      _id: payload.user_id,
+    });
+    if (!user) throw new NotFoundException("invalid user");
     return this.create({
       type: INVITATION_OR_JOIN_TYPE.invitation,
       ...payload,
+      user,
     });
   }
 
   async join(
-    payload: Omit<InviteJoinPayload, "type">
+    payload: Omit<InviteJoinPayload, "type" | "school"> & { school_id: string }
   ): Promise<Invitations_Joins> {
+    const school = await this.schoolService.findSchoolUnsafe({
+      _id: payload.school_id,
+    });
+    if (!school) throw new NotFoundException("invalid school");
     return this.create({
       type: INVITATION_OR_JOIN_TYPE.join,
       ...payload,
+      school,
     });
   }
 
@@ -106,48 +111,36 @@ export class InvitationJoinService {
     return this.invitationJoinRepo.find({ ...conditions, ...options });
   }
 
-  async cancel({
-    _id,
-    type,
-    school_id,
-    user_id,
-  }: Partial<Omit<InviteJoinPayload, "role" | "type">> & {
-    _id: string;
-    type: INVITATION_OR_JOIN_TYPE;
-  }) {
-    const criteria: FindConditions<Invitations_Joins> = {
-      _id,
-      type,
-    };
+  async cancel({ _id, user }: { _id: string; user: User }) {
+    const invitationJoin = await this.invitationJoinRepo.findOne(
+      { _id },
+      {
+        relations: ["user", "school"],
+      }
+    );
+
+    if (!invitationJoin) throw new NotFoundException("invalid invitation/join");
+
+    const { type, school, user: requestedUser } = invitationJoin;
+
+    // for a join-request cancellation user of the invitation card must
+    // be the current user
+    // for a invitation cancellation current user must be an
+    // admin/co-admin & their school _id should match with current user's
+    // school's _id
     if (
-      (type === INVITATION_OR_JOIN_TYPE.invitation && !school_id) ||
-      (type === INVITATION_OR_JOIN_TYPE.join && !user_id)
+      (type === INVITATION_OR_JOIN_TYPE.join &&
+        user._id !== requestedUser._id) ||
+      (type === INVITATION_OR_JOIN_TYPE.invitation &&
+        (![USER_ROLE.admin, USER_ROLE.coAdmin].includes(user.role) ||
+          school._id !== user.school._id))
     ) {
-      throw new BadRequestException(
-        `Required field based on type(${type}) didn't met the expectation`
-      );
-    } else if (type === INVITATION_OR_JOIN_TYPE.invitation) {
-      const { ...school } = await this.schoolService.findSchoolUnsafe({
-        _id: school_id,
-      });
-      if (!school) throw new BadRequestException("invalid school");
-      criteria.school = school;
-    } else if (type === INVITATION_OR_JOIN_TYPE.join) {
-      const { ...user } = await this.userService.findUserUnsafe({
-        _id: user_id,
-      });
-      if (!user) throw new BadRequestException("invalid user");
-      criteria.user = user;
+      throw new ForbiddenException("wrong credentials");
     }
-    const invitation = await this.invitationJoinRepo.findOne(criteria, {
-      relations: ["user", "school"],
-    });
 
-    if (!invitation) throw new NotFoundException("invalid invitation/join");
+    delete invitationJoin.created_at;
 
-    delete invitation.created_at;
-
-    const deleted = await this.invitationJoinRepo.delete(invitation);
+    const deleted = await this.invitationJoinRepo.delete(invitationJoin);
     if (deleted.affected !== 1) {
       throw new InternalServerErrorException(
         undefined,
@@ -160,24 +153,51 @@ export class InvitationJoinService {
   async complete({
     _id,
     action,
+    user,
   }: {
+    user: User;
     _id: string;
     action: INVITATION_OR_JOIN_ACTION;
-  }): Promise<DeleteResult> {
-    const invitation = await this.findOne(
+  }): Promise<{ message: string }> {
+    const invitation = await this.invitationJoinRepo.findOne(
       { _id },
       { relations: ["school", "user"] }
     );
-    const { role, school, user } = invitation;
+
+    if (!invitation)
+      throw new NotFoundException("invalid invitation/join-request");
+
+    const { role, school, user: requestedUser, type } = invitation;
     if (action === INVITATION_OR_JOIN_ACTION.accept) {
-      // not checking if user already has a school/role
-      // as it was checked previously while sending the invitation/join
-      // request
-      await this.userService.findUserAndUpdate(user._id, {
+      // for a invitation completion user of the invitation card must match
+      // for a join request completion current user must be an
+      // admin/co-admin & their school _id should match with the requested
+      // school's _id
+      if (
+        (type === INVITATION_OR_JOIN_TYPE.invitation &&
+          user._id !== requestedUser._id) ||
+        (type === INVITATION_OR_JOIN_TYPE.join &&
+          (![USER_ROLE.admin, USER_ROLE.coAdmin].includes(user.role) ||
+            school._id !== user.school._id))
+      ) {
+        throw new ForbiddenException("wrong credentials");
+      }
+
+      // now check the user if he/she had joined any school meanwhile
+      if (requestedUser.role && requestedUser.school)
+        throw new NotAcceptableException("user already has a school");
+
+      await this.userService.findUserAndUpdate(requestedUser._id, {
         role: (role as unknown) as USER_ROLE,
-        school: school,
+        school,
       });
     }
-    return await this.invitationJoinRepo.delete(invitation);
+    delete invitation.created_at; // causes issue when deleting
+    const deleted = await this.invitationJoinRepo.delete(invitation);
+    if (deleted.affected < 1)
+      throw new InternalServerErrorException(
+        "failed to complete invitation/join"
+      );
+    return { message: `${action}ed invitation/join` };
   }
 }

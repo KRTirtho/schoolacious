@@ -14,8 +14,11 @@ export default class School {
   @PrimaryGeneratedColumn("uuid")
   _id: string;
 
-  @Column("text", { nullable: false, unique: true })
+  @Column("text", { nullable: false })
   name: string;
+
+  @Column("varchar", { nullable: false, unique: true, length: 20 })
+  short_name: string;
 
   @Column("varchar", { length: 100, nullable: false, unique: true })
   email: string;

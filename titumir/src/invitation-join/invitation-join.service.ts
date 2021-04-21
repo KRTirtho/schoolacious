@@ -33,6 +33,11 @@ export enum INVITATION_OR_JOIN_ACTION {
   reject = "reject",
 }
 
+interface GetInvitationJoin {
+  _id: string;
+  type: INVITATION_OR_JOIN_TYPE;
+}
+
 @Injectable()
 export class InvitationJoinService {
   constructor(
@@ -199,5 +204,25 @@ export class InvitationJoinService {
         "failed to complete invitation/join"
       );
     return { message: `${action}ed invitation/join` };
+  }
+
+  getUserInvitationsJoin({
+    _id,
+    type,
+  }: GetInvitationJoin): Promise<Invitations_Joins[]> {
+    return this.findAll({ user: { _id }, type }, { relations: ["school"] });
+  }
+
+  getSchoolInvitationJoin({
+    _id,
+    type,
+  }: GetInvitationJoin): Promise<Invitations_Joins[]> {
+    return this.findAll(
+      {
+        type,
+        school: { _id },
+      },
+      { relations: ["user"] }
+    );
   }
 }

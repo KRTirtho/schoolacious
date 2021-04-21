@@ -35,10 +35,11 @@ export class SchoolService {
     });
     const newSchool = await this.schoolRepo.save(school);
 
-    this.userService.findUserAndUpdate(payload.admin._id, {
+    const admin = await this.userService.findUserAndUpdate(payload.admin._id, {
       role: USER_ROLE.admin,
       school: newSchool,
     });
+    newSchool.admin = admin;
     return newSchool;
   }
 

@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsNumber, MaxLength } from "class-validator";
+import {
+  IsEmail,
+  IsLowercase,
+  IsNotEmpty,
+  IsNumber,
+  Matches,
+  MaxLength,
+} from "class-validator";
 
 export default class CreateSchoolDTO {
   @IsNotEmpty()
@@ -12,4 +19,10 @@ export default class CreateSchoolDTO {
 
   @IsNotEmpty()
   description: string;
+
+  @IsLowercase()
+  @IsNotEmpty()
+  @MaxLength(20)
+  @Matches(/\w*\d*-*/g)
+  short_name: string;
 }

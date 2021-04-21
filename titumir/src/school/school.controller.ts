@@ -4,11 +4,17 @@ import {
   Logger,
   Post,
   NotAcceptableException,
+  Get,
+  Param,
+  NotFoundException,
 } from "@nestjs/common";
-import { DeepPartial } from "typeorm";
+import { createQueryBuilder, DeepPartial } from "typeorm";
+import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
+import { Roles } from "../decorator/roles.decorator";
+import { InvitationJoinService } from "../invitation-join/invitation-join.service";
 import { UserService } from "../user/user.service";
 import AddCoAdminDTO from "./dto/add-co-admin.dto";
 import CreateSchoolDTO from "./dto/create-school.dto";
@@ -19,8 +25,52 @@ export class SchoolController {
   logger: Logger = new Logger(SchoolController.name);
   constructor(
     private readonly schoolService: SchoolService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly invitationJoinService: InvitationJoinService
   ) {}
+
+  @Get(":school")
+  async getSchool(@Param("school") short_name: string) {
+    try {
+      const school = await createQueryBuilder(School, "school")
+        .where("school.short_name=:short_name", { short_name })
+        .leftJoinAndSelect("school.admin", "admin")
+        .getOne();
+      if (!school) throw new NotFoundException("school doesn't exist");
+      return school;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  @Get(":school/join-requests")
+  @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+  async getSchoolJoinRequests(@CurrentUser() user: User) {
+    try {
+      return this.invitationJoinService.getSchoolInvitationJoin({
+        _id: user.school._id,
+        type: INVITATION_OR_JOIN_TYPE.join,
+      });
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  @Get(":school/invitations")
+  @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+  async getSchoolSentInvitations(@CurrentUser() user: User) {
+    try {
+      return this.invitationJoinService.getSchoolInvitationJoin({
+        _id: user.school._id,
+        type: INVITATION_OR_JOIN_TYPE.invitation,
+      });
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
 
   @Post()
   async createSchool(@CurrentUser() user: User, @Body() body: CreateSchoolDTO) {

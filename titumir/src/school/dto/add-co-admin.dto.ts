@@ -7,9 +7,5 @@ export default class AddCoAdminDTO {
 
   @IsNotEmpty()
   @IsUUID()
-  school_id: string;
-
-  @IsNotEmpty()
-  @IsUUID()
-  _id: string;
+  user_id: string;
 }

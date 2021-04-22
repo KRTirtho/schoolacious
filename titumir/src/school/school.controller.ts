@@ -3,7 +3,6 @@ import {
   Controller,
   Logger,
   Post,
-  NotAcceptableException,
   Get,
   Param,
   NotFoundException,
@@ -14,6 +13,7 @@ import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
+import { VerifySchool } from "../decorator/verify-school.decorator";
 import { InvitationJoinService } from "../invitation-join/invitation-join.service";
 import { UserService } from "../user/user.service";
 import AddCoAdminDTO from "./dto/add-co-admin.dto";
@@ -46,6 +46,7 @@ export class SchoolController {
 
   @Get(":school/join-requests")
   @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+  @VerifySchool()
   async getSchoolJoinRequests(@CurrentUser() user: User) {
     try {
       return this.invitationJoinService.getSchoolInvitationJoin({
@@ -60,6 +61,7 @@ export class SchoolController {
 
   @Get(":school/invitations")
   @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+  @VerifySchool()
   async getSchoolSentInvitations(@CurrentUser() user: User) {
     try {
       return this.invitationJoinService.getSchoolInvitationJoin({
@@ -83,22 +85,12 @@ export class SchoolController {
     }
   }
 
-  @Post("co-admin")
-  async addCoAdmin(@Body() body: AddCoAdminDTO) {
+  @Post(":school/co-admin")
+  @Roles(USER_ROLE.admin)
+  @VerifySchool()
+  async addCoAdmin(@Body() body: AddCoAdminDTO, @CurrentUser() user: User) {
     try {
-      const newCoAdmin = await this.userService.findUser(
-        { _id: body._id },
-        { select: ["role"] }
-      );
-
-      if (newCoAdmin.role === USER_ROLE.coAdmin) {
-        throw new NotAcceptableException(
-          "User already is a co-admin. Cannot assign twice"
-        );
-      }
-      const payload: DeepPartial<School> = {};
-      payload[body.index === 1 ? "coAdmin1" : "coAdmin2"] = { _id: body._id };
-      this.schoolService.update({ _id: body.school_id }, payload);
+      return this.schoolService.assignCoAdmin({ ...body, user });
     } catch (error) {
       this.logger.log(error.message);
       throw error;

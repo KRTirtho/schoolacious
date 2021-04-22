@@ -7,6 +7,7 @@ import {
   FindManyOptions,
   FindOneOptions,
   Repository,
+  SaveOptions,
 } from "typeorm";
 import bcrypt from "bcrypt";
 
@@ -103,5 +104,10 @@ export class UserService {
     }
     user.password = await bcrypt.hash(newPassword, 12);
     return this.userRepo.save(user);
+  }
+
+  //save
+  save(entity: DeepPartial<User>, options?: SaveOptions) {
+    return this.userRepo.save(entity, options);
   }
 }

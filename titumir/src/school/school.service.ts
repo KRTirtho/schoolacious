@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotAcceptableException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   DeepPartial,
@@ -8,7 +12,7 @@ import {
   Repository,
 } from "typeorm";
 import School from "../database/entity/schools.entity";
-import { USER_ROLE } from "../database/entity/users.entity";
+import User, { USER_ROLE } from "../database/entity/users.entity";
 import { UserService } from "../user/user.service";
 
 @Injectable()
@@ -77,5 +81,51 @@ export class SchoolService {
     const school = await this.findSchool(conditions, options);
     Object.assign(school, payload);
     return this.schoolRepo.save(school);
+  }
+
+  async assignCoAdmin({
+    index,
+    user,
+    user_id,
+  }: {
+    user_id: string;
+    user: User;
+    index: number;
+  }) {
+    const newCoAdmin = await this.userService.findUser(
+      { _id: user_id },
+      { select: ["role", "_id", "school"], relations: ["school"] }
+    );
+
+    if (newCoAdmin.role === USER_ROLE.coAdmin) {
+      throw new NotAcceptableException(
+        "User already is a co-admin. Cannot assign twice"
+      );
+    }
+    if (newCoAdmin.school._id !== user.school._id)
+      throw new BadRequestException("User doesn't belong to same school");
+    const payload: DeepPartial<School> = {};
+    const coAdmin = index === 1 ? "coAdmin1" : "coAdmin2";
+    payload[coAdmin] = newCoAdmin;
+    const school = await this.findSchool(
+      { _id: user.school._id },
+      { relations: [coAdmin] }
+    );
+    // working with previous co-admin(s)
+    if (school[coAdmin]) {
+      await this.userService.findUserAndUpdate(school[coAdmin]._id, {
+        role: USER_ROLE.teacher,
+      });
+    }
+    Object.assign(school, payload);
+    const updatedSchool = await this.schoolRepo.save(school);
+    newCoAdmin.school = updatedSchool;
+    newCoAdmin.role = USER_ROLE.coAdmin;
+    // saving the new co-admin
+    await this.userService.save(newCoAdmin);
+    school[coAdmin].role = USER_ROLE.coAdmin;
+    // this is to remove circular structure of json
+    delete school[coAdmin].school;
+    return school;
   }
 }

@@ -93,9 +93,11 @@ export class AuthController {
       if (error instanceof QueryFailedError) {
         return res
           .status(HttpStatus.NOT_ACCEPTABLE)
-          .json({ error: (error as any).detail });
+          .json({ message: (error as any).detail, error: "Not Acceptable" });
       }
-      return res.status(HttpStatus.FORBIDDEN).json(error.message);
+      return res
+        .status(HttpStatus.FORBIDDEN)
+        .json({ error: "Forbidden", message: error.message });
     }
   }
 }

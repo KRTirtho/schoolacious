@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsUUID } from "class-validator";
+import { IsDefined, IsEnum, IsOptional, IsUUID } from "class-validator";
 import {
   INVITATION_OR_JOIN_ROLE,
   INVITATION_OR_JOIN_TYPE,
@@ -13,9 +13,11 @@ export default class InvitationJoinDTO {
   @IsUUID()
   school_id?: string;
 
+  @IsDefined()
   @IsEnum(INVITATION_OR_JOIN_ROLE)
   role: INVITATION_OR_JOIN_ROLE;
 
+  @IsDefined()
   @IsEnum(INVITATION_OR_JOIN_TYPE)
   type: INVITATION_OR_JOIN_TYPE;
 }

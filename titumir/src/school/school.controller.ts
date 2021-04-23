@@ -7,7 +7,7 @@ import {
   Param,
   NotFoundException,
 } from "@nestjs/common";
-import { createQueryBuilder, DeepPartial } from "typeorm";
+import { createQueryBuilder } from "typeorm";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";

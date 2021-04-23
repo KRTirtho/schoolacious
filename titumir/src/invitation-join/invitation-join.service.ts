@@ -173,21 +173,20 @@ export class InvitationJoinService {
       throw new NotFoundException("invalid invitation/join-request");
 
     const { role, school, user: requestedUser, type } = invitation;
-    if (action === INVITATION_OR_JOIN_ACTION.accept) {
-      // for a invitation completion user of the invitation card must match
-      // for a join request completion current user must be an
-      // admin/co-admin & their school _id should match with the requested
-      // school's _id
-      if (
-        (type === INVITATION_OR_JOIN_TYPE.invitation &&
-          user._id !== requestedUser._id) ||
-        (type === INVITATION_OR_JOIN_TYPE.join &&
-          (![USER_ROLE.admin, USER_ROLE.coAdmin].includes(user.role) ||
-            school._id !== user.school._id))
-      ) {
-        throw new ForbiddenException("wrong credentials");
-      }
+    // for a invitation completion user of the invitation card must match
+    // for a join request completion current user must be an
+    // admin/co-admin & their school _id should match with the requested
+    // school's _id
+    if (
+      (type === INVITATION_OR_JOIN_TYPE.invitation &&
+        user._id !== requestedUser._id) ||
+      (type === INVITATION_OR_JOIN_TYPE.join &&
+        (![USER_ROLE.admin, USER_ROLE.coAdmin].includes(user.role) ||
+          school._id !== user.school._id))
+    )
+      throw new ForbiddenException("wrong credentials");
 
+    if (action === INVITATION_OR_JOIN_ACTION.accept) {
       // now check the user if he/she had joined any school meanwhile
       if (requestedUser.role && requestedUser.school)
         throw new NotAcceptableException("user already has a school");

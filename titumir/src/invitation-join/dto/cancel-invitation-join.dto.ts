@@ -1,6 +1,7 @@
-import { IsUUID } from "class-validator";
+import { IsDefined, IsUUID } from "class-validator";
 
 export default class CancelInvitationJoinDTO {
+  @IsDefined()
   @IsUUID()
   _id: string;
 }

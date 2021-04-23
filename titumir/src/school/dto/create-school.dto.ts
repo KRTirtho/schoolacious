@@ -1,4 +1,5 @@
 import {
+  IsDefined,
   IsEmail,
   IsLowercase,
   IsNotEmpty,
@@ -8,18 +9,23 @@ import {
 } from "class-validator";
 
 export default class CreateSchoolDTO {
+  @IsDefined()
   @IsNotEmpty()
   name: string;
 
+  @IsDefined()
   @IsEmail()
   email: string;
 
+  @IsDefined()
   @IsNumber()
   phone: number;
 
+  @IsDefined()
   @IsNotEmpty()
   description: string;
 
+  @IsDefined()
   @IsLowercase()
   @IsNotEmpty()
   @MaxLength(20)

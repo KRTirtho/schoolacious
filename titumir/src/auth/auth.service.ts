@@ -30,11 +30,11 @@ export class AuthService {
       }
     );
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException("user doesn't exist");
     }
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      throw new BadRequestException();
+      throw new BadRequestException("wrong credentials");
     }
     delete user.password;
     return user;
@@ -79,7 +79,7 @@ export class AuthService {
     const payload = this.jwtService.verify(token, { secret: NOT_A_SECRET });
     const user = await this.userService.findUser({ email: payload.email });
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException("aborted for maliciousness");
     }
     return user;
   }

@@ -1,4 +1,4 @@
-import { ValidationPipe } from "@nestjs/common";
+import { HttpStatus, ValidationPipe } from "@nestjs/common";
 import { INestApplication } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Test } from "@nestjs/testing";
@@ -27,22 +27,25 @@ describe("(e2e) PATH: auth/", () => {
     server = app.getHttpServer();
   });
 
+  const averageUser = {
+    email: "damn@damn.damn",
+    password: "whatthepass",
+    first_name: "I know",
+    last_name: "I'm cool",
+  };
+
   it("/signup (POST) perfect", async () => {
-    const user = {
-      email: "damn@damn.damn",
-      password: "whatthepass",
-      first_name: "I know",
-      last_name: "I'm cool",
-    };
     const res = await request(server)
       .post("/auth/signup")
-      .send(user)
-      .expect(201);
-    expect(res.body).toHaveProperty("email", user.email);
+      .send(averageUser)
+      .expect(HttpStatus.CREATED);
+    expect(res.body).toHaveProperty("email", averageUser.email);
     expect(res.body).not.toHaveProperty("password");
-    expect(res.body).toHaveProperty("first_name", user.first_name);
-    expect(res.body).toHaveProperty("last_name", user.last_name);
+    expect(res.body).toHaveProperty("first_name", averageUser.first_name);
+    expect(res.body).toHaveProperty("last_name", averageUser.last_name);
     expect(res.body).toHaveProperty("joined_on");
+    expect(res.headers).toHaveProperty("x-access-token");
+    expect(res.headers).toHaveProperty("x-refresh-token");
   });
 
   it("/signup (POST) without required fields", async () => {
@@ -50,7 +53,7 @@ describe("(e2e) PATH: auth/", () => {
     const res = await request(server)
       .post("/auth/signup")
       .send(user)
-      .expect(400);
+      .expect(HttpStatus.BAD_REQUEST);
     expect(res.body).toHaveProperty("message");
     expect(res.body.message).toBeInstanceOf(Array);
     expect(res.body.message).toEqual([
@@ -61,53 +64,129 @@ describe("(e2e) PATH: auth/", () => {
       "password must be longer than or equal to 8 characters",
       "password should not be empty",
     ]);
+    expect(res.headers).not.toHaveProperty("x-access-token");
+    expect(res.headers).not.toHaveProperty("x-refresh-token");
   });
 
   it("/signup (POST) with invalid email", async () => {
     const user = {
+      ...averageUser,
       email: "asdado",
-      password: "whatthepass",
-      first_name: "I know",
-      last_name: "I'm cool",
     };
     const res = await request(server)
       .post("/auth/signup")
       .send(user)
-      .expect(400);
+      .expect(HttpStatus.BAD_REQUEST);
     expect(res.body).toHaveProperty("message");
     expect(res.body.message).toBeInstanceOf(Array);
     expect(res.body.message).toContain("email must be an email");
+    expect(res.headers).not.toHaveProperty("x-access-token");
+    expect(res.headers).not.toHaveProperty("x-refresh-token");
   });
 
   it("/signup (POST) with already signed up user", async () => {
-    const user = {
-      email: "damn@damn.damn",
-      password: "whatthepass",
-      first_name: "I know",
-      last_name: "I'm cool",
-    };
     const res = await request(server)
       .post("/auth/signup")
-      .send(user)
-      .expect(406);
+      .send(averageUser)
+      .expect(HttpStatus.NOT_ACCEPTABLE);
 
     expect(res.body).toHaveProperty("message");
     expect(res.body.message).toEqual(
-      `Key (email)=(${user.email}) already exists.`
+      `Key (email)=(${averageUser.email}) already exists.`
+    );
+    expect(res.headers).not.toHaveProperty("x-access-token");
+    expect(res.headers).not.toHaveProperty("x-refresh-token");
+  });
+
+  it("/login (POST) perfect", async () => {
+    const res = await request(server)
+      .post("/auth/login")
+      .send(averageUser)
+      .expect(HttpStatus.CREATED);
+    expect(res.body).toHaveProperty("_id");
+    expect(res.body).toHaveProperty("email");
+    expect(res.body).toHaveProperty("first_name");
+    expect(res.body).toHaveProperty("last_name");
+    expect(res.body).toHaveProperty("role");
+    expect(res.body).toHaveProperty("joined_on");
+
+    expect(res.body).not.toHaveProperty("password");
+
+    expect(res.body.first_name).toEqual(averageUser.first_name);
+    expect(res.body.last_name).toEqual(averageUser.last_name);
+
+    expect(res.headers).toHaveProperty("x-access-token");
+    expect(res.headers).toHaveProperty("x-refresh-token");
+  });
+
+  it("/login (POST) wrong password", async () => {
+    const res = await request(server)
+      .post("/auth/login")
+      .send({ ...averageUser, password: "whatnotapssdasda34" })
+      .expect(HttpStatus.BAD_REQUEST);
+    expect(res.body).toHaveProperty("message");
+    expect(res.body.message).toEqual("wrong credentials");
+
+    expect(res.headers).not.toHaveProperty("x-access-token");
+    expect(res.headers).not.toHaveProperty("x-refresh-token");
+  });
+
+  it("/login (POST) non-existing email", async () => {
+    const res = await request(server)
+      .post("/auth/login")
+      .send({ ...averageUser, email: "nobody@noreply.fu" })
+      .expect(HttpStatus.NOT_FOUND);
+    expect(res.body).toHaveProperty("message");
+    expect(res.body.message).toEqual("user doesn't exist");
+
+    expect(res.headers).not.toHaveProperty("x-access-token");
+    expect(res.headers).not.toHaveProperty("x-refresh-token");
+  });
+
+  it("/refresh (POST) perfect", async () => {
+    const loginRes = await request(server)
+      .post("/auth/login")
+      .send(averageUser)
+      .expect(HttpStatus.CREATED);
+    expect(loginRes.headers).toHaveProperty("x-access-token");
+    expect(loginRes.headers).toHaveProperty("x-refresh-token");
+    const res = await request(server)
+      .post("/auth/refresh")
+      .set("x-refresh-token", loginRes.header["x-refresh-token"])
+      .expect(HttpStatus.CREATED);
+    expect(res.body.message).toEqual("Refreshed access_token");
+
+    expect(res.headers).toHaveProperty("x-access-token");
+    expect(res.headers).toHaveProperty("x-refresh-token");
+    expect(res.headers["x-refresh"]).not.toEqual(
+      loginRes.headers["x-refresh-token"]
     );
   });
 
-  // it("/login (POST) perfect", () => {});
+  it("/refresh (POST) without x-refresh-token header", async () => {
+    const res = await request(server)
+      .post("/auth/refresh")
+      .expect(HttpStatus.NOT_ACCEPTABLE);
 
-  // it("/login (POST) wrong password", () => {});
+    expect(res.body.message).toStrictEqual("refresh token not set");
 
-  // it("/login (POST) non-existing email", () => {});
+    expect(res.headers).not.toHaveProperty("x-access-token");
+    expect(res.headers).not.toHaveProperty("x-refresh-token");
+  });
 
-  // it("/refresh (POST) perfect", () => {});
+  it("/refresh (POST) with wrong refresh token", async () => {
+    const res = await request(server)
+      .post("/auth/refresh")
+      .set(
+        "x-refresh-token",
+        "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.O_Hud-xr0BkuIf7uypjVWqak4BA5B_6w3p58H5KvwHJQaUqmKlIjFq1tgduOzsOB"
+      )
+      .expect(HttpStatus.UNAUTHORIZED);
+    expect(res.body.message).toStrictEqual("invalid signature");
 
-  // it("/refresh (POST) without x-refresh-token header", () => {});
-
-  // it("/refresh (POST) with wrong refresh token", () => {});
+    expect(res.headers).not.toHaveProperty("x-access-token");
+    expect(res.headers).not.toHaveProperty("x-refresh-token");
+  });
 
   afterAll(async () => {
     await getRepository(User).delete({});

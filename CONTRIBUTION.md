@@ -260,16 +260,16 @@ All Typescript code is linted with [Prettier](https://prettier.io/).
 
 ### Tests Styleguide
 
-- Include thoughtfully-worded, well-structured [Jest](https://jestjs.io/) tests in the `./test` folder of each separate part of the project.
+- Include thoughtfully-worded, well-structured [Jest](https://jestjs.io/) tests in the `./test` folder of each separate part of the project
 - Treat `describe` as a noun or situation.
-- Treat `test` as a statement about result or how an operation results.
+- Treat `it` as a statement about result or how an operation results.
 - Treat `expect` as a noun about expectation about certain operation's behavior or result
 
 #### Example
 
 ```typescript
 describe("Test the root path", () => {
-  test("It should response the GET method", () => {
+  it("should response the GET method", () => {
     return request(app)
       .get("/")
       .then((response) => {

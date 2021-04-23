@@ -5,13 +5,11 @@ import {
   Logger,
   Post,
   Req,
-  Res,
   UseGuards,
   NotAcceptableException,
   UnauthorizedException,
-  HttpStatus,
 } from "@nestjs/common";
-import { Request, Response } from "express";
+import { Request } from "express";
 import { QueryFailedError } from "typeorm";
 import {
   CONST_ACCESS_TOKEN_HEADER,
@@ -22,6 +20,7 @@ import { UserService } from "../user/user.service";
 import { AuthService, TokenUser } from "./auth.service";
 import SignupDTO from "./dto/signup.dto";
 import LocalAuthGuard from "./guards/local-auth.jwt";
+import { JsonWebTokenError } from "jsonwebtoken";
 
 @Controller("auth")
 export class AuthController {
@@ -34,26 +33,25 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post("login")
-  async login(@Req() req: Request, @Res() res: Response) {
+  async login(@Req() { res, ...req }: Request) {
     try {
       const { access_token, refresh_token } = this.authService.createTokens(
         req.user as TokenUser
       );
       res.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
       res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-      return res.json(req.user);
+      return req.user;
     } catch (error) {
+      this.logger.error(error.message);
       if (error instanceof QueryFailedError) {
-        return res
-          .status(HttpStatus.NOT_ACCEPTABLE)
-          .json({ error: (error as any).detail });
+        throw new NotAcceptableException((error as any).detail);
       }
-      return res.status(HttpStatus.FORBIDDEN).json(error.message);
+      return error;
     }
   }
   @Public()
   @Post("refresh")
-  async refresh(@Headers() headers: Request["headers"], @Res() res: Response) {
+  async refresh(@Headers() headers: Request["headers"], @Req() req: Request) {
     try {
       const refreshToken = headers[CONST_REFRESH_TOKEN_HEADER] as string;
       if (!refreshToken)
@@ -63,22 +61,21 @@ export class AuthController {
       const { access_token, refresh_token } = this.authService.createTokens(
         isValid
       );
-      res.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
-      res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-      return res.json({ message: "Refreshed access_token" });
+      req.res.set(CONST_ACCESS_TOKEN_HEADER, access_token);
+      req.res.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+      return { message: "Refreshed access_token" };
     } catch (error) {
-      if (error instanceof QueryFailedError) {
-        return res
-          .status(HttpStatus.NOT_ACCEPTABLE)
-          .json({ error: (error as any).detail });
+      this.logger.error(error.message);
+      if (error instanceof JsonWebTokenError) {
+        throw new UnauthorizedException(error.message);
       }
-      return res.status(HttpStatus.FORBIDDEN).json(error.message);
+      throw error;
     }
   }
 
   @Public()
   @Post("signup")
-  async signup(@Body() body: SignupDTO, @Res() res: Response) {
+  async signup(@Body() body: SignupDTO, @Req() { res }: Request) {
     try {
       const { email, role, ...user } = await this.userService.create(body);
       const { access_token, refresh_token } = this.authService.createTokens({
@@ -87,17 +84,13 @@ export class AuthController {
       });
       res.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
       res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-      return res.json({ ...user, email });
+      return { ...user, email };
     } catch (error) {
       this.logger.error(error.message);
       if (error instanceof QueryFailedError) {
-        return res
-          .status(HttpStatus.NOT_ACCEPTABLE)
-          .json({ message: (error as any).detail, error: "Not Acceptable" });
+        throw new NotAcceptableException((error as any).detail);
       }
-      return res
-        .status(HttpStatus.FORBIDDEN)
-        .json({ error: "Forbidden", message: error.message });
+      throw error;
     }
   }
 }

@@ -6,8 +6,9 @@ import {
   Get,
   Param,
   NotFoundException,
+  BadRequestException,
 } from "@nestjs/common";
-import { createQueryBuilder } from "typeorm";
+import { createQueryBuilder, QueryFailedError } from "typeorm";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
@@ -15,7 +16,6 @@ import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifySchool } from "../decorator/verify-school.decorator";
 import { InvitationJoinService } from "../invitation-join/invitation-join.service";
-import { UserService } from "../user/user.service";
 import AddCoAdminDTO from "./dto/add-co-admin.dto";
 import CreateSchoolDTO from "./dto/create-school.dto";
 import { SchoolService } from "./school.service";
@@ -25,7 +25,6 @@ export class SchoolController {
   logger: Logger = new Logger(SchoolController.name);
   constructor(
     private readonly schoolService: SchoolService,
-    private readonly userService: UserService,
     private readonly invitationJoinService: InvitationJoinService
   ) {}
 
@@ -81,6 +80,9 @@ export class SchoolController {
       return school;
     } catch (error) {
       this.logger.error(error.message);
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException((error as any).detail);
+      }
       throw error;
     }
   }

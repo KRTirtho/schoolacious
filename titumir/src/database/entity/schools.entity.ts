@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
@@ -23,8 +24,8 @@ export default class School {
   @Column("varchar", { length: 100, nullable: false, unique: true })
   email: string;
 
-  @Column("int8", { nullable: false, unique: true })
-  phone: number;
+  @Column("varchar", { nullable: false, unique: true, length: 15 })
+  phone: string;
 
   @Column("text")
   description: string;
@@ -40,6 +41,10 @@ export default class School {
   @OneToOne(() => User, { nullable: true })
   @JoinColumn()
   coAdmin2?: User;
+
+  @Column()
+  @CreateDateColumn()
+  created_at: Date;
 
   @OneToMany(() => User, (user) => user.school, { nullable: true })
   user?: User;

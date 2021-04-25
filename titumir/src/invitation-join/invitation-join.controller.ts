@@ -43,8 +43,9 @@ export class InvitationJoinController {
           school_id: body.school_id,
           user,
         });
+      } else {
+        throw new ForbiddenException("wrong credentials");
       }
-      throw new ForbiddenException("wrong credentials");
     } catch (error) {
       this.logger.error(error.message);
       throw error;

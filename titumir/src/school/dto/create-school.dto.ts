@@ -2,11 +2,12 @@ import {
   IsDefined,
   IsEmail,
   IsLowercase,
+  IsMobilePhone,
   IsNotEmpty,
-  IsNumber,
   Matches,
   MaxLength,
 } from "class-validator";
+import validator from "validator";
 
 export default class CreateSchoolDTO {
   @IsDefined()
@@ -18,8 +19,8 @@ export default class CreateSchoolDTO {
   email: string;
 
   @IsDefined()
-  @IsNumber()
-  phone: number;
+  @IsMobilePhone("any" as validator.MobilePhoneLocale)
+  phone: string;
 
   @IsDefined()
   @IsNotEmpty()

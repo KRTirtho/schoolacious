@@ -26,7 +26,7 @@ export class SchoolService {
   // automatically as a `admin` USER_ROLE
   // if user already has school then the flow will break
   async create(
-    payload: Omit<School, "_id" | "invitations_joins">
+    payload: Omit<School, "_id" | "invitations_joins" | "created_at">
   ): Promise<School> {
     const hasSchool = await this.userHasSchool(payload.admin._id);
     if (hasSchool || payload.admin.role) {
@@ -43,6 +43,7 @@ export class SchoolService {
       role: USER_ROLE.admin,
       school: newSchool,
     });
+    delete admin.school; // for circular json
     newSchool.admin = admin;
     return newSchool;
   }

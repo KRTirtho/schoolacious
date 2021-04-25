@@ -1,21 +1,29 @@
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserModule } from "../../src/user/user.module";
+import { Server } from "http";
+import request from "supertest";
+import { AppModule } from "../../src/app.module";
+import { bootstrapApp } from "../e2e-test.util";
 
-describe("UserModule (e2e) PATH: user/", () => {
+describe("(e2e) PATH: /user", () => {
   let app: INestApplication;
+  let server: Server;
+  let client: request.SuperTest<request.Test>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [UserModule],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    bootstrapApp(app);
     await app.init();
+    server = app.getHttpServer();
+    client = request(server);
   });
 
-  it("/invitations (GET) perfect", () => {});
-  it("/join-requests (GET) perfect", () => {});
+  // test("/invitations (GET) perfect", () => {});
+  // test("/join-requests (GET) perfect", () => {});
 
   afterAll(() => {
     app.close();

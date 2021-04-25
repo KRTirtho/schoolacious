@@ -1,41 +1,37 @@
-import { HttpStatus, ValidationPipe } from "@nestjs/common";
+import { HttpStatus } from "@nestjs/common";
 import { INestApplication } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
 import { Test } from "@nestjs/testing";
 import { Server } from "http";
 import request from "supertest";
 import { getRepository } from "typeorm";
 import { AppModule } from "../../src/app.module";
-import JwtAuthGuard from "../../src/auth/guards/jwt-auth.guard";
-import RoleAuthGuard from "../../src/auth/guards/role-auth.guard";
 import User from "../../src/database/entity/users.entity";
+import { bootstrapApp } from "../e2e-test.util";
+
+const averageUser = {
+  email: "damn@damn.damn",
+  password: "whatthepass",
+  first_name: "I know",
+  last_name: "I'm cool",
+};
 
 describe("(e2e) PATH: auth/", () => {
   let app: INestApplication;
   let server: Server;
+  let client: request.SuperTest<request.Test>;
+
   beforeAll(async () => {
     app = (
       await Test.createTestingModule({ imports: [AppModule] }).compile()
     ).createNestApplication();
-
-    app.init();
-    app.useGlobalPipes(new ValidationPipe());
-    const reflector = new Reflector();
-    const jwtAuthGuard = new JwtAuthGuard(reflector);
-    const roleAuthGuard = new RoleAuthGuard(reflector);
-    app.useGlobalGuards(jwtAuthGuard, roleAuthGuard);
+    bootstrapApp(app);
+    await app.init();
     server = app.getHttpServer();
+    client = request(server);
   });
 
-  const averageUser = {
-    email: "damn@damn.damn",
-    password: "whatthepass",
-    first_name: "I know",
-    last_name: "I'm cool",
-  };
-
-  it("/signup (POST) perfect", async () => {
-    const res = await request(server)
+  test("/signup (POST) perfect", async () => {
+    const res = await client
       .post("/auth/signup")
       .send(averageUser)
       .expect(HttpStatus.CREATED);
@@ -48,9 +44,9 @@ describe("(e2e) PATH: auth/", () => {
     expect(res.headers).toHaveProperty("x-refresh-token");
   });
 
-  it("/signup (POST) without required fields", async () => {
+  test("/signup (POST) without required fields", async () => {
     const user = { email: "come@on.org", first_name: "Cool" };
-    const res = await request(server)
+    const res = await client
       .post("/auth/signup")
       .send(user)
       .expect(HttpStatus.BAD_REQUEST);
@@ -68,12 +64,12 @@ describe("(e2e) PATH: auth/", () => {
     expect(res.headers).not.toHaveProperty("x-refresh-token");
   });
 
-  it("/signup (POST) with invalid email", async () => {
+  test("/signup (POST) with invalid email", async () => {
     const user = {
       ...averageUser,
       email: "asdado",
     };
-    const res = await request(server)
+    const res = await client
       .post("/auth/signup")
       .send(user)
       .expect(HttpStatus.BAD_REQUEST);
@@ -84,8 +80,8 @@ describe("(e2e) PATH: auth/", () => {
     expect(res.headers).not.toHaveProperty("x-refresh-token");
   });
 
-  it("/signup (POST) with already signed up user", async () => {
-    const res = await request(server)
+  test("/signup (POST) with already signed up user", async () => {
+    const res = await client
       .post("/auth/signup")
       .send(averageUser)
       .expect(HttpStatus.NOT_ACCEPTABLE);
@@ -98,8 +94,8 @@ describe("(e2e) PATH: auth/", () => {
     expect(res.headers).not.toHaveProperty("x-refresh-token");
   });
 
-  it("/login (POST) perfect", async () => {
-    const res = await request(server)
+  test("/login (POST) perfect", async () => {
+    const res = await client
       .post("/auth/login")
       .send(averageUser)
       .expect(HttpStatus.CREATED);
@@ -119,8 +115,8 @@ describe("(e2e) PATH: auth/", () => {
     expect(res.headers).toHaveProperty("x-refresh-token");
   });
 
-  it("/login (POST) wrong password", async () => {
-    const res = await request(server)
+  test("/login (POST) wrong password", async () => {
+    const res = await client
       .post("/auth/login")
       .send({ ...averageUser, password: "whatnotapssdasda34" })
       .expect(HttpStatus.BAD_REQUEST);
@@ -131,8 +127,8 @@ describe("(e2e) PATH: auth/", () => {
     expect(res.headers).not.toHaveProperty("x-refresh-token");
   });
 
-  it("/login (POST) non-existing email", async () => {
-    const res = await request(server)
+  test("/login (POST) non-existing email", async () => {
+    const res = await client
       .post("/auth/login")
       .send({ ...averageUser, email: "nobody@noreply.fu" })
       .expect(HttpStatus.NOT_FOUND);
@@ -143,14 +139,14 @@ describe("(e2e) PATH: auth/", () => {
     expect(res.headers).not.toHaveProperty("x-refresh-token");
   });
 
-  it("/refresh (POST) perfect", async () => {
-    const loginRes = await request(server)
+  test("/refresh (POST) perfect", async () => {
+    const loginRes = await client
       .post("/auth/login")
       .send(averageUser)
       .expect(HttpStatus.CREATED);
     expect(loginRes.headers).toHaveProperty("x-access-token");
     expect(loginRes.headers).toHaveProperty("x-refresh-token");
-    const res = await request(server)
+    const res = await client
       .post("/auth/refresh")
       .set("x-refresh-token", loginRes.header["x-refresh-token"])
       .expect(HttpStatus.CREATED);
@@ -163,8 +159,8 @@ describe("(e2e) PATH: auth/", () => {
     );
   });
 
-  it("/refresh (POST) without x-refresh-token header", async () => {
-    const res = await request(server)
+  test("/refresh (POST) without x-refresh-token header", async () => {
+    const res = await client
       .post("/auth/refresh")
       .expect(HttpStatus.NOT_ACCEPTABLE);
 
@@ -174,8 +170,8 @@ describe("(e2e) PATH: auth/", () => {
     expect(res.headers).not.toHaveProperty("x-refresh-token");
   });
 
-  it("/refresh (POST) with wrong refresh token", async () => {
-    const res = await request(server)
+  test("/refresh (POST) with wrong refresh token", async () => {
+    const res = await client
       .post("/auth/refresh")
       .set(
         "x-refresh-token",
@@ -189,7 +185,7 @@ describe("(e2e) PATH: auth/", () => {
   });
 
   afterAll(async () => {
-    await getRepository(User).delete({});
+    await getRepository(User).delete({ email: averageUser.email });
     await app.close();
   });
 });

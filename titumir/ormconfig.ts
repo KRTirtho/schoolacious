@@ -3,6 +3,7 @@ import {
   DATABASE_NAME,
   DATABASE_PASSWORD,
   DATABASE_PORT,
+  NODE_ENV,
 } from "./config";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
@@ -13,7 +14,7 @@ const ormconfig: PostgresConnectionOptions = {
   port: DATABASE_PORT,
   password: DATABASE_PASSWORD,
   uuidExtension: "uuid-ossp",
-  logging: true,
+  logging: NODE_ENV !== "test",
   migrations: ["./dist/veschool/migrations/*.js"],
   cli: {
     migrationsDir: "veschool/migrations",

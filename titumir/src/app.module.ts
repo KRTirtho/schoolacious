@@ -6,6 +6,7 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import { SchoolModule } from "./school/school.module";
 import { InvitationJoinModule } from "./invitation-join/invitation-join.module";
+import { GradeModule } from './grade/grade.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { InvitationJoinModule } from "./invitation-join/invitation-join.module";
     UserModule,
     SchoolModule,
     InvitationJoinModule,
+    GradeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

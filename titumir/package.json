@@ -21,6 +21,7 @@
     "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest.e2e-config.ts"
   },
   "dependencies": {
+    "@drdgvhbh/postgres-error-codes": "^0.0.6",
     "@nestjs/common": "^7.6.15",
     "@nestjs/core": "^7.6.15",
     "@nestjs/jwt": "^7.2.0",
@@ -58,6 +59,7 @@
     "@types/node": "^14.14.36",
     "@types/passport-jwt": "^3.0.5",
     "@types/passport-local": "^1.0.33",
+    "@types/pg": "^7.14.11",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",

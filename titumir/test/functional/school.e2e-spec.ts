@@ -154,7 +154,9 @@ describe("(e2e) PATH: school/", () => {
       .set("Authorization", authorization)
       .expect(HttpStatus.NOT_FOUND);
 
-    expect(body.message).toEqual("school doesn't exist");
+    expect(body.message).toEqual(
+      "no school found with params: school=`dum-school`"
+    );
   });
 
   test("/:school/join-requests (GET) perfect", async () => {

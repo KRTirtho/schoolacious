@@ -77,10 +77,9 @@ export class InvitationJoinService {
   async invite(
     payload: Omit<InviteJoinPayload, "type" | "user"> & { user_id: string }
   ): Promise<Invitations_Joins> {
-    const user = await this.userService.findUserUnsafe({
+    const user = await this.userService.findUser({
       _id: payload.user_id,
     });
-    if (!user) throw new NotFoundException("invalid user");
     return this.create({
       type: INVITATION_OR_JOIN_TYPE.invitation,
       ...payload,
@@ -91,10 +90,9 @@ export class InvitationJoinService {
   async join(
     payload: Omit<InviteJoinPayload, "type" | "school"> & { school_id: string }
   ): Promise<Invitations_Joins> {
-    const school = await this.schoolService.findSchoolUnsafe({
+    const school = await this.schoolService.findSchool({
       _id: payload.school_id,
     });
-    if (!school) throw new NotFoundException("invalid school");
     return this.create({
       type: INVITATION_OR_JOIN_TYPE.join,
       ...payload,
@@ -164,13 +162,10 @@ export class InvitationJoinService {
     _id: string;
     action: INVITATION_OR_JOIN_ACTION;
   }): Promise<{ message: string }> {
-    const invitation = await this.invitationJoinRepo.findOne(
+    const invitation = await this.findOne(
       { _id },
       { relations: ["school", "user"] }
     );
-
-    if (!invitation)
-      throw new NotFoundException("invalid invitation/join-request");
 
     const { role, school, user: requestedUser, type } = invitation;
     // for a invitation completion user of the invitation card must match

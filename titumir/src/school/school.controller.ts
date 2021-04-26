@@ -1,14 +1,5 @@
-import {
-  Body,
-  Controller,
-  Logger,
-  Post,
-  Get,
-  Param,
-  NotFoundException,
-  BadRequestException,
-} from "@nestjs/common";
-import { createQueryBuilder, QueryFailedError } from "typeorm";
+import { Body, Controller, Logger, Post, Get, Param } from "@nestjs/common";
+import { createQueryBuilder } from "typeorm";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
@@ -34,8 +25,7 @@ export class SchoolController {
       const school = await createQueryBuilder(School, "school")
         .where("school.short_name=:short_name", { short_name })
         .leftJoinAndSelect("school.admin", "admin")
-        .getOne();
-      if (!school) throw new NotFoundException("school doesn't exist");
+        .getOneOrFail();
       return school;
     } catch (error) {
       this.logger.error(error.message);
@@ -80,9 +70,6 @@ export class SchoolController {
       return school;
     } catch (error) {
       this.logger.error(error.message);
-      if (error instanceof QueryFailedError) {
-        throw new BadRequestException((error as any).detail);
-      }
       throw error;
     }
   }

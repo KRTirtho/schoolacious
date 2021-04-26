@@ -57,13 +57,13 @@ export default class User {
   @OneToMany(() => Class, (_class) => _class.host, { nullable: true })
   classes?: Class[];
 
-  @ManyToOne(() => School, (school) => school.user, { nullable: true })
-  school?: School;
-
   @OneToMany(
     () => Invitations_Joins,
     (invitations_joins) => invitations_joins.user,
     { nullable: true }
   )
   invitations_joins?: Invitations_Joins[];
+
+  @ManyToOne(() => School, (school) => school.users, { nullable: true })
+  school?: School;
 }

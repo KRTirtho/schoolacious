@@ -8,8 +8,11 @@ import User from "../src/database/entity/users.entity";
 import request, { Response } from "supertest";
 import CreateSchoolDTO from "../src/school/dto/create-school.dto";
 import School from "../src/database/entity/schools.entity";
+import { EntityNotFoundFilter } from "../src/database/filters/entity-not-found.filter";
+import { QueryFailedFilter } from "../src/database/filters/query-failed.filter";
 
 export function bootstrapApp(app: INestApplication) {
+  app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
   app.useGlobalPipes(new ValidationPipe());
   const reflector = new Reflector();
   const jwtAuthGuard = new JwtAuthGuard(reflector);

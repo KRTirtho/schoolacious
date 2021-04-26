@@ -100,11 +100,11 @@ export class SchoolService {
 
     if (newCoAdmin.role === USER_ROLE.coAdmin) {
       throw new NotAcceptableException(
-        "User already is a co-admin. Cannot assign twice"
+        "user already is a co-admin. Cannot assign twice"
       );
     }
     if (newCoAdmin.school._id !== user.school._id)
-      throw new BadRequestException("User doesn't belong to same school");
+      throw new BadRequestException("user doesn't belong to same school");
     const payload: DeepPartial<School> = {};
     const coAdmin = index === 1 ? "coAdmin1" : "coAdmin2";
     payload[coAdmin] = newCoAdmin;

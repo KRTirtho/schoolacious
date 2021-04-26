@@ -7,6 +7,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import Grade from "./grades.entity";
 import Invitations_Joins from "./invitations_or_joins.entity";
 import User from "./users.entity";
 
@@ -47,7 +48,10 @@ export default class School {
   created_at: Date;
 
   @OneToMany(() => User, (user) => user.school, { nullable: true })
-  user?: User;
+  users?: User[];
+
+  @OneToMany(() => Grade, (grade) => grade.school, { nullable: true })
+  grades?: Grade[];
 
   @OneToMany(
     () => Invitations_Joins,

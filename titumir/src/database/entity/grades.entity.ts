@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
+import GradeToSubject from "./grade_subject.entity";
 import School from "./schools.entity";
 import Section from "./sections.entity";
 import User from "./users.entity";
@@ -39,4 +40,7 @@ export default class Grade {
   @OneToOne(() => User, { nullable: true })
   @JoinColumn()
   examiner?: User;
+
+  @OneToMany(() => GradeToSubject, (grade_subject) => grade_subject.grade)
+  grades_subjects: GradeToSubject[];
 }

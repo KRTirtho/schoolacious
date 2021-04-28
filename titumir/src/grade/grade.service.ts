@@ -11,7 +11,12 @@ export class GradeService {
     private readonly schoolService: SchoolService
   ) {}
 
-  async create(payload: Omit<Grade, "sections" | "_id" | "created_at">) {
+  async create(
+    payload: Omit<
+      Grade,
+      "sections" | "_id" | "created_at" | "grades_subjects"
+    >[]
+  ) {
     const grade = this.gradeRepo.create(payload);
     return this.gradeRepo.save(grade);
   }

@@ -56,18 +56,6 @@ export class InvitationJoinService {
     if (user.role !== null && user.school !== null) {
       throw new NotAcceptableException("user already has joined a school");
     }
-    // checking if user/school already has sent invitation
-    // or join requests
-    const hasInvitationJoin = await this.invitationJoinRepo.findOne({
-      school,
-      user,
-    });
-
-    if (hasInvitationJoin) {
-      throw new NotAcceptableException(
-        "user already has/sent invitation/join-request"
-      );
-    }
 
     const invitation = new Invitations_Joins();
     Object.assign(invitation, { role, school, user, type });

@@ -6,7 +6,11 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import { SchoolModule } from "./school/school.module";
 import { InvitationJoinModule } from "./invitation-join/invitation-join.module";
-import { GradeModule } from './grade/grade.module';
+import { GradeModule } from "./grade/grade.module";
+import { SubjectModule } from "./subject/subject.module";
+import JwtAuthGuard from "./auth/guards/jwt-auth.guard";
+
+export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
 
 @Module({
   imports: [
@@ -16,8 +20,13 @@ import { GradeModule } from './grade/grade.module';
     SchoolModule,
     InvitationJoinModule,
     GradeModule,
+    SubjectModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // guards
+    { provide: JWT_AUTH_GUARD, useClass: JwtAuthGuard },
+  ],
 })
 export class AppModule {}

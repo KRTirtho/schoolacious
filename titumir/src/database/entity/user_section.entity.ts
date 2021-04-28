@@ -19,12 +19,6 @@ export default class UsersToSections {
   @PrimaryGeneratedColumn("uuid")
   _id: string;
 
-  @Column()
-  user_id: string;
-
-  @Column()
-  section_id: string;
-
   @ManyToOne(() => User, (user) => user.userToSections)
   user: User;
 

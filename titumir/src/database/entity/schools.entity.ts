@@ -7,6 +7,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import Subject from "./subjects.entity";
 import Grade from "./grades.entity";
 import Invitations_Joins from "./invitations_or_joins.entity";
 import User from "./users.entity";
@@ -58,4 +59,7 @@ export default class School {
     (invitations_joins) => invitations_joins.school
   )
   invitations_joins?: Invitations_Joins[];
+
+  @OneToMany(() => Subject, (subject) => subject.school, { nullable: true })
+  subjects?: Subject[];
 }

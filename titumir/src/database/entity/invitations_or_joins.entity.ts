@@ -5,6 +5,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from "typeorm";
 import School from "./schools.entity";
 import User from "./users.entity";
@@ -20,6 +21,7 @@ export enum INVITATION_OR_JOIN_ROLE {
 }
 
 @Entity("invitations_or_joins")
+@Unique(["user", "school"])
 export default class Invitations_Joins {
   @PrimaryGeneratedColumn("uuid")
   _id: string;

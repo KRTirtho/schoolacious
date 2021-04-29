@@ -4,7 +4,7 @@ import { GradeController } from "./grade.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import Grade from "../database/entity/grades.entity";
 import { SchoolModule } from "../school/school.module";
-import { GradeSubjectService } from "./grade-section.service";
+import { GradeSubjectService } from "./grade-subject.service";
 import GradeToSubject from "../database/entity/grade_subject.entity";
 
 @Module({

@@ -2,7 +2,7 @@ import { ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
-import User from "../../database/entity/users.entity";
+import User, { USER_ROLE } from "../../database/entity/users.entity";
 import { EXTEND_USER_RELATION_KEY } from "../../decorator/extend-user-relation.decorator";
 import { VERIFY_GRADE_KEY } from "../../decorator/verify-grade.decorator";
 import { VERIFY_SCHOOL_KEY } from "../../decorator/verify-school.decorator";
@@ -50,9 +50,12 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
     )) as boolean;
 
     if (extendUserRelations) {
-      request.user = this.userService.findUser(request.user, {
-        relations: extendUserRelations,
-      });
+      request.user = await this.userService.findUser(
+        { _id: (request.user as User)._id },
+        {
+          relations: ["school", ...extendUserRelations],
+        }
+      );
     }
 
     if (verifySchool && superActivate) {
@@ -61,12 +64,18 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
       // TODO: Grade verification has to be more advanced & it'll based be
       // TODO: on Sections
       // school has to be same for user to verify grade
-      // if (verifyGrade && isSameSchool && request.params.grade) {
+      // if (verifyGrade) {
       //   const grade = await this.gradeService.findOne({
       //     school: (request.user as User).school,
       //     standard: request.params.grade,
       //   });
-      //   return !!grade;
+
+      //   return (
+      //     ((request.user as User).role in
+      //       [USER_ROLE.admin, USER_ROLE.coAdmin] &&
+      //       isSameSchool) ||
+      //     (isSameSchool && !!grade)
+      //   );
       // }
       return isSameSchool;
     }

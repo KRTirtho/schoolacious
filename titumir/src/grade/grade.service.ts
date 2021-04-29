@@ -1,6 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, FindConditions, FindOneOptions } from "typeorm";
+import {
+  Repository,
+  FindConditions,
+  FindOneOptions,
+  FindManyOptions,
+} from "typeorm";
 import Grade from "../database/entity/grades.entity";
 import { SchoolService } from "../school/school.service";
 
@@ -22,6 +27,10 @@ export class GradeService {
   }
 
   findOne(conditions: FindConditions<Grade>, options?: FindOneOptions<Grade>) {
-    return this.gradeRepo.findOne(conditions, options);
+    return this.gradeRepo.findOneOrFail(conditions, options);
+  }
+
+  findAll(conditions: FindConditions<Grade>, options?: FindManyOptions<Grade>) {
+    return this.gradeRepo.find({ ...conditions, ...options });
   }
 }

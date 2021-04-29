@@ -25,7 +25,9 @@ export class EntityNotFoundFilter implements ExceptionFilter {
       .toLowerCase();
     const params = this.formateObject(req.params);
     const queries = this.formateObject(req.query);
-    const body = this.formateObject(req.body);
+    let body: string;
+    if (!Array.isArray(req.body)) body = this.formateObject(req.body);
+    else body = JSON.stringify(req.body);
     return res.status(HttpStatus.NOT_FOUND).json({
       status: HttpStatus.NOT_FOUND,
       error: "Not Found",

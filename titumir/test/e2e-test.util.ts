@@ -2,7 +2,6 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { DeleteResult, getRepository } from "typeorm";
 import SignupDTO from "../src/auth/dto/signup.dto";
-import JwtAuthGuard from "../src/auth/guards/jwt-auth.guard";
 import RoleAuthGuard from "../src/auth/guards/role-auth.guard";
 import User from "../src/database/entity/users.entity";
 import request, { Response } from "supertest";
@@ -10,12 +9,13 @@ import CreateSchoolDTO from "../src/school/dto/create-school.dto";
 import School from "../src/database/entity/schools.entity";
 import { EntityNotFoundFilter } from "../src/database/filters/entity-not-found.filter";
 import { QueryFailedFilter } from "../src/database/filters/query-failed.filter";
+import { AppModule, JWT_AUTH_GUARD } from "../src/app.module";
 
 export function bootstrapApp(app: INestApplication) {
   app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
   app.useGlobalPipes(new ValidationPipe());
   const reflector = new Reflector();
-  const jwtAuthGuard = new JwtAuthGuard(reflector);
+  const jwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
   const roleAuthGuard = new RoleAuthGuard(reflector);
   app.useGlobalGuards(jwtAuthGuard, roleAuthGuard);
 }

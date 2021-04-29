@@ -1,13 +1,8 @@
-import { SetMetadata } from "@nestjs/common";
+import { applyDecorators, SetMetadata } from "@nestjs/common";
+import { VerifySchool } from "./verify-school.decorator";
 
 export const VERIFY_GRADE_KEY = "verifyGrade";
 
 export const VerifyGrade = () => {
-  return <T>(
-    target: T,
-    propertyKey: string | symbol,
-    descriptor: TypedPropertyDescriptor<T>
-  ) => {
-    SetMetadata(VERIFY_GRADE_KEY, true)(target, propertyKey, descriptor);
-  };
+  return applyDecorators(VerifySchool(), SetMetadata(VERIFY_GRADE_KEY, true));
 };

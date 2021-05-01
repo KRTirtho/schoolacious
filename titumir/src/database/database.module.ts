@@ -9,7 +9,7 @@ import School from "./entity/schools.entity";
 import Section from "./entity/sections.entity";
 import Subject from "./entity/subjects.entity";
 import User from "./entity/users.entity";
-import UsersToSections from "./entity/user_section.entity";
+import UsersToSectionsToGrades from "./entity/users_sections_grades.entity";
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import UsersToSections from "./entity/user_section.entity";
         User,
         Section,
         Grade,
-        UsersToSections,
+        UsersToSectionsToGrades,
         Class,
         School,
         Invitations_Joins,

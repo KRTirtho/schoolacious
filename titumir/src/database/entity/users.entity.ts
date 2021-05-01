@@ -10,7 +10,7 @@ import {
 import Class from "./classes.entity";
 import Invitations_Joins from "./invitations_or_joins.entity";
 import School from "./schools.entity";
-import UsersToSections from "./user_section.entity";
+import UsersToSectionsToGrades from "./users_sections_grades.entity";
 
 export enum USER_ROLE {
   admin = "admin",
@@ -47,12 +47,14 @@ export default class User {
   @CreateDateColumn()
   joined_on: Date;
 
-  // available for both teacher & student
-  // but student can only join one section
-  @OneToMany(() => UsersToSections, (usersToSection) => usersToSection.user, {
-    nullable: true,
-  })
-  userToSections?: UsersToSections[];
+  @OneToMany(
+    () => UsersToSectionsToGrades,
+    (usersToSection) => usersToSection.user,
+    {
+      nullable: true,
+    }
+  )
+  userToSectionsToGrades?: UsersToSectionsToGrades[];
 
   @OneToMany(() => Class, (_class) => _class.host, { nullable: true })
   classes?: Class[];

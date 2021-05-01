@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import Class from "./classes.entity";
 import Grade from "./grades.entity";
-import UsersToSections from "./user_section.entity";
+import UsersToSectionsToGrades from "./users_sections_grades.entity";
 
 @Entity("sections")
 @Unique(["name", "grade"])
@@ -23,10 +23,11 @@ export default class Section {
   grade: Grade;
 
   @OneToMany(
-    () => UsersToSections,
-    (usersToSections) => usersToSections.section
+    () => UsersToSectionsToGrades,
+    (usersToSections) => usersToSections.section,
+    { nullable: true }
   )
-  usersToSections: UsersToSections[];
+  usersToSectionToGrades: UsersToSectionsToGrades[];
 
   @OneToMany(() => Class, (_class) => _class.section)
   classes: Class[];

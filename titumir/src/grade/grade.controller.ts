@@ -6,6 +6,7 @@ import {
   Param,
   ParseArrayPipe,
   Post,
+  Put,
 } from "@nestjs/common";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
@@ -14,6 +15,7 @@ import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
 import { VerifySchool } from "../decorator/verify-school.decorator";
 import AssignSubjectsDTO from "./dto/assign-subject.dto";
+import AssignGradeLeadsDTO from "./dto/assign-grade-leads.dto";
 import CreateGradeDTO from "./dto/create-grade.dto";
 import { GradeSubjectService } from "./grade-subject.service";
 import { GradeService } from "./grade.service";
@@ -113,11 +115,41 @@ export class GradeController {
     }
   }
 
-  @Post(":grade/assign-moderator")
+  @Put(":grade/assign-moderator")
   @VerifySchool()
   @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
-  async assignModerator() {
+  async assignModerator(
+    @Param("grade") standard: number,
+    @CurrentUser("school") school: School,
+    @Body() { user_id }: AssignGradeLeadsDTO
+  ) {
     try {
+      return await this.gradeService.assignRole({
+        user_id,
+        role: USER_ROLE.gradeModerator,
+        school,
+        standard,
+      });
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+  @Put(":grade/assign-moderator")
+  @VerifySchool()
+  @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+  async assignExaminer(
+    @Param("grade") standard: number,
+    @CurrentUser("school") school: School,
+    @Body() { user_id }: AssignGradeLeadsDTO
+  ) {
+    try {
+      return await this.gradeService.assignRole({
+        user_id,
+        role: USER_ROLE.gradeExaminer,
+        school,
+        standard,
+      });
     } catch (error) {
       this.logger.error(error.message);
       throw error;

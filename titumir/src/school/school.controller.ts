@@ -1,4 +1,12 @@
-import { Body, Controller, Logger, Post, Get, Param } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Logger,
+  Post,
+  Get,
+  Param,
+  Put,
+} from "@nestjs/common";
 import { createQueryBuilder } from "typeorm";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import School from "../database/entity/schools.entity";
@@ -74,7 +82,7 @@ export class SchoolController {
     }
   }
 
-  @Post(":school/co-admin")
+  @Put(":school/co-admin")
   @Roles(USER_ROLE.admin)
   @VerifySchool()
   async addCoAdmin(@Body() body: AddCoAdminDTO, @CurrentUser() user: User) {

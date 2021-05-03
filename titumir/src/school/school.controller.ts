@@ -42,8 +42,8 @@ export class SchoolController {
   }
 
   @Get(":school/join-requests")
-  @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
   @VerifySchool()
+  @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
   async getSchoolJoinRequests(@CurrentUser() user: User) {
     try {
       return this.invitationJoinService.getSchoolInvitationJoin({
@@ -57,8 +57,8 @@ export class SchoolController {
   }
 
   @Get(":school/invitations")
-  @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
   @VerifySchool()
+  @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
   async getSchoolSentInvitations(@CurrentUser() user: User) {
     try {
       return this.invitationJoinService.getSchoolInvitationJoin({
@@ -74,7 +74,10 @@ export class SchoolController {
   @Post()
   async createSchool(@CurrentUser() user: User, @Body() body: CreateSchoolDTO) {
     try {
-      const school = await this.schoolService.create({ admin: user, ...body });
+      const school = await this.schoolService.createSchool({
+        admin: user,
+        ...body,
+      });
       return school;
     } catch (error) {
       this.logger.error(error.message);

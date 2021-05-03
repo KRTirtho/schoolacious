@@ -3,15 +3,12 @@ import {
   Injectable,
   InternalServerErrorException,
   NotAcceptableException,
-  NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import {
-  FindConditions,
-  FindManyOptions,
-  FindOneOptions,
-  Repository,
-} from "typeorm";
+import { Repository } from "typeorm";
+import BasicEntityService, {
+  PartialKey,
+} from "../database/abstracts/entity-service.abstract";
 import Invitations_Joins, {
   INVITATION_OR_JOIN_ROLE,
   INVITATION_OR_JOIN_TYPE,
@@ -28,6 +25,8 @@ export interface InviteJoinPayload {
   type: INVITATION_OR_JOIN_TYPE;
 }
 
+type CreateInvitationJoin = PartialKey<Invitations_Joins, "_id" | "created_at">;
+
 export enum INVITATION_OR_JOIN_ACTION {
   accept = "accept",
   reject = "reject",
@@ -39,33 +38,43 @@ interface GetInvitationJoin {
 }
 
 @Injectable()
-export class InvitationJoinService {
+export class InvitationJoinService extends BasicEntityService<
+  Invitations_Joins,
+  CreateInvitationJoin
+> {
   constructor(
     @InjectRepository(Invitations_Joins)
     private readonly invitationJoinRepo: Repository<Invitations_Joins>,
     private readonly userService: UserService,
     private readonly schoolService: SchoolService
-  ) {}
+  ) {
+    super(invitationJoinRepo);
+  }
 
-  async create({
-    role,
-    school,
-    type,
-    user,
-  }: InviteJoinPayload): Promise<Invitations_Joins> {
+  checkUserHasSchool(user: User) {
     if (user.role !== null && user.school !== null) {
       throw new NotAcceptableException("user already has joined a school");
     }
+  }
 
-    const invitation = new Invitations_Joins();
-    Object.assign(invitation, { role, school, user, type });
-    return this.invitationJoinRepo.save(invitation);
+  create(payload: CreateInvitationJoin): Promise<Invitations_Joins>;
+  create(payload: CreateInvitationJoin[]): Promise<Invitations_Joins[]>;
+
+  create(payload: CreateInvitationJoin | CreateInvitationJoin[]) {
+    if (Array.isArray(payload)) {
+      payload.forEach(({ user }) => {
+        this.checkUserHasSchool(user);
+      });
+      return super.create(payload);
+    }
+    this.checkUserHasSchool(payload.user);
+    return super.create(payload);
   }
 
   async invite(
     payload: Omit<InviteJoinPayload, "type" | "user"> & { user_id: string }
   ): Promise<Invitations_Joins> {
-    const user = await this.userService.findUser({
+    const user = await this.userService.findOne({
       _id: payload.user_id,
     });
     return this.create({
@@ -78,7 +87,7 @@ export class InvitationJoinService {
   async join(
     payload: Omit<InviteJoinPayload, "type" | "school"> & { school_id: string }
   ): Promise<Invitations_Joins> {
-    const school = await this.schoolService.findSchool({
+    const school = await this.schoolService.findOne({
       _id: payload.school_id,
     });
     return this.create({
@@ -88,29 +97,13 @@ export class InvitationJoinService {
     });
   }
 
-  findOne(
-    conditions: FindConditions<Invitations_Joins>,
-    options?: FindOneOptions<Invitations_Joins>
-  ): Promise<Invitations_Joins> {
-    return this.invitationJoinRepo.findOneOrFail(conditions, options);
-  }
-
-  findAll(
-    conditions: FindConditions<Invitations_Joins>,
-    options?: FindManyOptions<Invitations_Joins>
-  ): Promise<Invitations_Joins[]> {
-    return this.invitationJoinRepo.find({ ...conditions, ...options });
-  }
-
   async cancel({ _id, user }: { _id: string; user: User }) {
-    const invitationJoin = await this.invitationJoinRepo.findOne(
+    const invitationJoin = await this.findOne(
       { _id },
       {
         relations: ["user", "school"],
       }
     );
-
-    if (!invitationJoin) throw new NotFoundException("invalid invitation/join");
 
     const { type, school, user: requestedUser } = invitationJoin;
 
@@ -174,10 +167,13 @@ export class InvitationJoinService {
       if (requestedUser.role && requestedUser.school)
         throw new NotAcceptableException("user already has a school");
 
-      await this.userService.findUserAndUpdate(requestedUser._id, {
-        role: (role as unknown) as USER_ROLE,
-        school,
-      });
+      await this.userService.findOneAndUpdate(
+        { _id: requestedUser._id },
+        {
+          role: (role as unknown) as USER_ROLE,
+          school,
+        }
+      );
     }
     delete invitation.created_at; // causes issue when deleting
     const deleted = await this.invitationJoinRepo.delete(invitation);
@@ -192,19 +188,19 @@ export class InvitationJoinService {
     _id,
     type,
   }: GetInvitationJoin): Promise<Invitations_Joins[]> {
-    return this.findAll({ user: { _id }, type }, { relations: ["school"] });
+    return this.find(
+      {},
+      { where: { user: { _id }, type }, relations: ["school"] }
+    );
   }
 
   getSchoolInvitationJoin({
     _id,
     type,
   }: GetInvitationJoin): Promise<Invitations_Joins[]> {
-    return this.findAll(
-      {
-        type,
-        school: { _id },
-      },
-      { relations: ["user"] }
+    return this.find(
+      {},
+      { where: { type, school: { _id } }, relations: ["user"] }
     );
   }
 }

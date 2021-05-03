@@ -4,43 +4,29 @@ import User from "../database/entity/users.entity";
 import {
   DeepPartial,
   FindConditions,
-  FindManyOptions,
   FindOneOptions,
   Repository,
-  SaveOptions,
 } from "typeorm";
 import bcrypt from "bcrypt";
+import BasicEntityService, {
+  PartialKey,
+} from "../database/abstracts/entity-service.abstract";
 
 type SafeUser = Omit<User, "password">;
 
+type CreateUser = PartialKey<User, "_id" | "joined_on">;
+
 @Injectable()
-export class UserService {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
+export class UserService extends BasicEntityService<User, CreateUser> {
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) {
+    super(userRepo);
+  }
 
-  async create({
-    password,
-    ...props
-  }: Pick<User, "email" | "first_name" | "last_name" | "password">) {
-    const user = new User();
+  async createUser({ password, ...props }: CreateUser) {
     const hashedPassword = await bcrypt.hash(password, 12);
-    Object.assign(user, { ...props, password: hashedPassword });
-    const newUser = await this.userRepo.save(user);
-    delete newUser.password;
-    return newUser;
-  }
-
-  findUser(
-    conditions: FindConditions<DeepPartial<SafeUser>>,
-    options?: FindOneOptions<User>
-  ) {
-    return this.userRepo.findOneOrFail(conditions, options);
-  }
-
-  findUserUnsafe(
-    conditions: FindConditions<DeepPartial<SafeUser>>,
-    options?: FindOneOptions<User>
-  ) {
-    return this.userRepo.findOne(conditions, options);
+    const user = await super.create({ ...props, password: hashedPassword });
+    delete user.password;
+    return user;
   }
 
   // a special query that returns entire User Object/Column
@@ -72,24 +58,11 @@ export class UserService {
     return naive;
   }
 
-  findUserRaw(
+  findOneRaw(
     conditions: FindConditions<DeepPartial<SafeUser>>,
     options?: Pick<FindOneOptions<User>, "order" | "select" | "where">
   ) {
     return this.buildRawUser(conditions, options).getOne();
-  }
-
-  findUsers(
-    payload: FindConditions<DeepPartial<SafeUser>>,
-    options?: FindManyOptions<User>
-  ) {
-    return this.userRepo.find({ ...payload, ...options });
-  }
-
-  async findUserAndUpdate(_id: string, payload: DeepPartial<SafeUser>) {
-    const user = await this.userRepo.findOneOrFail(_id);
-    Object.assign(user, payload);
-    return this.userRepo.save(user);
   }
 
   // simple password changing method for user
@@ -97,17 +70,12 @@ export class UserService {
     _id: string,
     { newPassword, oldPassword }: { oldPassword: string; newPassword: string }
   ) {
-    const user = await this.findUser({ _id });
+    const user = await this.findOne({ _id });
     const isValidPassword = bcrypt.compare(oldPassword, user.password);
     if (!isValidPassword) {
       throw new BadRequestException();
     }
     user.password = await bcrypt.hash(newPassword, 12);
     return this.userRepo.save(user);
-  }
-
-  //save
-  save(entity: DeepPartial<User>, options?: SaveOptions) {
-    return this.userRepo.save(entity, options);
   }
 }

@@ -29,6 +29,8 @@ export default class Subject {
   @ManyToOne(() => School, (school) => school.subjects)
   school: School;
 
-  @OneToMany(() => GradeToSubject, (grade_subject) => grade_subject.subject)
-  grades_subjects: GradeToSubject[];
+  @OneToMany(() => GradeToSubject, (grade_subject) => grade_subject.subject, {
+    nullable: true,
+  })
+  grades_subjects?: GradeToSubject[];
 }

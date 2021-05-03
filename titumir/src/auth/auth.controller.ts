@@ -77,7 +77,7 @@ export class AuthController {
   @Post("signup")
   async signup(@Body() body: SignupDTO, @Req() { res }: Request) {
     try {
-      const { email, role, ...user } = await this.userService.create(body);
+      const { email, role, ...user } = await this.userService.createUser(body);
       const { access_token, refresh_token } = this.authService.createTokens({
         email,
         role,

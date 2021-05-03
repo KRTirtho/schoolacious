@@ -50,7 +50,7 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
     )) as boolean;
 
     if (extendUserRelations) {
-      request.user = await this.userService.findUser(
+      request.user = await this.userService.findOne(
         { _id: (request.user as User)._id },
         {
           relations: ["school", ...extendUserRelations],

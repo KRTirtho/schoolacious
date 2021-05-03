@@ -23,7 +23,7 @@ export class SubjectController {
   @VerifySchool()
   async getAlSubject(@CurrentUser() user: User) {
     try {
-      return await this.subjectService.findAll({ school: user.school });
+      return await this.subjectService.find({ school: user.school });
     } catch (error) {
       this.logger.error(error.message);
       throw error;

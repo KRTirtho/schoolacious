@@ -23,7 +23,7 @@ export class AuthService {
   ) {}
 
   async validate(email: string, password: string) {
-    const user = await this.userService.findUserRaw(
+    const user = await this.userService.findOneRaw(
       { email },
       {
         select: ["password"],
@@ -72,12 +72,12 @@ export class AuthService {
   ): Promise<User | TokenUser> {
     const tokenUser = this.jwtService.decode(token) as TokenUser;
     if (!options.full) return tokenUser;
-    return this.userService.findUser({ email: tokenUser.email });
+    return this.userService.findOne({ email: tokenUser.email });
   }
 
   async verify(token: string) {
     const payload = this.jwtService.verify(token, { secret: NOT_A_SECRET });
-    const user = await this.userService.findUser({ email: payload.email });
+    const user = await this.userService.findOne({ email: payload.email });
     if (!user) {
       throw new NotFoundException("aborted for maliciousness");
     }

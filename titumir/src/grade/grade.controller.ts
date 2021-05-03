@@ -32,7 +32,7 @@ export class GradeController {
   @VerifySchool()
   async getAllGradeOfSchool(@CurrentUser() user: User) {
     try {
-      const grades = await this.gradeService.findAll({ school: user.school });
+      const grades = await this.gradeService.find({ school: user.school });
       return grades;
     } catch (error) {
       this.logger.error(error.message);
@@ -135,7 +135,7 @@ export class GradeController {
       throw error;
     }
   }
-  @Put(":grade/assign-moderator")
+  @Put(":grade/assign-examiner")
   @VerifySchool()
   @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
   async assignExaminer(

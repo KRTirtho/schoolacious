@@ -16,9 +16,6 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate({ email }: Pick<User, "email" | "role">) {
-    return await this.userService.findUser(
-      { email },
-      { relations: ["school"] }
-    );
+    return await this.userService.findOne({ email }, { relations: ["school"] });
   }
 }

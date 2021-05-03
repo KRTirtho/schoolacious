@@ -24,15 +24,9 @@ export default class Grade {
   @Column("int", { nullable: false })
   standard: number;
 
-  @ManyToOne(() => School, (school) => school.grades)
-  school: School;
-
   @Column()
   @CreateDateColumn()
-  created_at: string;
-
-  @OneToMany(() => Section, (section) => section.grade)
-  sections: Section[];
+  created_at: Date;
 
   @OneToOne(() => User, { nullable: true })
   @JoinColumn()
@@ -42,13 +36,21 @@ export default class Grade {
   @JoinColumn()
   examiner?: User;
 
-  @OneToMany(() => GradeToSubject, (grade_subject) => grade_subject.grade)
-  grades_subjects: GradeToSubject[];
+  @OneToMany(() => Section, (section) => section.grade, { nullable: true })
+  sections?: Section[];
+
+  @OneToMany(() => GradeToSubject, (grade_subject) => grade_subject.grade, {
+    nullable: true,
+  })
+  grades_subjects?: GradeToSubject[];
 
   @OneToMany(
     () => UsersToSectionsToGrades,
     (usersToSectionsToGrade) => usersToSectionsToGrade.grade,
     { nullable: true }
   )
-  usersToSectionsToGrade: UsersToSectionsToGrades[];
+  usersToSectionsToGrade?: UsersToSectionsToGrades[];
+
+  @ManyToOne(() => School, (school) => school.grades)
+  school: School;
 }

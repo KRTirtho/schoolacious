@@ -56,7 +56,8 @@ export default class School {
 
   @OneToMany(
     () => Invitations_Joins,
-    (invitations_joins) => invitations_joins.school
+    (invitations_joins) => invitations_joins.school,
+    { nullable: true }
   )
   invitations_joins?: Invitations_Joins[];
 

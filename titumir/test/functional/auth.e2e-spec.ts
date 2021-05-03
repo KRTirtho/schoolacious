@@ -3,17 +3,10 @@ import { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { Server } from "http";
 import request from "supertest";
-import { getRepository } from "typeorm";
 import { AppModule } from "../../src/app.module";
-import User from "../../src/database/entity/users.entity";
-import { bootstrapApp } from "../e2e-test.util";
+import { bootstrapApp, generateMockUser } from "../e2e-test.util";
 
-const averageUser = {
-  email: "damn@damn.damn",
-  password: "whatthepass",
-  first_name: "I know",
-  last_name: "I'm cool",
-};
+const averageUser = generateMockUser();
 
 describe("(e2e) PATH: auth/", () => {
   let app: INestApplication;
@@ -185,7 +178,6 @@ describe("(e2e) PATH: auth/", () => {
   });
 
   afterAll(async () => {
-    await getRepository(User).delete({ email: averageUser.email });
     await app.close();
   });
 });

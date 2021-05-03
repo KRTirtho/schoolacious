@@ -3,34 +3,25 @@ import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
 import { Server } from "http";
 import CreateSchoolDTO from "../../src/school/dto/create-school.dto";
-import { getRepository } from "typeorm";
-import User, { USER_ROLE } from "../../src/database/entity/users.entity";
-import School from "../../src/database/entity/schools.entity";
+import { USER_ROLE } from "../../src/database/entity/users.entity";
 import { AppModule } from "../../src/app.module";
 import SignupDTO from "../../src/auth/dto/signup.dto";
-import { bootstrapApp, signUpUser, SignUpUserReturns } from "../e2e-test.util";
+import {
+  bootstrapApp,
+  createMockUser,
+  generateMockSchool,
+  generateMockUser,
+} from "../e2e-test.util";
 
-export const averageSchool: Partial<CreateSchoolDTO> = {
-  email: "dum@shksc.edu",
-  description: "Its not a school come on",
-  name: "Shamsul Haque Khan School & College",
-  phone: "8801111111111",
-  short_name: "shksc",
-};
+export const averageSchool: Partial<CreateSchoolDTO> = generateMockSchool();
 
 describe("(e2e) PATH: school/", () => {
   let app: INestApplication;
   let server: Server;
   let client: request.SuperTest<request.Test>;
   let authorization = "";
-  let existingSchoolUser: SignUpUserReturns;
 
-  const averageUser: Partial<SignupDTO> = {
-    email: "fujiko_f_fujio@doraemon.anime",
-    first_name: "Fujiko",
-    last_name: "Fujio",
-    password: "I created doraemon",
-  };
+  const averageUser: SignupDTO = generateMockUser();
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -44,9 +35,9 @@ describe("(e2e) PATH: school/", () => {
     client = request(server);
 
     // login with the averageUser
-    const signup = await signUpUser(client, averageUser as SignupDTO);
+    const newUser = await createMockUser(client, averageUser);
 
-    authorization = `Bearer ${signup.headers["x-access-token"]}`;
+    authorization = `Bearer ${newUser.headers["x-access-token"]}`;
   });
 
   test("/ (POST) perfect", async () => {
@@ -70,23 +61,17 @@ describe("(e2e) PATH: school/", () => {
     expect(body).toEqual(averageSchool);
   });
   test("/ (POST) with existing school", async () => {
-    existingSchoolUser = await signUpUser(client, {
-      email: "wow@wow.how",
-      first_name: "don",
-      last_name: "is",
-      password: "strongest password ever",
-    });
+    const mockUser = await createMockUser(client);
 
     const { body } = await client
       .post("/school")
       .send(averageSchool)
-      .set(
-        "Authorization",
-        `Bearer ${existingSchoolUser.headers["x-access-token"]}`
-      )
+      .set("Authorization", `Bearer ${mockUser.headers["x-access-token"]}`)
       .expect(HttpStatus.BAD_REQUEST);
 
-    expect(body.message).toEqual("Key (email)=(dum@shksc.edu) already exists.");
+    expect(body.message).toEqual(
+      `Key (email)=(${averageSchool.email}) already exists.`
+    );
   });
   test("/ (POST) with missing required fields", async () => {
     const { body } = await client
@@ -115,10 +100,10 @@ describe("(e2e) PATH: school/", () => {
     const { body } = await client
       .post("/school")
       .set("Authorization", authorization)
-      .send(averageSchool)
+      .send(generateMockSchool())
       .expect(HttpStatus.BAD_REQUEST);
 
-    expect(body.message).toEqual("User already has joined a school");
+    expect(body.message).toEqual("user already has joined a school");
   });
 
   test("/:school (GET) perfect", async () => {
@@ -182,26 +167,6 @@ describe("(e2e) PATH: school/", () => {
   // test("/:school/co-admin (POST) with an outside user", () => {});
 
   afterAll(async () => {
-    const schoolRepo = getRepository(School);
-    const userRepo = getRepository(User);
-    const [school, user] = await Promise.all([
-      schoolRepo.findOne({
-        short_name: averageSchool.short_name,
-      }),
-      userRepo.findOne({ email: averageUser.email }),
-    ]);
-    school.admin = null;
-    await schoolRepo.save(school);
-
-    user.school = null;
-    user.role = null;
-    await userRepo.save(user);
-
-    await Promise.all([
-      schoolRepo.delete({ short_name: averageSchool.short_name }),
-      userRepo.delete({ email: averageUser.email }),
-      existingSchoolUser.clearUser(),
-    ]);
     await app.close();
   });
 });

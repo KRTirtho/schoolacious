@@ -60,7 +60,7 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
 
     if (verifySchool && superActivate) {
       const isSameSchool =
-        (request.user as User).school.short_name === request.params.school;
+        (request.user as User)?.school?.short_name === request.params.school;
       // TODO: Grade verification has to be more advanced & it'll based be
       // TODO: on Sections
       // school has to be same for user to verify grade

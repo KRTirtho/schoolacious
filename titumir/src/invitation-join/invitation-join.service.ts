@@ -164,8 +164,8 @@ export class InvitationJoinService extends BasicEntityService<
 
     if (action === INVITATION_OR_JOIN_ACTION.accept) {
       // now check the user if he/she had joined any school meanwhile
-      if (requestedUser.role && requestedUser.school)
-        throw new NotAcceptableException("user already has a school");
+      if (requestedUser.role !== null && requestedUser.school !== null)
+        throw new NotAcceptableException("user already has a school meanwhile");
 
       await this.userService.findOneAndUpdate(
         { _id: requestedUser._id },
@@ -181,7 +181,7 @@ export class InvitationJoinService extends BasicEntityService<
       throw new InternalServerErrorException(
         "failed to complete invitation/join"
       );
-    return { message: `${action}ed invitation/join` };
+    return { message: `${action.valueOf()}ed invitation/join` };
   }
 
   getUserInvitationsJoin({

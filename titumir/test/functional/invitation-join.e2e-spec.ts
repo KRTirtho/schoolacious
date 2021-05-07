@@ -4,6 +4,9 @@ import request from "supertest";
 import { Server } from "http";
 import {
   createJwtTokenFromHeader,
+  createMockCoAdmin,
+  createMockInvitation,
+  createMockJoin,
   createMockSchool,
   createMockUser,
   MockSchoolResponse,
@@ -16,6 +19,7 @@ import {
 } from "../../src/database/entity/invitations_or_joins.entity";
 import { bootstrapApp } from "../e2e-test.util";
 import { AppModule } from "../../src/app.module";
+import { INVITATION_OR_JOIN_ACTION } from "../../src/invitation-join/invitation-join.service";
 
 describe("InvitationJoinModule (e2e) PATH: /invitation-join", () => {
   let app: INestApplication;
@@ -33,6 +37,7 @@ describe("InvitationJoinModule (e2e) PATH: /invitation-join", () => {
   let authorization: string;
 
   // mocks
+  let coAdminAuth: string;
   let invitationMockUser: MockUserResponse;
   let joinMockUser: MockUserResponse;
 
@@ -59,6 +64,9 @@ describe("InvitationJoinModule (e2e) PATH: /invitation-join", () => {
     averageInvitation.user_id = invitationMockUser.body._id;
     // assigning the mock school as school for join mock user
     averageJoin.school_id = school.body._id;
+    const coAdmin = await createMockUser(client);
+    await createMockCoAdmin(client, authorization, coAdmin);
+    coAdminAuth = createJwtTokenFromHeader(coAdmin);
   });
 
   test("/ (POST) perfect invitation", async () => {
@@ -185,7 +193,26 @@ describe("InvitationJoinModule (e2e) PATH: /invitation-join", () => {
       `Key (user_id, school_id)=(${joinMockUser.body._id}, ${school.body._id}) already exists.`
     );
   });
-  // test("/ (POST) sending invitation from non-admin/co-admin user", () => {});
+
+  test("/ (POST) sending invitation from non-admin/co-admin user", async () => {
+    const user = await createMockUser(client);
+    const { body } = await client
+      .post("/invitation-join")
+      .set("Authorization", coAdminAuth)
+      .send({ ...averageInvitation, user_id: user.body._id })
+      .expect(HttpStatus.CREATED);
+
+    expect(body).toHaveProperty("_id");
+    expect(body).toHaveProperty("role");
+    expect(body).toHaveProperty("user");
+    expect(body).toHaveProperty("type");
+    expect(body).toHaveProperty("school");
+    expect(body).toHaveProperty("created_at");
+
+    expect(body.user._id).toEqual(user.body._id);
+    expect(body.school._id).toEqual(school.body._id);
+  });
+
   test("/ (POST) sending invitation with school_id", async () => {
     const user = await createMockUser(client);
     const { body } = await client
@@ -287,21 +314,194 @@ describe("InvitationJoinModule (e2e) PATH: /invitation-join", () => {
 
     expect(body.message).toEqual("wrong credentials");
   });
-  // test("/ (DELETE) cancel invitation from non-admin/co-admin user", () => {});
+  test("/ (DELETE) cancel invitation from non-admin/co-admin user", async () => {
+    await createMockInvitation(client, coAdminAuth, undefined, true);
+    const schoolInvitations = await client
+      .get(`/school/${school.body.short_name}/invitations`)
+      .set("Authorization", coAdminAuth);
+    const { body } = await client
+      .delete("/invitation-join")
+      .set("Authorization", coAdminAuth)
+      .send({ _id: schoolInvitations.body[0]._id })
+      .expect(HttpStatus.OK);
 
-  // test("/complete (POST) accept perfect invitation complete", () => {});
-  // test("/complete (POST) reject perfect invitation complete", () => {});
-  // test("/complete (POST) accept perfect join complete", () => {});
-  // test("/complete (POST) reject perfect join complete", () => {});
-  // test("/complete (POST) accept without _id", () => {});
-  // test("/complete (POST) reject without _id", () => {});
-  // test("/complete (POST) accept with invalid _id", () => {});
-  // test("/complete (POST) reject with invalid _id", () => {});
-  // test("/complete (POST) accept wrong credentials", () => {});
-  // test("/complete (POST) reject wrong credentials", () => {});
-  // test("/complete (POST) accept with not admin/co-admin user", () => {});
-  // test("/complete (POST) reject with not admin/co-admin user", () => {});
-  // test("/complete (POST) accept while user already join a school meanwhile", () => {});
+    expect(body.message).toEqual("Cancelled invitation/join-request");
+  });
+
+  test("/complete (POST) without required fields", async () => {
+    const { body } = await client
+      .post("/invitation-join/complete")
+      .set("Authorization", createJwtTokenFromHeader(invitationMockUser))
+      .expect(HttpStatus.BAD_REQUEST);
+
+    expect(body.message).toEqual([
+      "_id should not be null or undefined",
+      "_id must be a UUID",
+      "action should not be null or undefined",
+      "action must be a valid enum value",
+    ]);
+  });
+  test("/complete (POST) with invalid _id", async () => {
+    const invalid_id = "12fb4244-9db3-49ce-a13d-7d0b3d42b98d";
+    const { body } = await client
+      .post("/invitation-join/complete")
+      .send({
+        _id: invalid_id,
+        action: INVITATION_OR_JOIN_ACTION.reject,
+      })
+      .set("Authorization", createJwtTokenFromHeader(invitationMockUser))
+      .expect(HttpStatus.NOT_FOUND);
+
+    expect(body.message).toEqual(
+      `no invitations_joins found with body: _id=\`${invalid_id}\`, action=\`reject\``
+    );
+  });
+
+  test("/complete (POST) accept wrong credentials", async () => {
+    const userInvitation = await client
+      .post("/invitation-join")
+      .set("Authorization", authorization)
+      .send(averageInvitation);
+    const { body } = await client
+      .post("/invitation-join/complete")
+      .send({
+        _id: userInvitation.body._id,
+        action: INVITATION_OR_JOIN_ACTION.reject,
+      })
+      .set("Authorization", createJwtTokenFromHeader(joinMockUser))
+      .expect(HttpStatus.FORBIDDEN);
+
+    expect(body.message).toEqual("wrong credentials");
+  });
+
+  test("/complete (POST) reject perfect invitation complete", async () => {
+    const {
+      body: [userInvitation],
+    } = await client
+      .get("/user/invitations")
+      .set("Authorization", createJwtTokenFromHeader(invitationMockUser))
+      .expect(HttpStatus.OK);
+    const { body } = await client
+      .post("/invitation-join/complete")
+      .send({
+        _id: userInvitation._id,
+        action: INVITATION_OR_JOIN_ACTION.reject,
+      })
+      .set("Authorization", createJwtTokenFromHeader(invitationMockUser))
+      .expect(HttpStatus.CREATED);
+
+    expect(body.message).toEqual("rejected invitation/join");
+  });
+
+  test("/complete (POST) accept perfect invitation complete", async () => {
+    const userInvitation = await client
+      .post("/invitation-join")
+      .set("Authorization", authorization)
+      .send(averageInvitation);
+    const { body } = await client
+      .post("/invitation-join/complete")
+      .send({
+        _id: userInvitation.body._id,
+        action: INVITATION_OR_JOIN_ACTION.accept,
+      })
+      .set("Authorization", createJwtTokenFromHeader(invitationMockUser))
+      .expect(HttpStatus.CREATED);
+
+    expect(body.message).toEqual("accepted invitation/join");
+  });
+
+  test("/complete (POST) accept when user already joined a school meanwhile", async () => {
+    // creating the admin users
+    const admin = await createMockUser(client);
+    const user = await createMockUser(client);
+
+    const mockSchool2Auth = createJwtTokenFromHeader(admin);
+    // creating the secondary mock school
+    await createMockSchool(client, mockSchool2Auth);
+    // sending invitation to user from both mock schools
+    const invite = (auth: string) =>
+      client
+        .post("/invitation-join")
+        .send({ ...averageInvitation, user_id: user.body._id })
+        .set("Authorization", auth);
+
+    const invitation1 = await invite(authorization);
+    const invitation2 = await invite(mockSchool2Auth);
+
+    const accept = (invitation: request.Response) =>
+      client
+        .post("/invitation-join/complete")
+        .send({
+          _id: invitation.body._id,
+          action: INVITATION_OR_JOIN_ACTION.accept,
+        })
+        .set("Authorization", createJwtTokenFromHeader(user));
+    // accepting the first invitation
+    await accept(invitation1).expect(HttpStatus.CREATED);
+
+    const { body } = await accept(invitation2).expect(
+      HttpStatus.NOT_ACCEPTABLE
+    );
+    expect(body.message).toEqual("user already has a school meanwhile");
+  });
+
+  test("/complete (POST) accept a join with not admin/co-admin user", async () => {
+    const user = await createMockUser(client);
+    const joinRequest = await createMockJoin(
+      client,
+      createJwtTokenFromHeader(user),
+      school
+    );
+
+    const { body } = await client
+      .post("/invitation-join/complete")
+      .send({
+        _id: joinRequest.body._id,
+        action: INVITATION_OR_JOIN_ACTION.accept,
+      })
+      .set("Authorization", coAdminAuth)
+      .expect(HttpStatus.CREATED);
+
+    expect(body.message).toEqual("accepted invitation/join");
+  });
+
+  test("/complete (POST) reject perfect join complete", async () => {
+    const {
+      body: [joinRequest],
+    } = await client
+      .get(`/school/${school.body.short_name}/join-requests`)
+      .set("Authorization", authorization)
+      .expect(HttpStatus.OK);
+
+    const { body } = await client
+      .post("/invitation-join/complete")
+      .send({
+        _id: joinRequest._id,
+        action: INVITATION_OR_JOIN_ACTION.reject,
+      })
+      .set("Authorization", authorization)
+      .expect(HttpStatus.CREATED);
+
+    expect(body.message).toEqual("rejected invitation/join");
+  });
+
+  test("/complete (POST) accept perfect join complete", async () => {
+    const joinRequest = await createMockJoin(
+      client,
+      createJwtTokenFromHeader(joinMockUser),
+      school
+    );
+    const { body } = await client
+      .post("/invitation-join/complete")
+      .send({
+        _id: joinRequest.body._id,
+        action: INVITATION_OR_JOIN_ACTION.accept,
+      })
+      .set("Authorization", authorization)
+      .expect(HttpStatus.CREATED);
+
+    expect(body.message).toEqual("accepted invitation/join");
+  });
 
   afterAll(async () => {
     await app.close();

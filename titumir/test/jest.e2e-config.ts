@@ -5,7 +5,6 @@ const config: Config.InitialOptions = {
   rootDir: ".",
   testEnvironment: "node",
   testRegex: ".e2e-spec.ts$",
-  testPathIgnorePatterns: ["./functional/user.e2e-spec.ts"],
   transform: {
     "^.+\\.(t|j)s$": "ts-jest",
   },

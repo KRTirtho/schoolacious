@@ -68,7 +68,7 @@ export class SchoolService extends BasicEntityService<School, CreateSchool> {
         "user already is a co-admin. Cannot assign twice"
       );
     }
-    if (newCoAdmin.school._id !== user.school._id)
+    if (newCoAdmin?.school?._id !== user.school._id)
       throw new BadRequestException("user doesn't belong to same school");
     const payload: DeepPartial<School> = {};
     const coAdmin = index === 1 ? "coAdmin1" : "coAdmin2";

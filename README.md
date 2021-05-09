@@ -10,33 +10,56 @@ This platform promises to allow children to learn even in the current serious co
 
 ## Project
 
-### Framework/Packages/Tools:
-  - Frontend 
-    - **React.js** (for web)
-    - **Flutter** (for mobile & desktop) [Vision]
-  - Backend
-    - express
-    - **Nest.js** (layer over express)
-    - **TypeORM** (database driver)
-  - DBMS
-    - **PostgreSQL** (for relational)
-    - MongoDB (non-structured)
-  - Automation/CI-CD
-    - Github Actions (might change)
-  - Other
-    - Dependobot (Github's official auto dependency bump)
+### Top Level Overview Framework/Packages/Tools:
+
+- Frontend
+  - **React.js** (for web)
+  - **Flutter** (for mobile & desktop) [Vision]
+- Backend
+  - express
+  - **Nest.js** (layer over express)
+  - **TypeORM** (database driver)
+- DBMS
+  - **PostgreSQL** (for relational)
+  - MongoDB (non-structured)
+- Automation/CI-CD
+  - Github Actions (might change)
+- Other
+  - Dependobot (Github's official auto dependency bump)
+
+See [CONTRIBUTION.md](/CONTRIBUTION.md#what-should-i-know-before-i-get-started) to learn more
 
 ### Structure
 
-|Code Cluster                                                                                                         |Purpose                         |
-|---------------------------------------------------------------------------------------------------------------------|--------------------------------|
-| [titumir](https://github.com/KRTirtho/veschool/tree/master/titumir) ([wiki](https://en.wikipedia.org/wiki/Titumir)) | Web Frontend with ReactTS      |
+| Code Cluster                                                                                                            | Purpose                    |
+| ----------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| [titumir](https://github.com/KRTirtho/veschool/tree/master/titumir) ([wiki](https://en.wikipedia.org/wiki/Titumir))     | Web Frontend with ReactTS  |
 | [zainul](https://github.com/KRTirtho/veschool/tree/master/zainul) ([wiki](https://en.wikipedia.org/wiki/Zainul_Abedin)) | Nodejs Backend with NestTS |
-
 
 ## Contribution
 
 Any kind of **Valid** Contribution more than welcomed
 Help make the world a better & stable place like before by letting the current generation learn new things regardless of any serious pandemic or disaster
 
-Learn more from [CONTRIBUTION.md](/CONTRIBUTION.md)
+Learn more from [CONTRIBUTION.md](/CONTRIBUTION.md/)
+
+## Contribution Needed For | TODO
+
+- [ ] Frontend Setup (React)
+- [ ] Unit Tests for Backend (NestJS)
+- [ ] WebRTC API implementation
+- [ ] API Client (Browser & Dart)
+- [ ] Backend Security
+- [ ] Docker integration
+- [ ] CI/CD integration (Github Actions)
+
+For knowing more tasks, go to repo's [projects](https://github.com/KRTirtho/veschool/projects)
+
+## Discussions
+
+Discuss about any topic related to this repo & project in github [veschool/discussion](https://github.com/KRTirtho/veschool/discussions)
+
+<hr>
+
+<p align="center">Measure veschool's progress by following us on <a href='https://twitter.com/KrTirtho'>twitter</a></p>
+<pre align="center">&copy VESchool 2021. All rights reserved</pre>

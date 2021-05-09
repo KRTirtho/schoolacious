@@ -1,9 +1,16 @@
-import { Body, Controller, Get, Logger, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  ParseArrayPipe,
+  Post,
+} from "@nestjs/common";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifySchool } from "../decorator/verify-school.decorator";
-import CreateSchoolDTO from "../school/dto/create-school.dto";
+import CreateSubjectDTO from "./dto/create-subject.dto";
 import defaultSubjects from "./static/default-subjects";
 import { SubjectService } from "./subject.service";
 
@@ -34,7 +41,8 @@ export class SubjectController {
   @VerifySchool()
   @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
   async createSubjects(
-    @Body() body: CreateSchoolDTO[],
+    @Body(new ParseArrayPipe({ items: CreateSubjectDTO }))
+    body: CreateSubjectDTO[],
     @CurrentUser() user: User
   ) {
     try {

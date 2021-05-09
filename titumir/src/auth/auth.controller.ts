@@ -10,17 +10,18 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
-import { QueryFailedError } from "typeorm";
 import {
   CONST_ACCESS_TOKEN_HEADER,
   CONST_REFRESH_TOKEN_HEADER,
 } from "../../config";
 import { Public } from "../decorator/public.decorator";
 import { UserService } from "../user/user.service";
-import { AuthService, TokenUser } from "./auth.service";
+import { AuthService } from "./auth.service";
 import SignupDTO from "./dto/signup.dto";
 import LocalAuthGuard from "./guards/local-auth.jwt";
 import { JsonWebTokenError } from "jsonwebtoken";
+import { CurrentUser } from "../decorator/current-user.decorator";
+import User from "../database/entity/users.entity";
 
 @Controller("auth")
 export class AuthController {
@@ -33,19 +34,18 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post("login")
-  async login(@Req() { res, ...req }: Request) {
+  async login(
+    @CurrentUser() user: User,
+    @Req() { res }: Request
+  ): Promise<User> {
     try {
       const { access_token, refresh_token } = this.authService.createTokens(
-        req.user as TokenUser
+        user
       );
       res.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
       res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-      return req.user;
+      return user;
     } catch (error) {
-      this.logger.error(error.message);
-      if (error instanceof QueryFailedError) {
-        throw new NotAcceptableException((error as any).detail);
-      }
       return error;
     }
   }
@@ -84,12 +84,9 @@ export class AuthController {
       });
       res.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
       res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-      return { ...user, email };
+      return { ...user, email, role };
     } catch (error) {
       this.logger.error(error.message);
-      if (error instanceof QueryFailedError) {
-        throw new NotAcceptableException((error as any).detail);
-      }
       throw error;
     }
   }

@@ -8,6 +8,7 @@ import { SchoolModule } from "./school/school.module";
 import { InvitationJoinModule } from "./invitation-join/invitation-join.module";
 import { GradeModule } from "./grade/grade.module";
 import { SubjectModule } from "./subject/subject.module";
+import { SectionModule } from "./section/section.module";
 import JwtAuthGuard from "./auth/guards/jwt-auth.guard";
 
 export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
@@ -21,6 +22,7 @@ export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
     InvitationJoinModule,
     GradeModule,
     SubjectModule,
+    SectionModule,
   ],
   controllers: [AppController],
   providers: [

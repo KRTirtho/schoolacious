@@ -3,11 +3,13 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
 import Class from "./classes.entity";
 import Grade from "./grades.entity";
+import User from "./users.entity";
 import UsersToSectionsToGrades from "./users_sections_grades.entity";
 
 @Entity("sections")
@@ -16,7 +18,7 @@ export default class Section {
   @PrimaryGeneratedColumn("uuid")
   _id: string;
 
-  @Column("varchar", { length: 100, nullable: false })
+  @Column("varchar", { length: 100 })
   name: string;
 
   @ManyToOne(() => Grade, (grade) => grade.sections)
@@ -27,8 +29,11 @@ export default class Section {
     (usersToSections) => usersToSections.section,
     { nullable: true }
   )
-  usersToSectionToGrades: UsersToSectionsToGrades[];
+  usersToSectionToGrades?: UsersToSectionsToGrades[];
 
-  @OneToMany(() => Class, (_class) => _class.section)
-  classes: Class[];
+  @OneToMany(() => Class, (_class) => _class.section, { nullable: true })
+  classes?: Class[];
+
+  @OneToOne(() => User, { nullable: true })
+  class_teacher?: User;
 }

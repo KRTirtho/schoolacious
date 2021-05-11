@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotAcceptableException,
 } from "@nestjs/common";
@@ -10,7 +12,9 @@ import BasicEntityService, {
 } from "../database/abstracts/entity-service.abstract";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
+import { GradeService } from "../grade/grade.service";
 import { UserService } from "../user/user.service";
+import { isGradeAdministrative } from "../utils/helper-functions.util";
 
 type CreateSchool = PartialKey<School, "_id" | "created_at">;
 
@@ -18,7 +22,9 @@ type CreateSchool = PartialKey<School, "_id" | "created_at">;
 export class SchoolService extends BasicEntityService<School, CreateSchool> {
   constructor(
     @InjectRepository(School) private readonly schoolRepo: Repository<School>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    @Inject(forwardRef(() => GradeService))
+    private readonly gradeService: GradeService
   ) {
     super(schoolRepo);
   }
@@ -58,40 +64,43 @@ export class SchoolService extends BasicEntityService<School, CreateSchool> {
     user: User;
     index: number;
   }) {
-    const newCoAdmin = await this.userService.findOne(
+    const assignee = await this.userService.findOne(
       { _id: user_id },
       { select: ["role", "_id", "school"], relations: ["school"] }
     );
 
-    if (newCoAdmin.role === USER_ROLE.coAdmin) {
+    if (assignee.role === USER_ROLE.coAdmin) {
       throw new NotAcceptableException(
         "user already is a co-admin. Cannot assign twice"
       );
+    } else if (isGradeAdministrative(assignee.role)) {
+      // removing user from grade moderator as a user can't be both
+      // grade-(moderator/examiner) & co-admin at a same time
+      await this.gradeService.removeRole(
+        assignee,
+        assignee.role as USER_ROLE.gradeExaminer | USER_ROLE.gradeModerator,
+        false
+      );
     }
-    if (newCoAdmin?.school?._id !== user.school._id)
+    if (assignee?.school?._id !== user.school._id)
       throw new BadRequestException("user doesn't belong to same school");
     const payload: DeepPartial<School> = {};
     const coAdmin = index === 1 ? "coAdmin1" : "coAdmin2";
-    payload[coAdmin] = newCoAdmin;
+    payload[coAdmin] = assignee;
     const school = await this.findOne(
       { _id: user.school._id },
       { relations: [coAdmin] }
     );
     // working with previous co-admin(s)
     if (school[coAdmin]) {
-      await this.userService.findOneAndUpdate(
-        { _id: school[coAdmin]._id },
-        {
-          role: USER_ROLE.teacher,
-        }
-      );
+      await this.removeCoAdmin(school[coAdmin], school);
     }
     Object.assign(school, payload);
     const updatedSchool = await this.schoolRepo.save(school);
-    newCoAdmin.school = updatedSchool;
-    newCoAdmin.role = USER_ROLE.coAdmin;
+    assignee.school = updatedSchool;
+    assignee.role = USER_ROLE.coAdmin;
     // saving the new co-admin
-    await this.userService.save(newCoAdmin);
+    await this.userService.save(assignee);
     school[coAdmin].role = USER_ROLE.coAdmin;
     // this is to remove circular structure of json
     delete school[coAdmin].school;
@@ -112,6 +121,8 @@ export class SchoolService extends BasicEntityService<School, CreateSchool> {
 
     const coAdminField =
       school?.coAdmin1?._id === user._id ? "coAdmin1" : "coAdmin2";
+    if (!school[coAdminField])
+      throw new NotAcceptableException("school has no co-admin");
     school[coAdminField] = null;
     if (updateUser) {
       user.role = USER_ROLE.teacher;

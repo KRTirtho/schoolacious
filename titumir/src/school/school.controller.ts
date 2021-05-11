@@ -33,6 +33,8 @@ export class SchoolController {
       const school = await createQueryBuilder(School, "school")
         .where("school.short_name=:short_name", { short_name })
         .leftJoinAndSelect("school.admin", "admin")
+        .leftJoinAndSelect("school.coAdmin1", "coAdmin1")
+        .leftJoinAndSelect("school.coAdmin2", "coAdmin2")
         .getOneOrFail();
       return school;
     } catch (error) {

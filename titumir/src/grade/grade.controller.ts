@@ -19,6 +19,8 @@ import AssignGradeLeadsDTO from "./dto/assign-grade-leads.dto";
 import CreateGradeDTO from "./dto/create-grade.dto";
 import { GradeSubjectService } from "./grade-subject.service";
 import { GradeService } from "./grade.service";
+import { ParseIntPipe } from "@nestjs/common";
+import { ExtendUserRelation } from "../decorator/extend-user-relation.decorator";
 
 @Controller("/school/:school/grade")
 export class GradeController {
@@ -80,7 +82,7 @@ export class GradeController {
       const grade = await this.gradeService.create(
         body.map((grade) => ({ ...grade, school: user.school }))
       );
-      return grade;
+      return grade.map((grade) => ({ ...grade, school: undefined }));
     } catch (error) {
       this.logger.error({ ...error });
       throw error;
@@ -117,6 +119,7 @@ export class GradeController {
 
   @Put(":grade/assign-moderator")
   @VerifySchool()
+  @ExtendUserRelation("school.coAdmin1", "school.coAdmin2")
   @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
   async assignModerator(
     @Param("grade") standard: number,
@@ -137,9 +140,10 @@ export class GradeController {
   }
   @Put(":grade/assign-examiner")
   @VerifySchool()
+  @ExtendUserRelation("school.coAdmin1", "school.coAdmin2")
   @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
   async assignExaminer(
-    @Param("grade") standard: number,
+    @Param("grade", new ParseIntPipe()) standard: number,
     @CurrentUser("school") school: School,
     @Body() { user_id }: AssignGradeLeadsDTO
   ) {

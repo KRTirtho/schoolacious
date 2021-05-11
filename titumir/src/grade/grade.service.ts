@@ -9,6 +9,7 @@ import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
+import { isGradeAdministrative } from "../utils/helper-functions.util";
 
 type CreateGrade = PartialKey<Grade, "_id" | "created_at">;
 
@@ -44,12 +45,12 @@ export class GradeService extends BasicEntityService<Grade, CreateGrade> {
       throw new BadRequestException("user doesn't belong to the school");
     // check if users was a moderator/examiner already & update that grade
     // to set the [role field] as NULL
-    if (
-      [USER_ROLE.gradeExaminer, USER_ROLE.gradeModerator].includes(
-        assignee.role
-      )
-    ) {
-      await this.removeRole(assignee, role, false);
+    if (isGradeAdministrative(assignee?.role)) {
+      await this.removeRole(
+        assignee,
+        assignee.role as USER_ROLE.gradeModerator | USER_ROLE.gradeExaminer,
+        false
+      );
     } else if (assignee.role === USER_ROLE.coAdmin) {
       await this.schoolService.removeCoAdmin(assignee, school, false);
     }
@@ -89,7 +90,7 @@ export class GradeService extends BasicEntityService<Grade, CreateGrade> {
       throw new BadRequestException(`user isn't a/an ${leaderField}`);
     const grade = await this.findOne(
       {
-        [leaderField]: user._id,
+        [leaderField]: { _id: user._id },
       },
       { relations: ["school"] }
     );

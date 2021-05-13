@@ -15,52 +15,52 @@ import User from "./users.entity";
 @Entity("schools")
 export default class School {
   @PrimaryGeneratedColumn("uuid")
-  _id: string;
+  _id!: string;
 
   @Column("text", { nullable: false })
-  name: string;
+  name!: string;
 
   @Column("varchar", { nullable: false, unique: true, length: 20 })
-  short_name: string;
+  short_name!: string;
 
   @Column("varchar", { length: 100, nullable: false, unique: true })
-  email: string;
+  email!: string;
 
   @Column("varchar", { nullable: false, unique: true, length: 15 })
-  phone: string;
+  phone!: string;
 
   @Column("text")
-  description: string;
+  description!: string;
 
   @OneToOne(() => User)
   @JoinColumn()
-  admin: User;
+  admin!: User;
 
   @OneToOne(() => User, { nullable: true })
   @JoinColumn()
-  coAdmin1?: User;
+  coAdmin1?: User | null;
 
   @OneToOne(() => User, { nullable: true })
   @JoinColumn()
-  coAdmin2?: User;
+  coAdmin2?: User | null;
 
   @Column()
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @OneToMany(() => User, (user) => user.school, { nullable: true })
-  users?: User[];
+  users?: User[] | null;
 
   @OneToMany(() => Grade, (grade) => grade.school, { nullable: true })
-  grades?: Grade[];
+  grades?: Grade[] | null;
 
   @OneToMany(
     () => Invitations_Joins,
     (invitations_joins) => invitations_joins.school,
     { nullable: true }
   )
-  invitations_joins?: Invitations_Joins[];
+  invitations_joins?: Invitations_Joins[] | null;
 
   @OneToMany(() => Subject, (subject) => subject.school, { nullable: true })
-  subjects?: Subject[];
+  subjects?: Subject[] | null;
 }

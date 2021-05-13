@@ -20,7 +20,7 @@ export class EntityNotFoundFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
     const res = ctx.getResponse<Response>();
     const entityName = exception.message
-      .match(/".*"/g)[0]
+      .match(/".*"/g)?.[0]
       .replace(/"/g, "")
       .toLowerCase();
     const params = this.formateObject(req.params);

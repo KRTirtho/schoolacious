@@ -68,7 +68,10 @@ export type MockUserResponse = Omit<request.Response, "body"> & {
  * @param {SignupDTO} [payload] - optional payload which will be used
  * instead of `generateMockUser`
  */
-export async function createMockUser(client: Client, payload?: SignupDTO) {
+export async function createMockUser(
+  client: Client,
+  payload?: SignupDTO
+): Promise<MockUserResponse> {
   try {
     if (!payload) payload = generateMockUser();
 
@@ -78,6 +81,7 @@ export async function createMockUser(client: Client, payload?: SignupDTO) {
     return user;
   } catch (error) {
     errorOut(createMockUser, error);
+    throw error;
   }
 }
 
@@ -106,6 +110,8 @@ export type MockSchoolResponse = Omit<request.Response, "body"> & {
     | "name"
     | "phone"
     | "short_name"
+    | "coAdmin1"
+    | "coAdmin2"
   >;
 };
 type Client = request.SuperTest<request.Test>;
@@ -121,7 +127,7 @@ export async function createMockSchool(
   client: Client,
   authorization: string,
   payload?: CreateSchoolDTO
-) {
+): Promise<MockSchoolResponse> {
   try {
     if (!payload) payload = generateMockSchool();
 
@@ -132,6 +138,7 @@ export async function createMockSchool(
     return school;
   } catch (error) {
     errorOut(createMockSchool, error);
+    throw error;
   }
 }
 
@@ -159,7 +166,7 @@ export async function createMockInvitation(
     const payload: InvitationJoinDTO = {
       role: INVITATION_OR_JOIN_ROLE.teacher,
       type: INVITATION_OR_JOIN_TYPE.invitation,
-      user_id: user.body._id,
+      user_id: user?.body._id,
     };
     return await client
       .post("/invitation-join")
@@ -167,6 +174,7 @@ export async function createMockInvitation(
       .send(payload);
   } catch (error) {
     errorOut(createMockInvitation, error);
+    throw error;
   }
 }
 
@@ -200,7 +208,7 @@ export async function createMockJoin(
     const payload: InvitationJoinDTO = {
       role: INVITATION_OR_JOIN_ROLE.teacher,
       type: INVITATION_OR_JOIN_TYPE.join,
-      school_id: school.body._id,
+      school_id: school?.body._id,
     };
     const res = await client
       .post("/invitation-join")
@@ -209,6 +217,7 @@ export async function createMockJoin(
     return res;
   } catch (error) {
     errorOut(createMockJoin, error);
+    throw error;
   }
 }
 

@@ -24,25 +24,23 @@ export enum INVITATION_OR_JOIN_ROLE {
 @Unique(["user", "school"])
 export default class Invitations_Joins {
   @PrimaryGeneratedColumn("uuid")
-  _id: string;
+  _id!: string;
 
   @IsEnum(INVITATION_OR_JOIN_TYPE)
   @Column("varchar", { length: 15 })
-  type: INVITATION_OR_JOIN_TYPE;
+  type!: INVITATION_OR_JOIN_TYPE;
 
-  @ManyToOne(() => School, (school) => school.invitations_joins, {
-    nullable: false,
-  })
-  school: School;
+  @ManyToOne(() => School, (school) => school.invitations_joins)
+  school!: School;
 
-  @ManyToOne(() => User, (user) => user.invitations_joins, { nullable: false })
-  user: User;
+  @ManyToOne(() => User, (user) => user.invitations_joins)
+  user!: User;
 
   @Column()
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @IsEnum(INVITATION_OR_JOIN_ROLE)
   @Column("varchar", { length: 10 })
-  role: INVITATION_OR_JOIN_ROLE;
+  role!: INVITATION_OR_JOIN_ROLE;
 }

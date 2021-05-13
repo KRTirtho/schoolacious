@@ -14,23 +14,23 @@ import School from "./schools.entity";
 @Unique(["name", "school"])
 export default class Subject {
   @PrimaryGeneratedColumn("uuid")
-  _id: string;
+  _id!: string;
 
   @Column("varchar", { length: 50 })
-  name: string;
+  name!: string;
 
   @Column("text")
-  description: string;
+  description!: string;
 
   @Column()
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @ManyToOne(() => School, (school) => school.subjects)
-  school: School;
+  school!: School;
 
   @OneToMany(() => GradeToSubject, (grade_subject) => grade_subject.subject, {
     nullable: true,
   })
-  grades_subjects?: GradeToSubject[];
+  grades_subjects?: GradeToSubject[] | null;
 }

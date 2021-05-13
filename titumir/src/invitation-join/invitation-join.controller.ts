@@ -9,6 +9,7 @@ import {
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
+import { isAdministrative } from "../utils/helper-functions.util";
 import CancelInvitationJoinDTO from "./dto/cancel-invitation-join.dto";
 import CompleteInvitationJoinDTO from "./dto/complete-invitation-join.dto";
 import InvitationJoinDTO from "./dto/invitation-join.dto";
@@ -28,13 +29,13 @@ export class InvitationJoinController {
       if (
         type === INVITATION_OR_JOIN_TYPE.invitation &&
         body.user_id &&
-        [USER_ROLE.admin, USER_ROLE.coAdmin].includes(user.role)
+        isAdministrative(user.role)
       ) {
         delete body.school_id;
         return await this.invitationJoinService.invite({
           ...body,
           user_id: body.user_id,
-          school: user.school,
+          school: user.school!,
         });
       } else if (type === INVITATION_OR_JOIN_TYPE.join && body.school_id) {
         delete body.user_id;

@@ -17,6 +17,7 @@ import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
+import { isAdministrative } from "../utils/helper-functions.util";
 
 export interface InviteJoinPayload {
   role: INVITATION_OR_JOIN_ROLE;
@@ -116,13 +117,12 @@ export class InvitationJoinService extends BasicEntityService<
       (type === INVITATION_OR_JOIN_TYPE.join &&
         user._id !== requestedUser._id) ||
       (type === INVITATION_OR_JOIN_TYPE.invitation &&
-        (![USER_ROLE.admin, USER_ROLE.coAdmin].includes(user.role) ||
-          school._id !== user.school._id))
+        (!isAdministrative(user.role) || school._id !== user.school?._id))
     ) {
       throw new ForbiddenException("wrong credentials");
     }
 
-    delete invitationJoin.created_at;
+    delete (invitationJoin as any).created_at;
 
     const deleted = await this.invitationJoinRepo.delete(invitationJoin);
     if (deleted.affected !== 1) {
@@ -157,8 +157,7 @@ export class InvitationJoinService extends BasicEntityService<
       (type === INVITATION_OR_JOIN_TYPE.invitation &&
         user._id !== requestedUser._id) ||
       (type === INVITATION_OR_JOIN_TYPE.join &&
-        (![USER_ROLE.admin, USER_ROLE.coAdmin].includes(user.role) ||
-          school._id !== user.school._id))
+        (!isAdministrative(user.role) || school._id !== user.school?._id))
     )
       throw new ForbiddenException("wrong credentials");
 
@@ -175,9 +174,9 @@ export class InvitationJoinService extends BasicEntityService<
         }
       );
     }
-    delete invitation.created_at; // causes issue when deleting
+    delete (invitation as any).created_at; // causes issue when deleting
     const deleted = await this.invitationJoinRepo.delete(invitation);
-    if (deleted.affected < 1)
+    if (deleted.affected !== 1)
       throw new InternalServerErrorException(
         "failed to complete invitation/join"
       );

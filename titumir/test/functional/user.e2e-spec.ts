@@ -47,9 +47,8 @@ describe("(e2e) PATH: /user", () => {
       .set("Authorization", userAuth)
       .expect(HttpStatus.OK);
 
-    delete invitation.body.user;
     expect(body).toBeInstanceOf(Array);
-    expect(body).toContainEqual(invitation.body);
+    expect(body).toContainEqual({ ...invitation.body, user: undefined });
   });
 
   test("/join-requests (GET) perfect", async () => {
@@ -65,7 +64,7 @@ describe("(e2e) PATH: /user", () => {
       .set("Authorization", createJwtTokenFromHeader(user))
       .expect(HttpStatus.OK);
 
-    delete joinReq.body.user;
+    Object.assign(joinReq.body, { user: undefined });
     expect(body).toBeInstanceOf(Array);
     expect(body).toContainEqual(joinReq.body);
   });

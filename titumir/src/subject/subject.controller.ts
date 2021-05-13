@@ -30,7 +30,7 @@ export class SubjectController {
   @VerifySchool()
   async getAlSubject(@CurrentUser() user: User) {
     try {
-      return await this.subjectService.find({ school: user.school });
+      return await this.subjectService.find({ school: user.school! });
     } catch (error) {
       this.logger.error(error.message);
       throw error;
@@ -47,7 +47,7 @@ export class SubjectController {
   ) {
     try {
       const subjects = await this.subjectService.create(
-        body.map((subject) => ({ ...subject, school: user.school }))
+        body.map((subject) => ({ ...subject, school: user!.school! }))
       );
       return subjects.map((subject) => ({ ...subject, school: undefined }));
     } catch (error) {

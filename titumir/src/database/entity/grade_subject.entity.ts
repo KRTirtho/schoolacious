@@ -12,14 +12,14 @@ import Subject from "./subjects.entity";
 @Unique(["grade", "subject"])
 export default class GradeToSubject {
   @PrimaryGeneratedColumn("uuid")
-  _id: string;
+  _id!: string;
 
   @ManyToOne(() => Grade, (grade) => grade.grades_subjects)
-  grade: Grade;
+  grade!: Grade;
 
   @ManyToOne(() => Subject, (subject) => subject.grades_subjects)
-  subject: Subject;
+  subject!: Subject;
 
   @Column("int", { default: 100 })
-  mark: number;
+  mark!: number;
 }

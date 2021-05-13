@@ -128,19 +128,21 @@ describe("(e2e) PATH: school/", () => {
     expect(body).toHaveProperty("admin");
     expect(body).toHaveProperty("phone");
     expect(body).toHaveProperty("created_at");
+    expect(body).toHaveProperty("coAdmin1");
+    expect(body).toHaveProperty("coAdmin2");
 
     delete body.admin._id;
     delete body.admin.joined_on;
+    delete (averageUser as any).password;
     expect(body.admin).toEqual({
       ...averageUser,
       role: USER_ROLE.admin,
-      password: undefined,
     });
 
     delete body.admin;
     delete body._id;
     delete body.created_at;
-    expect(body).toEqual(averageSchool);
+    expect(body).toEqual({ ...averageSchool, coAdmin1: null, coAdmin2: null });
   });
   test("/:school (GET) non-existing school", async () => {
     const { body } = await client
@@ -165,9 +167,11 @@ describe("(e2e) PATH: school/", () => {
       await createMockJoin(client, createJwtTokenFromHeader(users[0]), school),
       await createMockJoin(client, createJwtTokenFromHeader(users[1]), school),
     ].map(({ body }) => {
-      delete body.school;
-      delete body?.user?.school;
-      return body;
+      return {
+        ...body,
+        user: { ...body.user, school: undefined },
+        school: undefined,
+      };
     });
     const { body } = await client
       .get(`/school/${averageSchool.short_name}/join-requests`)
@@ -206,9 +210,11 @@ describe("(e2e) PATH: school/", () => {
       await createMockInvitation(client, authorization, users[0]),
       await createMockInvitation(client, authorization, users[1]),
     ].map(({ body }) => {
-      delete body.school;
-      delete body?.user?.school;
-      return body;
+      return {
+        ...body,
+        user: { ...body.user, school: undefined },
+        school: undefined,
+      };
     });
 
     const { body } = await client

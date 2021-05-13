@@ -10,10 +10,10 @@ export default class LoginDTO {
   @MaxLength(100)
   @IsDefined()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsNotEmpty()
   @IsDefined()
   @MinLength(8)
-  password: string;
+  password!: string;
 }

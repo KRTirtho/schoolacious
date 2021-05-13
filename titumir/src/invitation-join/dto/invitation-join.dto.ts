@@ -15,9 +15,9 @@ export default class InvitationJoinDTO {
 
   @IsDefined()
   @IsEnum(INVITATION_OR_JOIN_ROLE)
-  role: INVITATION_OR_JOIN_ROLE;
+  role!: INVITATION_OR_JOIN_ROLE;
 
   @IsDefined()
   @IsEnum(INVITATION_OR_JOIN_TYPE)
-  type: INVITATION_OR_JOIN_TYPE;
+  type!: INVITATION_OR_JOIN_TYPE;
 }

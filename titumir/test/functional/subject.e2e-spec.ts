@@ -49,7 +49,10 @@ describe("(e2e) PATH: /school/:school/subject", () => {
       .set("Authorization", authorization)
       .send(subjects)
       .expect(HttpStatus.CREATED);
-    body = body.map(({ name, description }) => ({ name, description }));
+    body = body.map(({ name, description }: CreateSubjectDTO) => ({
+      name,
+      description,
+    }));
     for (const subject of subjects) {
       expect(body).toContainEqual(subject);
     }
@@ -69,7 +72,10 @@ describe("(e2e) PATH: /school/:school/subject", () => {
       .set("Authorization", authorization)
       .expect(HttpStatus.OK);
 
-    body = body.map(({ name, description }) => ({ name, description }));
+    body = body.map(({ name, description }: CreateSubjectDTO) => ({
+      name,
+      description,
+    }));
     for (const subject of subjects) {
       expect(body).toContainEqual(subject);
     }

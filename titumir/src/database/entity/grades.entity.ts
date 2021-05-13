@@ -19,38 +19,38 @@ import UsersToSectionsToGrades from "./users_sections_grades.entity";
 @Unique(["standard", "school"])
 export default class Grade {
   @PrimaryGeneratedColumn("uuid")
-  _id: string;
+  _id!: string;
 
   @Column("int", { nullable: false })
-  standard: number;
+  standard!: number;
 
   @Column()
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @OneToOne(() => User, { nullable: true })
   @JoinColumn()
-  moderator?: User;
+  moderator?: User | null;
 
   @OneToOne(() => User, { nullable: true })
   @JoinColumn()
-  examiner?: User;
+  examiner?: User | null;
 
   @OneToMany(() => Section, (section) => section.grade, { nullable: true })
-  sections?: Section[];
+  sections?: Section[] | null;
 
   @OneToMany(() => GradeToSubject, (grade_subject) => grade_subject.grade, {
     nullable: true,
   })
-  grades_subjects?: GradeToSubject[];
+  grades_subjects?: GradeToSubject[] | null;
 
   @OneToMany(
     () => UsersToSectionsToGrades,
     (usersToSectionsToGrade) => usersToSectionsToGrade.grade,
     { nullable: true }
   )
-  usersToSectionsToGrade?: UsersToSectionsToGrades[];
+  usersToSectionsToGrade?: UsersToSectionsToGrades[] | null;
 
   @ManyToOne(() => School, (school) => school.grades)
-  school: School;
+  school!: School;
 }

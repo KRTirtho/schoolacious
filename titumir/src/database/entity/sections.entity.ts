@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -16,24 +17,25 @@ import UsersToSectionsToGrades from "./users_sections_grades.entity";
 @Unique(["name", "grade"])
 export default class Section {
   @PrimaryGeneratedColumn("uuid")
-  _id: string;
+  _id!: string;
 
   @Column("varchar", { length: 100 })
-  name: string;
+  name!: string;
 
   @ManyToOne(() => Grade, (grade) => grade.sections)
-  grade: Grade;
+  grade!: Grade;
 
   @OneToMany(
     () => UsersToSectionsToGrades,
     (usersToSections) => usersToSections.section,
     { nullable: true }
   )
-  usersToSectionToGrades?: UsersToSectionsToGrades[];
+  usersToSectionToGrades?: UsersToSectionsToGrades[] | null;
 
   @OneToMany(() => Class, (_class) => _class.section, { nullable: true })
-  classes?: Class[];
+  classes?: Class[] | null;
 
   @OneToOne(() => User, { nullable: true })
-  class_teacher?: User;
+  @JoinColumn()
+  class_teacher?: User | null;
 }

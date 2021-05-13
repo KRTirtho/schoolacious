@@ -20,5 +20,6 @@
       "username": "krtirtho",
       "password": "encrypt"
     }
-  ]
+  ],
+  "typescript.tsdk": "./titumir/node_modules/typescript/lib"
 }

@@ -27,22 +27,22 @@ export enum SECTION_ROLE {
 @Unique(["grade", "section", "user"])
 export default class UsersToSectionsToGrades {
   @PrimaryGeneratedColumn("uuid")
-  _id: string;
+  _id!: string;
 
   @ManyToOne(() => Grade, (grade) => grade.usersToSectionsToGrade)
-  grade: Grade;
+  grade!: Grade;
 
   @ManyToOne(() => User, (user) => user.userToSectionsToGrades)
-  user: User;
+  user!: User;
 
   @ManyToOne(() => Section, (section) => section.usersToSectionToGrades)
-  section: Section;
+  section!: Section;
 
   @Column()
   @CreateDateColumn()
-  assigned_at: Date;
+  assigned_at!: Date;
 
   @IsEnum(SECTION_ROLE)
   @Column("varchar", { length: 10 })
-  role: SECTION_ROLE;
+  role!: SECTION_ROLE;
 }

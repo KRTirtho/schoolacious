@@ -82,18 +82,18 @@ export class SchoolService extends BasicEntityService<School, CreateSchool> {
         false
       );
     }
-    if (assignee?.school?._id !== user.school._id)
+    if (assignee?.school?._id !== user.school?._id)
       throw new BadRequestException("user doesn't belong to same school");
     const payload: DeepPartial<School> = {};
     const coAdmin = index === 1 ? "coAdmin1" : "coAdmin2";
     payload[coAdmin] = assignee;
     const school = await this.findOne(
-      { _id: user.school._id },
+      { _id: user.school?._id },
       { relations: [coAdmin] }
     );
     // working with previous co-admin(s)
     if (school[coAdmin]) {
-      await this.removeCoAdmin(school[coAdmin], school);
+      await this.removeCoAdmin(school[coAdmin]!, school);
     }
     Object.assign(school, payload);
     const updatedSchool = await this.schoolRepo.save(school);
@@ -101,9 +101,10 @@ export class SchoolService extends BasicEntityService<School, CreateSchool> {
     assignee.role = USER_ROLE.coAdmin;
     // saving the new co-admin
     await this.userService.save(assignee);
-    school[coAdmin].role = USER_ROLE.coAdmin;
-    // this is to remove circular structure of json
-    delete school[coAdmin].school;
+    Object.assign(school[coAdmin], {
+      role: USER_ROLE.coAdmin,
+      school: undefined,
+    });
     return school;
   }
 
@@ -123,7 +124,7 @@ export class SchoolService extends BasicEntityService<School, CreateSchool> {
       school?.coAdmin1?._id === user._id ? "coAdmin1" : "coAdmin2";
     if (!school[coAdminField])
       throw new NotAcceptableException("school has no co-admin");
-    school[coAdminField] = null;
+    school[coAdminField] = undefined;
     if (updateUser) {
       user.role = USER_ROLE.teacher;
       await this.userService.save(user);

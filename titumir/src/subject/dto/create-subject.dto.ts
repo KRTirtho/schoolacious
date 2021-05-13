@@ -4,9 +4,9 @@ export default class CreateSubjectDTO {
   @IsDefined()
   @IsNotEmpty()
   @MaxLength(50)
-  name: string;
+  name!: string;
 
   @IsDefined()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 }

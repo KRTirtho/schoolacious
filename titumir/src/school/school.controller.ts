@@ -7,9 +7,7 @@ import {
   Param,
   Put,
 } from "@nestjs/common";
-import { createQueryBuilder } from "typeorm";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
-import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
@@ -30,7 +28,8 @@ export class SchoolController {
   @Get(":school")
   async getSchool(@Param("school") short_name: string) {
     try {
-      const school = await createQueryBuilder(School, "school")
+      const school = await this.schoolService
+        .queryBuilder("school")
         .where("school.short_name=:short_name", { short_name })
         .leftJoinAndSelect("school.admin", "admin")
         .leftJoinAndSelect("school.coAdmin1", "coAdmin1")
@@ -49,7 +48,7 @@ export class SchoolController {
   async getSchoolJoinRequests(@CurrentUser() user: User) {
     try {
       return this.invitationJoinService.getSchoolInvitationJoin({
-        _id: user.school._id,
+        _id: user.school!._id,
         type: INVITATION_OR_JOIN_TYPE.join,
       });
     } catch (error) {
@@ -64,7 +63,7 @@ export class SchoolController {
   async getSchoolSentInvitations(@CurrentUser() user: User) {
     try {
       return this.invitationJoinService.getSchoolInvitationJoin({
-        _id: user.school._id,
+        _id: user.school!._id,
         type: INVITATION_OR_JOIN_TYPE.invitation,
       });
     } catch (error) {

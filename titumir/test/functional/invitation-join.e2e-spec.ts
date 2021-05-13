@@ -387,8 +387,7 @@ describe("InvitationJoinModule (e2e) PATH: /invitation-join", () => {
         _id: userInvitation._id,
         action: INVITATION_OR_JOIN_ACTION.reject,
       })
-      .set("Authorization", createJwtTokenFromHeader(invitationMockUser))
-      .expect(HttpStatus.CREATED);
+      .set("Authorization", createJwtTokenFromHeader(invitationMockUser));
 
     expect(body.message).toEqual("rejected invitation/join");
   });

@@ -77,7 +77,7 @@ describe("(e2e) PATH: auth/", () => {
     const res = await client
       .post("/auth/signup")
       .send(averageUser)
-      .expect(HttpStatus.NOT_ACCEPTABLE);
+      .expect(HttpStatus.BAD_REQUEST);
 
     expect(res.body).toHaveProperty("message");
     expect(res.body.message).toEqual(

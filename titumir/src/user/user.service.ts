@@ -24,9 +24,8 @@ export class UserService extends BasicEntityService<User, CreateUser> {
 
   async createUser({ password, ...props }: CreateUser) {
     const hashedPassword = await bcrypt.hash(password, 12);
-    const user = await super.create({ ...props, password: hashedPassword });
-    delete user.password;
-    return user;
+    const user = await this.create({ ...props, password: hashedPassword });
+    return { ...user, password: undefined };
   }
 
   // a special query that returns entire User Object/Column
@@ -35,9 +34,7 @@ export class UserService extends BasicEntityService<User, CreateUser> {
     conditions: FindConditions<DeepPartial<SafeUser>>,
     options?: Pick<FindOneOptions<User>, "order" | "select" | "where">
   ) {
-    const naive = this.userRepo
-      .createQueryBuilder("user")
-      .where(options?.where ?? conditions);
+    const naive = this.queryBuilder("user").where(options?.where ?? conditions);
     if (options?.select) {
       for (const select of options.select) {
         naive.addSelect(`user.${select}`);

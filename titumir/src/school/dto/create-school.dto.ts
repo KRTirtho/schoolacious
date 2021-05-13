@@ -12,24 +12,24 @@ import validator from "validator";
 export default class CreateSchoolDTO {
   @IsDefined()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsDefined()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsDefined()
   @IsMobilePhone("any" as validator.MobilePhoneLocale)
-  phone: string;
+  phone!: string;
 
   @IsDefined()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @IsDefined()
   @IsLowercase()
   @IsNotEmpty()
   @MaxLength(20)
   @Matches(/\w*\d*-*/g)
-  short_name: string;
+  short_name!: string;
 }

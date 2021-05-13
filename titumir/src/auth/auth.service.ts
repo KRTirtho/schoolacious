@@ -36,8 +36,7 @@ export class AuthService {
     if (!isValidPassword) {
       throw new BadRequestException("wrong credentials");
     }
-    delete user.password;
-    return user;
+    return { ...user, password: undefined };
   }
 
   getAccessToken(payload: TokenUser) {
@@ -71,7 +70,7 @@ export class AuthService {
     options?: { full?: boolean }
   ): Promise<User | TokenUser> {
     const tokenUser = this.jwtService.decode(token) as TokenUser;
-    if (!options.full) return tokenUser;
+    if (!options?.full) return tokenUser;
     return this.userService.findOne({ email: tokenUser.email });
   }
 

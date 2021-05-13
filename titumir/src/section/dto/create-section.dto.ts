@@ -4,5 +4,5 @@ export default class CreateSectionDTO {
   @IsDefined()
   @IsNotEmpty()
   @MaxLength(100)
-  name: string;
+  name!: string;
 }

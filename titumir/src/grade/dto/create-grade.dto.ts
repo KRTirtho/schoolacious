@@ -4,5 +4,5 @@ export default class CreateGradeDTO {
   @IsDefined()
   @IsNumber()
   @IsPositive()
-  standard: number;
+  standard!: number;
 }

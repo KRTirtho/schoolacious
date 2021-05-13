@@ -12,7 +12,7 @@ export default class AssignSubjectsDTO {
   @IsDefined()
   @IsNotEmpty()
   @IsUUID()
-  subject_id: string;
+  subject_id!: string;
 
   @IsOptional()
   @IsNumber()

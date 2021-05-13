@@ -10,7 +10,9 @@ if (NODE_ENV === "test") {
 }
 // all the env vars
 export const DATABASE_HOST = process.env.DATABASE_HOST;
-export const DATABASE_PORT = parseInt(process.env.DATABASE_PORT);
+export const DATABASE_PORT = process.env.DATABASE_PORT
+  ? parseInt(process.env.DATABASE_PORT)
+  : undefined;
 export const DATABASE_NAME = process.env.DATABASE_NAME;
 export const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
 export const NOT_A_SECRET = process.env.NOT_A_SECRET;

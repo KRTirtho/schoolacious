@@ -5,10 +5,10 @@ export default class SignupDTO extends LoginDTO {
   @IsNotEmpty()
   @IsDefined()
   @MaxLength(50)
-  first_name: string;
+  first_name!: string;
 
   @IsNotEmpty()
   @IsDefined()
   @MaxLength(50)
-  last_name: string;
+  last_name!: string;
 }

@@ -45,7 +45,16 @@ export class GradeService extends BasicEntityService<Grade, CreateGrade> {
       throw new BadRequestException("user doesn't belong to the school");
     // check if users was a moderator/examiner already & update that grade
     // to set the [role field] as NULL
-    if (isGradeAdministrative(assignee?.role)) {
+
+    const grade = await this.findOne(
+      { standard, school: { _id: school._id } },
+      { relations: [leaderField] }
+    );
+    if (assignee.role && isGradeAdministrative(assignee.role)) {
+      if (grade[leaderField]?._id === assignee._id)
+        throw new BadRequestException(
+          `cannot assign same ${leaderField} twice`
+        );
       await this.removeRole(
         assignee,
         assignee.role as USER_ROLE.gradeModerator | USER_ROLE.gradeExaminer,
@@ -54,8 +63,6 @@ export class GradeService extends BasicEntityService<Grade, CreateGrade> {
     } else if (assignee.role === USER_ROLE.coAdmin) {
       await this.schoolService.removeCoAdmin(assignee, school, false);
     }
-
-    const grade = await this.findOne({ standard, school: { _id: school._id } });
     grade[leaderField] = assignee;
     assignee.role = role;
 
@@ -84,9 +91,7 @@ export class GradeService extends BasicEntityService<Grade, CreateGrade> {
         { relations: ["school"] }
       );
     }
-    if (
-      ![USER_ROLE.gradeExaminer, USER_ROLE.gradeModerator].includes(user.role)
-    )
+    if (!isGradeAdministrative(user.role))
       throw new BadRequestException(`user isn't a/an ${leaderField}`);
     const grade = await this.findOne(
       {
@@ -99,6 +104,6 @@ export class GradeService extends BasicEntityService<Grade, CreateGrade> {
       await this.userService.save(user);
     }
     grade[leaderField] = null;
-    return await this.gradeRepo.save(grade);
+    return await this.gradeRepo.save({ ...grade });
   }
 }

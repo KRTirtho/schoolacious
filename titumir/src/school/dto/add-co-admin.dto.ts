@@ -10,10 +10,10 @@ export default class AddCoAdminDTO {
   @IsDefined()
   @IsNumber()
   @IsPositive()
-  index: 1 | 2;
+  index!: 1 | 2;
 
   @IsDefined()
   @IsNotEmpty()
   @IsUUID()
-  user_id: string;
+  user_id!: string;
 }

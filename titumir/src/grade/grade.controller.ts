@@ -21,6 +21,11 @@ import { GradeSubjectService } from "./grade-subject.service";
 import { GradeService } from "./grade.service";
 import { ParseIntPipe } from "@nestjs/common";
 import { ExtendUserRelation } from "../decorator/extend-user-relation.decorator";
+import Grade from "../database/entity/grades.entity";
+
+export interface VerifiedGradeUser extends User {
+  grade: Grade;
+}
 
 @Controller("/school/:school/grade")
 export class GradeController {
@@ -34,7 +39,7 @@ export class GradeController {
   @VerifySchool()
   async getAllGradeOfSchool(@CurrentUser() user: User) {
     try {
-      const grades = await this.gradeService.find({ school: user.school });
+      const grades = await this.gradeService.find({ school: user.school! });
       return grades;
     } catch (error) {
       this.logger.error(error.message);
@@ -63,7 +68,7 @@ export class GradeController {
       return {
         ...grade,
         grades_subjects: undefined,
-        subjects: grade.grades_subjects.map((gs) => gs.subject),
+        subjects: grade.grades_subjects?.map((gs) => gs.subject),
       };
     } catch (error) {
       this.logger.error(error.message);
@@ -80,7 +85,7 @@ export class GradeController {
   ) {
     try {
       const grade = await this.gradeService.create(
-        body.map((grade) => ({ ...grade, school: user.school }))
+        body.map((grade) => ({ ...grade, school: user.school! }))
       );
       return grade.map((grade) => ({ ...grade, school: undefined }));
     } catch (error) {
@@ -96,11 +101,11 @@ export class GradeController {
     @Body(new ParseArrayPipe({ items: AssignSubjectsDTO }))
     body: AssignSubjectsDTO[],
     @Param("grade") standard: number,
-    @CurrentUser() user: User
+    @CurrentUser() user: VerifiedGradeUser
   ) {
     try {
       const grade = await this.gradeService.findOne({
-        school: user.school,
+        school: user.school!,
         standard,
       });
       const gradesToSubjects = await this.gradeToSubjectService.create(

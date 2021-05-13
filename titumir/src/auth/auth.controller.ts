@@ -42,8 +42,8 @@ export class AuthController {
       const { access_token, refresh_token } = this.authService.createTokens(
         user
       );
-      res.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
-      res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+      res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
+      res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
       return user;
     } catch (error) {
       return error;
@@ -51,7 +51,10 @@ export class AuthController {
   }
   @Public()
   @Post("refresh")
-  async refresh(@Headers() headers: Request["headers"], @Req() req: Request) {
+  async refresh(
+    @Headers() headers: Request["headers"],
+    @Req() { res }: Request
+  ) {
     try {
       const refreshToken = headers[CONST_REFRESH_TOKEN_HEADER] as string;
       if (!refreshToken)
@@ -61,8 +64,8 @@ export class AuthController {
       const { access_token, refresh_token } = this.authService.createTokens(
         isValid
       );
-      req.res.set(CONST_ACCESS_TOKEN_HEADER, access_token);
-      req.res.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+      res?.set(CONST_ACCESS_TOKEN_HEADER, access_token);
+      res?.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
       return { message: "Refreshed access_token" };
     } catch (error) {
       this.logger.error(error.message);
@@ -82,8 +85,8 @@ export class AuthController {
         email,
         role,
       });
-      res.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
-      res.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+      res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
+      res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
       return { ...user, email, role };
     } catch (error) {
       this.logger.error(error.message);

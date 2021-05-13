@@ -25,27 +25,27 @@ export enum USER_ROLE {
 @Entity("users")
 export default class User {
   @PrimaryGeneratedColumn("uuid")
-  _id: string;
+  _id!: string;
 
   @Column({ type: "varchar", length: 100, nullable: false, unique: true })
-  email: string;
+  email!: string;
 
   @Column("text", { nullable: false, select: false })
-  password: string;
+  password!: string;
 
   @Column("varchar", { length: 50, nullable: false })
-  first_name: string;
+  first_name!: string;
 
   @Column("varchar", { length: 50, nullable: false })
-  last_name: string;
+  last_name!: string;
 
   @IsEnum(USER_ROLE)
   @Column("varchar", { length: 20, nullable: true })
-  role?: USER_ROLE;
+  role?: USER_ROLE | null;
 
   @Column()
   @CreateDateColumn()
-  joined_on: Date;
+  joined_on!: Date;
 
   @OneToMany(
     () => UsersToSectionsToGrades,
@@ -54,18 +54,18 @@ export default class User {
       nullable: true,
     }
   )
-  userToSectionsToGrades?: UsersToSectionsToGrades[];
+  userToSectionsToGrades?: UsersToSectionsToGrades[] | null;
 
   @OneToMany(() => Class, (_class) => _class.host, { nullable: true })
-  classes?: Class[];
+  classes?: Class[] | null;
 
   @OneToMany(
     () => Invitations_Joins,
     (invitations_joins) => invitations_joins.user,
     { nullable: true }
   )
-  invitations_joins?: Invitations_Joins[];
+  invitations_joins?: Invitations_Joins[] | null;
 
   @ManyToOne(() => School, (school) => school.users, { nullable: true })
-  school?: School;
+  school?: School | null;
 }

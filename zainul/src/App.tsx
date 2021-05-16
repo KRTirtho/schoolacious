@@ -1,37 +1,37 @@
+import React from "react";
+import { useState } from "react";
 import {
-  Grommet,
-  Box,
-  Header,
-  Heading,
-  Card,
-  CardBody,
-  CardHeader,
-  CardFooter,
-} from 'grommet';
+  ThemeProvider,
+  createMuiTheme,
+  Grid,
+  Typography,
+  Button,
+} from "@material-ui/core";
 
 function App() {
+  const [count, setCount] = useState(0);
+
   return (
-    <Grommet full>
-      <Header justify="center" alignContent="center">
-        <Heading level="1">Hello No One</Heading>
-      </Header>
-      <Box justify="center" direction="row">
-        <Card style={{ maxWidth: 300 }} pad="10px">
-          <CardHeader justify="center" direction="row">
-            <Heading level="4">Header</Heading>
-          </CardHeader>
-          <CardBody margin={{ vertical: '10px' }}>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Harum
-            ducimus odit, dolorem quasi, reiciendis, facere recusandae impedit
-            accusamus tempore fuga unde sit vel temporibus dolorum dolor.
-            Repellat nemo, exercitationem et officia animi dolorem beatae
-            debitis eaque molestias, laudantium amet placeat ut saepe maiores
-            illo quas ad ipsa dignissimos soluta magnam.
-          </CardBody>
-          <CardFooter>Its a footer</CardFooter>
-        </Card>
-      </Box>
-    </Grommet>
+    <>
+      <ThemeProvider
+        theme={createMuiTheme({
+          props: { MuiButtonBase: { disableRipple: true } },
+        })}
+      >
+        <Grid container alignItems="center" direction="column" justify="center">
+          {/* header of the counter */}
+          <Typography variant="h1">Counter React</Typography>
+          <Typography variant="h3">The count is {count}</Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setCount(count + 1)}
+          >
+            Click
+          </Button>
+        </Grid>
+      </ThemeProvider>
+    </>
   );
 }
 

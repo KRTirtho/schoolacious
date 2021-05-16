@@ -24,6 +24,7 @@ import { ExtendUserRelation } from "../decorator/extend-user-relation.decorator"
 import Grade from "../database/entity/grades.entity";
 
 export interface VerifiedGradeUser extends User {
+  school: School;
   grade: Grade;
 }
 

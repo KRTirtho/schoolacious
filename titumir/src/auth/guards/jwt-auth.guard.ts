@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable } from "@nestjs/common";
+import { ExecutionContext, Injectable, Logger } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
@@ -24,6 +24,7 @@ type RequestWithParams = Request<{
 
 @Injectable()
 export default class JwtAuthGuard extends AuthGuard("jwt") {
+  logger: Logger = new Logger(JwtAuthGuard.name);
   constructor(
     private readonly reflector: Reflector,
     private readonly userService: UserService,
@@ -123,8 +124,8 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
       }
       return superActivate;
     } catch (error) {
-      console.error(error);
-      return false;
+      this.logger.error(error);
+      throw error;
     }
   }
 }

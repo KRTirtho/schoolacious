@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Logger,
   Param,
@@ -17,13 +18,18 @@ import { VerifyGrade } from "../decorator/verify-grade.decorator";
 import { VerifySchool } from "../decorator/verify-school.decorator";
 import { VerifiedGradeUser } from "../grade/grade.controller";
 import AssignClassTeacherDTO from "./dto/assign-class-teacher.dto";
+import TeacherStudentDTO from "./dto/teacher-student.dto";
 import CreateSectionDTO from "./dto/create-section.dto";
 import { SectionService } from "./section.service";
+import { StudentSectionGradeService } from "./student-section-grade.service";
 
 @Controller("/school/:school/grade/:grade/section")
 export class SectionController {
   logger: Logger = new Logger(SectionController.name);
-  constructor(private sectionService: SectionService) {}
+  constructor(
+    private sectionService: SectionService,
+    private studentSGService: StudentSectionGradeService
+  ) {}
 
   @Get()
   @VerifySchool()
@@ -93,7 +99,7 @@ export class SectionController {
     }
   }
 
-  @Put(":section/assign-class-teacher")
+  @Put(":section/class-teacher")
   @VerifyGrade()
   @Roles(USER_ROLE.admin, USER_ROLE.coAdmin, USER_ROLE.gradeModerator)
   async assignClassTeacher(
@@ -105,7 +111,7 @@ export class SectionController {
       return await this.sectionService.assignClassTeacher({
         grade: user.grade,
         user_id,
-        school: user.school!,
+        school: user.school,
         section,
       });
     } catch (error) {
@@ -114,7 +120,7 @@ export class SectionController {
     }
   }
 
-  @Put(":section/assign-students")
+  @Put(":section/students")
   @VerifyGrade()
   @Roles(
     USER_ROLE.admin,
@@ -122,7 +128,43 @@ export class SectionController {
     USER_ROLE.gradeModerator,
     USER_ROLE.classTeacher
   )
-  async addStudents() {
-    throw "unimplemented";
+  async addStudents(
+    @CurrentUser() user: VerifiedGradeUser,
+    @Body(new ParseArrayPipe({ items: TeacherStudentDTO }))
+    body: TeacherStudentDTO[],
+    @Param("section") name: string
+  ) {
+    try {
+      const sections = await this.sectionService.findOne({
+        grade: user.grade,
+        name,
+      });
+      return await this.studentSGService.addStudents(
+        body.map(({ _id }) => _id),
+        user.school,
+        user.grade,
+        sections
+      );
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  @Delete(":section/students")
+  @VerifyGrade()
+  @Roles(
+    USER_ROLE.admin,
+    USER_ROLE.coAdmin,
+    USER_ROLE.gradeModerator,
+    USER_ROLE.classTeacher
+  )
+  async removeStudent(@Body() body: TeacherStudentDTO) {
+    try {
+      return { message: await this.studentSGService.removeStudent(body._id) };
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
   }
 }

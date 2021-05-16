@@ -10,7 +10,8 @@ import {
 import Class from "./classes.entity";
 import Invitations_Joins from "./invitations_or_joins.entity";
 import School from "./schools.entity";
-import UsersToSectionsToGrades from "./users_sections_grades.entity";
+import StudentsToSectionsToGrades from "./students_sections_grades.entity";
+import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
 
 export enum USER_ROLE {
   admin = "admin",
@@ -47,14 +48,19 @@ export default class User {
   @CreateDateColumn()
   joined_on!: Date;
 
+  @OneToMany(() => TeachersToSectionsToGrades, (tsg) => tsg.user, {
+    nullable: true,
+  })
+  teachersToSectionsToGrades?: TeachersToSectionsToGrades[] | null;
+
   @OneToMany(
-    () => UsersToSectionsToGrades,
-    (usersToSection) => usersToSection.user,
+    () => StudentsToSectionsToGrades,
+    (studentsToSectionsToGrade) => studentsToSectionsToGrade.user,
     {
       nullable: true,
     }
   )
-  userToSectionsToGrades?: UsersToSectionsToGrades[] | null;
+  studentsToSectionsToGrade?: StudentsToSectionsToGrades[] | null;
 
   @OneToMany(() => Class, (_class) => _class.host, { nullable: true })
   classes?: Class[] | null;

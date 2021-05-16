@@ -47,7 +47,7 @@ export class SubjectController {
   ) {
     try {
       const subjects = await this.subjectService.create(
-        body.map((subject) => ({ ...subject, school: user!.school! }))
+        body.map((subject) => ({ ...subject, school: user.school! }))
       );
       return subjects.map((subject) => ({ ...subject, school: undefined }));
     } catch (error) {

@@ -7,7 +7,8 @@ import { EXTEND_USER_RELATION_KEY } from "../../decorator/extend-user-relation.d
 import { VERIFY_GRADE_KEY } from "../../decorator/verify-grade.decorator";
 import { VERIFY_SCHOOL_KEY } from "../../decorator/verify-school.decorator";
 import { GradeService } from "../../grade/grade.service";
-import { UserSectionGradeService } from "../../section/user-section-grade.service";
+import { StudentSectionGradeService } from "../../section/student-section-grade.service";
+import { TeacherSectionGradeService } from "../../section/teacher-section-grade.service";
 import { UserService } from "../../user/user.service";
 import {
   isAdministrative,
@@ -27,7 +28,8 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
     private readonly reflector: Reflector,
     private readonly userService: UserService,
     private readonly gradeService: GradeService,
-    private readonly usgService: UserSectionGradeService
+    private readonly studentSGService: StudentSectionGradeService,
+    private readonly teacherSGService: TeacherSectionGradeService
   ) {
     super();
   }
@@ -80,9 +82,14 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
         const isSameSchool = user?.school?.short_name === request.params.school;
 
         if (isSameSchool && verifyGrade) {
-          const grade = await this.gradeService.findOne({
-            standard: request.params.grade,
-          });
+          const leaderField =
+            user.role === USER_ROLE.gradeExaminer ? "examiner" : "moderator";
+          const grade = await this.gradeService.findOne(
+            {
+              standard: request.params.grade,
+            },
+            { relations: [leaderField] }
+          );
           if (isAdministrative(user.role)) {
             Object.assign(request.user, { grade });
             return true;
@@ -91,14 +98,22 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
               roles.includes(USER_ROLE.gradeModerator)) &&
             isGradeAdministrative(user.role)
           ) {
-            const leaderField =
-              user.role === USER_ROLE.gradeExaminer ? "examiner" : "moderator";
-
             Object.assign(request.user, { grade });
             return grade[leaderField]?._id === user._id;
           } else {
             // for general student/teacher/class-teacher(s)
-            const usg = await this.usgService.findOne({ grade, user });
+            // in here user.role can be anything because a grade-moderator
+            // or grade-examiner might not belong to current grade but
+            // might belong as a regular teacher. That's why except student
+            // everyone here is a teacher & we've to verify that
+            const serviceField =
+              user.role === USER_ROLE.student
+                ? "studentSGService"
+                : "teacherSGService";
+            const usg = await this[serviceField].findOne({
+              grade,
+              user,
+            });
             Object.assign(request.user, { grade });
             return !!usg;
           }

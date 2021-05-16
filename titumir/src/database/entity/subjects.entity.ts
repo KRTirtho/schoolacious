@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import GradeToSubject from "./grade_subject.entity";
 import School from "./schools.entity";
+import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
 
 @Entity("subjects")
 @Unique(["name", "school"])
@@ -33,4 +34,9 @@ export default class Subject {
     nullable: true,
   })
   grades_subjects?: GradeToSubject[] | null;
+
+  @OneToMany(() => TeachersToSectionsToGrades, (tsg) => tsg.subject, {
+    nullable: true,
+  })
+  teachersToSectionsToGrades?: TeachersToSectionsToGrades[] | null;
 }

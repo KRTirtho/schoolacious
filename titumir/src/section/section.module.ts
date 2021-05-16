@@ -1,23 +1,33 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import Section from "../database/entity/sections.entity";
-import UsersToSectionsToGrades from "../database/entity/users_sections_grades.entity";
 import { GradeModule } from "../grade/grade.module";
 import { SchoolModule } from "../school/school.module";
 import { UserModule } from "../user/user.module";
 import { SectionController } from "./section.controller";
 import { SectionService } from "./section.service";
-import { UserSectionGradeService } from "./user-section-grade.service";
+import { StudentSectionGradeService } from "./student-section-grade.service";
+import { TeacherSectionGradeService } from "./teacher-section-grade.service";
+import TeachersToSectionsToGrades from "../database/entity/teachers_sections_grades.entity";
+import StudentsToSectionsToGrades from "../database/entity/students_sections_grades.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Section, UsersToSectionsToGrades]),
+    TypeOrmModule.forFeature([
+      Section,
+      TeachersToSectionsToGrades,
+      StudentsToSectionsToGrades,
+    ]),
     UserModule,
     SchoolModule,
     GradeModule,
   ],
   controllers: [SectionController],
-  providers: [SectionService, UserSectionGradeService],
-  exports: [UserSectionGradeService],
+  providers: [
+    SectionService,
+    StudentSectionGradeService,
+    TeacherSectionGradeService,
+  ],
+  exports: [StudentSectionGradeService, TeacherSectionGradeService],
 })
 export class SectionModule {}

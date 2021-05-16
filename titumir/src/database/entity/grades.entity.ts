@@ -12,8 +12,9 @@ import {
 import GradeToSubject from "./grade_subject.entity";
 import School from "./schools.entity";
 import Section from "./sections.entity";
+import StudentsToSectionsToGrades from "./students_sections_grades.entity";
+import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
 import User from "./users.entity";
-import UsersToSectionsToGrades from "./users_sections_grades.entity";
 
 @Entity("grades")
 @Unique(["standard", "school"])
@@ -44,12 +45,17 @@ export default class Grade {
   })
   grades_subjects?: GradeToSubject[] | null;
 
+  @OneToMany(() => TeachersToSectionsToGrades, (tsg) => tsg.grade, {
+    nullable: true,
+  })
+  teachersToSectionsToGrades?: TeachersToSectionsToGrades[] | null;
+
   @OneToMany(
-    () => UsersToSectionsToGrades,
-    (usersToSectionsToGrade) => usersToSectionsToGrade.grade,
+    () => StudentsToSectionsToGrades,
+    (studentsToSectionsToGrade) => studentsToSectionsToGrade.grade,
     { nullable: true }
   )
-  usersToSectionsToGrade?: UsersToSectionsToGrades[] | null;
+  studentsToSectionsToGrade?: StudentsToSectionsToGrades[] | null;
 
   @ManyToOne(() => School, (school) => school.grades)
   school!: School;

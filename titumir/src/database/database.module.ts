@@ -7,9 +7,10 @@ import GradeToSubject from "./entity/grade_subject.entity";
 import Invitations_Joins from "./entity/invitations_or_joins.entity";
 import School from "./entity/schools.entity";
 import Section from "./entity/sections.entity";
+import StudentsToSectionsToGrades from "./entity/students_sections_grades.entity";
 import Subject from "./entity/subjects.entity";
+import TeachersToSectionsToGrades from "./entity/teachers_sections_grades.entity";
 import User from "./entity/users.entity";
-import UsersToSectionsToGrades from "./entity/users_sections_grades.entity";
 
 @Module({
   imports: [
@@ -19,12 +20,13 @@ import UsersToSectionsToGrades from "./entity/users_sections_grades.entity";
         User,
         Section,
         Grade,
-        UsersToSectionsToGrades,
         Class,
         School,
         Invitations_Joins,
         Subject,
         GradeToSubject,
+        StudentsToSectionsToGrades,
+        TeachersToSectionsToGrades,
       ],
     }),
   ],

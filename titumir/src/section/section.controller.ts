@@ -10,7 +10,7 @@ import {
   Put,
 } from "@nestjs/common";
 import Section from "../database/entity/sections.entity";
-import User, { USER_ROLE } from "../database/entity/users.entity";
+import { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
@@ -112,5 +112,17 @@ export class SectionController {
       this.logger.error(error.message);
       throw error;
     }
+  }
+
+  @Put(":section/assign-students")
+  @VerifyGrade()
+  @Roles(
+    USER_ROLE.admin,
+    USER_ROLE.coAdmin,
+    USER_ROLE.gradeModerator,
+    USER_ROLE.classTeacher
+  )
+  async addStudents() {
+    throw "unimplemented";
   }
 }

@@ -78,7 +78,7 @@ describe("(e2e) PATH: school/", () => {
       .expect(HttpStatus.BAD_REQUEST);
 
     expect(body.message).toEqual(
-      `Key (email)=(${averageSchool.email}) already exists.`
+      `Key (short_name)=(${averageSchool.short_name}) already exists.`
     );
   });
   test("/ (POST) with missing required fields", async () => {

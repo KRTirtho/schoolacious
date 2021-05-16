@@ -95,7 +95,7 @@ export class SectionService extends BasicEntityService<Section, CreateSection> {
   }
 
   //!! this method isn't complete yet, because class_teachers can also
-  //!! register classes thus those class needs to get cancelled too
+  //!! register classes thus those classes need to get cancelled too
   //!! also `UserSectionGrade` entity needs to get updated too
   async removeClassTeacher(user: string | User, updateUser = true) {
     if (typeof user === "string") {

@@ -15,8 +15,6 @@ import User, { USER_ROLE } from "../database/entity/users.entity";
 import { GradeService } from "../grade/grade.service";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
-import { StudentSectionGradeService } from "./student-section-grade.service";
-import { TeacherSectionGradeService } from "./teacher-section-grade.service";
 
 type CreateSection = PartialKey<Section, "_id">;
 
@@ -34,10 +32,7 @@ export class SectionService extends BasicEntityService<Section, CreateSection> {
     sectionRepo: Repository<Section>,
     private readonly userService: UserService,
     private schoolService: SchoolService,
-    private gradeService: GradeService,
-    // SG = SectionGrade
-    private studentSGService: StudentSectionGradeService,
-    private teacherSGService: TeacherSectionGradeService
+    private gradeService: GradeService
   ) {
     super(sectionRepo);
   }

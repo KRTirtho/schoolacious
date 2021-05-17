@@ -10,6 +10,7 @@ import { StudentSectionGradeService } from "./student-section-grade.service";
 import { TeacherSectionGradeService } from "./teacher-section-grade.service";
 import TeachersToSectionsToGrades from "../database/entity/teachers_sections_grades.entity";
 import StudentsToSectionsToGrades from "../database/entity/students_sections_grades.entity";
+import { SubjectModule } from "../subject/subject.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import StudentsToSectionsToGrades from "../database/entity/students_sections_gra
     UserModule,
     SchoolModule,
     GradeModule,
+    SubjectModule,
   ],
   controllers: [SectionController],
   providers: [

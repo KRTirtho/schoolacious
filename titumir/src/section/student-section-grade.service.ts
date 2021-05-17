@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import BasicEntityService from "../database/abstracts/entity-service.abstract";
@@ -57,7 +61,8 @@ export class StudentSectionGradeService extends BasicEntityService<StudentsToSec
     const ssg = await this.findOne({ user });
     delete (ssg as any).assigned_at;
     const deleteResult = await this.ssgRepo.delete(ssg);
-    if (deleteResult.affected !== 1) return "failed removing student";
-    return "successfully removed student";
+    if (deleteResult.affected !== 1)
+      throw new InternalServerErrorException("failed removing student");
+    return { message: "successfully removed student" };
   }
 }

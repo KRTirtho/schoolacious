@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Logger,
   Param,
@@ -18,17 +19,19 @@ import { VerifyGrade } from "../decorator/verify-grade.decorator";
 import { VerifySchool } from "../decorator/verify-school.decorator";
 import { VerifiedGradeUser } from "../grade/grade.controller";
 import AssignClassTeacherDTO from "./dto/assign-class-teacher.dto";
-import TeacherStudentDTO from "./dto/teacher-student.dto";
+import StudentDTO, { TeacherDTO } from "./dto/teacher-student.dto";
 import CreateSectionDTO from "./dto/create-section.dto";
 import { SectionService } from "./section.service";
 import { StudentSectionGradeService } from "./student-section-grade.service";
+import { TeacherSectionGradeService } from "./teacher-section-grade.service";
 
 @Controller("/school/:school/grade/:grade/section")
 export class SectionController {
   logger: Logger = new Logger(SectionController.name);
   constructor(
     private sectionService: SectionService,
-    private studentSGService: StudentSectionGradeService
+    private studentSGService: StudentSectionGradeService,
+    private teacherSGService: TeacherSectionGradeService
   ) {}
 
   @Get()
@@ -130,8 +133,8 @@ export class SectionController {
   )
   async addStudents(
     @CurrentUser() user: VerifiedGradeUser,
-    @Body(new ParseArrayPipe({ items: TeacherStudentDTO }))
-    body: TeacherStudentDTO[],
+    @Body(new ParseArrayPipe({ items: StudentDTO }))
+    body: StudentDTO[],
     @Param("section") name: string
   ) {
     try {
@@ -159,9 +162,84 @@ export class SectionController {
     USER_ROLE.gradeModerator,
     USER_ROLE.classTeacher
   )
-  async removeStudent(@Body() body: TeacherStudentDTO) {
+  async removeStudent(@Body() body: StudentDTO) {
     try {
-      return { message: await this.studentSGService.removeStudent(body._id) };
+      return await this.studentSGService.removeStudent(body._id);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  @Put(":section/teachers")
+  @VerifyGrade()
+  @Roles(
+    USER_ROLE.admin,
+    USER_ROLE.coAdmin,
+    USER_ROLE.gradeModerator,
+    USER_ROLE.classTeacher
+  )
+  async addTeachers(
+    @Body(new ParseArrayPipe({ items: TeacherDTO })) body: TeacherDTO[],
+    @CurrentUser() user: VerifiedGradeUser,
+    @Param("section") name: string
+  ) {
+    try {
+      const section = await this.sectionService.findOne(
+        { name },
+        { relations: ["class_teacher"] }
+      );
+      if (
+        user.role === USER_ROLE.classTeacher &&
+        section.class_teacher?._id !== user._id
+      )
+        throw new ForbiddenException(
+          `user isn't the class_teacher of section ${section.name}`
+        );
+      return await this.teacherSGService.addTeachers(
+        body,
+        user.school,
+        user.grade,
+        section
+      );
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  @Delete(":section/teachers")
+  @VerifyGrade()
+  @Roles(
+    USER_ROLE.admin,
+    USER_ROLE.coAdmin,
+    USER_ROLE.gradeModerator,
+    USER_ROLE.classTeacher
+  )
+  async remove(
+    @Body() body: TeacherDTO,
+    @Param("section") name: string,
+    @CurrentUser() user: VerifiedGradeUser
+  ) {
+    try {
+      const section = await this.sectionService.findOne(
+        { name },
+        { relations: ["class_teacher"] }
+      );
+      if (
+        user.role === USER_ROLE.classTeacher &&
+        section.class_teacher?._id !== user._id
+      )
+        throw new ForbiddenException(
+          `user isn't the class_teacher of section ${section.name}`
+        );
+      return await this.teacherSGService.removeTeacher(
+        {
+          subject: body.subject_id,
+          user: body._id,
+        },
+        section
+      );
     } catch (error) {
       this.logger.error(error.message);
       throw error;

@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from "typeorm";
 import Grade from "./grades.entity";
 import Section from "./sections.entity";
@@ -11,6 +12,8 @@ import Subject from "./subjects.entity";
 import User from "./users.entity";
 
 @Entity()
+@Unique(["user", "section", "subject"])
+@Unique(["section", "subject"])
 export default class TeachersToSectionsToGrades {
   @PrimaryGeneratedColumn("uuid")
   _id!: string;

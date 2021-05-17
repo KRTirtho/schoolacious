@@ -7,7 +7,7 @@ import {
   Post,
 } from "@nestjs/common";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
-import User, { USER_ROLE } from "../database/entity/users.entity";
+import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { isAdministrative } from "../utils/helper-functions.util";
 import CancelInvitationJoinDTO from "./dto/cancel-invitation-join.dto";

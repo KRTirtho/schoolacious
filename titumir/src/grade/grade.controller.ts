@@ -106,7 +106,7 @@ export class GradeController {
   ) {
     try {
       const grade = await this.gradeService.findOne({
-        school: user.school!,
+        school: user.school,
         standard,
       });
       const gradesToSubjects = await this.gradeToSubjectService.create(

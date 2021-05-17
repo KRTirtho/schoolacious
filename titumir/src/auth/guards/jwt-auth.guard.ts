@@ -1,4 +1,9 @@
-import { ExecutionContext, Injectable, Logger } from "@nestjs/common";
+import {
+  ExecutionContext,
+  HttpException,
+  Injectable,
+  Logger,
+} from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
@@ -83,41 +88,7 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
         const isSameSchool = user?.school?.short_name === request.params.school;
 
         if (isSameSchool && verifyGrade) {
-          const leaderField =
-            user.role === USER_ROLE.gradeExaminer ? "examiner" : "moderator";
-          const grade = await this.gradeService.findOne(
-            {
-              standard: request.params.grade,
-            },
-            { relations: [leaderField] }
-          );
-          if (isAdministrative(user.role)) {
-            Object.assign(request.user, { grade });
-            return true;
-          } else if (
-            (roles.includes(USER_ROLE.gradeExaminer) ||
-              roles.includes(USER_ROLE.gradeModerator)) &&
-            isGradeAdministrative(user.role)
-          ) {
-            Object.assign(request.user, { grade });
-            return grade[leaderField]?._id === user._id;
-          } else {
-            // for general student/teacher/class-teacher(s)
-            // in here user.role can be anything because a grade-moderator
-            // or grade-examiner might not belong to current grade but
-            // might belong as a regular teacher. That's why except student
-            // everyone here is a teacher & we've to verify that
-            const serviceField =
-              user.role === USER_ROLE.student
-                ? "studentSGService"
-                : "teacherSGService";
-            const usg = await this[serviceField].findOne({
-              grade,
-              user,
-            });
-            Object.assign(request.user, { grade });
-            return !!usg;
-          }
+          return this.verifyGrade(request, user, roles);
         }
 
         return isSameSchool;
@@ -125,7 +96,50 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
       return superActivate;
     } catch (error) {
       this.logger.error(error);
-      throw error;
+      if (error instanceof HttpException) throw error;
+      return false;
+    }
+  }
+
+  async verifyGrade(
+    request: RequestWithParams,
+    user: User,
+    roles: USER_ROLE[]
+  ) {
+    const leaderField =
+      user.role === USER_ROLE.gradeExaminer ? "examiner" : "moderator";
+    const grade = await this.gradeService.findOne(
+      {
+        standard: request.params.grade,
+      },
+      { relations: [leaderField] }
+    );
+    if (isAdministrative(user.role)) {
+      Object.assign(request.user, { grade });
+      return true;
+    } else if (
+      (roles.includes(USER_ROLE.gradeExaminer) ||
+        roles.includes(USER_ROLE.gradeModerator)) &&
+      isGradeAdministrative(user.role)
+    ) {
+      Object.assign(request.user, { grade });
+      return grade[leaderField]?._id === user._id;
+    } else {
+      // for general student/teacher/class-teacher(s)
+      // in here user.role can be anything because a grade-moderator
+      // or grade-examiner might not belong to current grade but
+      // might belong as a regular teacher. That's why except student
+      // everyone here is a teacher & we've to verify that
+      const serviceField =
+        user.role === USER_ROLE.student
+          ? "studentSGService"
+          : "teacherSGService";
+      const usg = await this[serviceField].findOneUnsafe({
+        grade,
+        user,
+      });
+      Object.assign(request.user, { grade });
+      return !!usg;
     }
   }
 }

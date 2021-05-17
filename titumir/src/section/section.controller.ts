@@ -12,7 +12,7 @@ import {
   Put,
 } from "@nestjs/common";
 import Section from "../database/entity/sections.entity";
-import { USER_ROLE } from "../database/entity/users.entity";
+import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
@@ -24,6 +24,25 @@ import CreateSectionDTO from "./dto/create-section.dto";
 import { SectionService } from "./section.service";
 import { StudentSectionGradeService } from "./student-section-grade.service";
 import { TeacherSectionGradeService } from "./teacher-section-grade.service";
+import { FindConditions } from "typeorm";
+
+async function verifyClassTeacher(
+  user: User,
+  conditions: FindConditions<Section>,
+  sectionService: SectionService
+) {
+  const section = await sectionService.findOne(conditions, {
+    relations: ["class_teacher"],
+  });
+  if (
+    user.role === USER_ROLE.classTeacher &&
+    section.class_teacher?._id !== user._id
+  )
+    throw new ForbiddenException(
+      `user isn't the class_teacher of section ${section.name}`
+    );
+  return section;
+}
 
 @Controller("/school/:school/grade/:grade/section")
 export class SectionController {
@@ -138,10 +157,11 @@ export class SectionController {
     @Param("section") name: string
   ) {
     try {
-      const sections = await this.sectionService.findOne({
-        grade: user.grade,
-        name,
-      });
+      const sections = await verifyClassTeacher(
+        user,
+        { grade: user.grade, name },
+        this.sectionService
+      );
       return await this.studentSGService.addStudents(
         body.map(({ _id }) => _id),
         user.school,
@@ -162,8 +182,17 @@ export class SectionController {
     USER_ROLE.gradeModerator,
     USER_ROLE.classTeacher
   )
-  async removeStudent(@Body() body: StudentDTO) {
+  async removeStudent(
+    @Body() body: StudentDTO,
+    @CurrentUser() user: VerifiedGradeUser,
+    @Param("section") name: string
+  ) {
     try {
+      await verifyClassTeacher(
+        user,
+        { grade: user.grade, name },
+        this.sectionService
+      );
       return await this.studentSGService.removeStudent(body._id);
     } catch (error) {
       this.logger.error(error.message);
@@ -185,17 +214,11 @@ export class SectionController {
     @Param("section") name: string
   ) {
     try {
-      const section = await this.sectionService.findOne(
-        { name },
-        { relations: ["class_teacher"] }
+      const section = await verifyClassTeacher(
+        user,
+        { grade: user.grade, name },
+        this.sectionService
       );
-      if (
-        user.role === USER_ROLE.classTeacher &&
-        section.class_teacher?._id !== user._id
-      )
-        throw new ForbiddenException(
-          `user isn't the class_teacher of section ${section.name}`
-        );
       return await this.teacherSGService.addTeachers(
         body,
         user.school,
@@ -222,17 +245,11 @@ export class SectionController {
     @CurrentUser() user: VerifiedGradeUser
   ) {
     try {
-      const section = await this.sectionService.findOne(
-        { name },
-        { relations: ["class_teacher"] }
+      const section = await verifyClassTeacher(
+        user,
+        { grade: user.grade, name },
+        this.sectionService
       );
-      if (
-        user.role === USER_ROLE.classTeacher &&
-        section.class_teacher?._id !== user._id
-      )
-        throw new ForbiddenException(
-          `user isn't the class_teacher of section ${section.name}`
-        );
       return await this.teacherSGService.removeTeacher(
         {
           subject: body.subject_id,

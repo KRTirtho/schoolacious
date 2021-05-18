@@ -8,16 +8,30 @@ import {
   Button,
 } from "@material-ui/core";
 
+const theme = createMuiTheme({
+  props: {
+    MuiButtonBase: { disableRipple: true },
+    MuiButton: { disableElevation: true },
+  },
+  overrides: {
+    MuiButtonBase: {
+      root: {
+        "&:active": {
+          transition: "all 250ms ease",
+          filter: "brightness(1.12)",
+          transform: "scale(0.92)",
+        },
+      },
+    },
+  },
+});
+
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
-      <ThemeProvider
-        theme={createMuiTheme({
-          props: { MuiButtonBase: { disableRipple: true } },
-        })}
-      >
+      <ThemeProvider theme={theme}>
         <Grid container alignItems="center" direction="column" justify="center">
           {/* header of the counter */}
           <Typography variant="h1">Counter React</Typography>

@@ -5,12 +5,21 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Chrome",
+      "name": "Attach Zainul(frontend)",
+      "port": 9222,
+      "request": "attach",
+      "type": "pwa-chrome",
+      "urlFilter": "http://localhost:3000/*",
+      "webRoot": "${workspaceFolder}/zainul/src"
+    },
+    {
+      "name": "Launch Zainul(frontend)",
       "request": "launch",
       "type": "pwa-chrome",
       "url": "http://localhost:3000",
-      "runtimeExecutable": "/bin/brave-browser",
-      "webRoot": "${workspaceFolder}/zainul",
+      // use your own browser here if needed
+      "runtimeExecutable": "/usr/lib/brave/brave",
+      "webRoot": "${workspaceFolder}/zainul/src",
     },
     {
       "type": "node",

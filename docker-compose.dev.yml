@@ -1,0 +1,13 @@
+version: "3"
+services:
+  titumir:
+    ports: 
+      - "9229:9229"
+    build:
+      context: ./titumir
+      args: 
+        NODE_ENV: development
+    volumes: 
+      - ./:/app
+      - /app/node_modules
+    command: npm run debug --prefix=titumir

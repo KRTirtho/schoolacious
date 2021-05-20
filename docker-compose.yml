@@ -1,0 +1,26 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:1.19.10-alpine
+    ports: 
+      - "4000:80"
+    volumes:
+      - ./titumir/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - titumir
+  postgres:
+    container_name: postgresdb
+    image: postgres:13.3-alpine
+    restart: always
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    env_file: ./titumir/.env
+  titumir:
+    build: 
+      context: ./titumir
+    env_file: ./titumir/.env
+    depends_on: 
+      - postgres
+
+volumes:
+  pg-data:

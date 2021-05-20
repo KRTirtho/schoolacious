@@ -5,6 +5,19 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}",
+      "name": "Titumir: Docker attach",
+      "port": 9229,
+      "remoteRoot": "/app",
+      "request": "attach",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "pwa-node",
+    },
+    
+    {
       "name": "Attach Zainul(frontend)",
       "port": 9222,
       "request": "attach",
@@ -21,45 +34,5 @@
       "runtimeExecutable": "/usr/lib/brave/brave",
       "webRoot": "${workspaceFolder}/zainul/src",
     },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Titumir(backend) Debug",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeExecutable": "/home/krtirtho/.nvm/versions/node/v14.16.0/bin/node",
-      "cwd": "${workspaceFolder}/titumir",
-      "args": [
-        "${workspaceFolder}/titumir/src/main.ts"
-      ],
-      "runtimeArgs": [
-        "--nolazy",
-        "-r",
-        "ts-node/register"
-      ],
-      "sourceMaps": true,
-      "protocol": "inspector",
-      "outFiles": [
-        "${workspaceFolder}/titumir/dist/*.js"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "attach",
-      "name": "Titumir NestJS WS Attach",
-      "port": 9229,
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "cwd": "${workspaceFolder}/titumir",
-      "restart": true,
-      "stopOnEntry": false,
-      "protocol": "inspector",
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/titumir/dist/*.js"
-      ]
-    }
   ]
 }

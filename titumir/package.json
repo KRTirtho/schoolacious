@@ -11,7 +11,7 @@
     "format": "prettier --write 'src/**/*.ts' 'test/**/*.ts'",
     "start": "nest start",
     "dev": "nest start --watch",
-    "debug": "nest start --debug --watch",
+    "debug": "nest start --debug 0.0.0.0:9229 --watch",
     "prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "cross-env NODE_ENV=test jest --config jest.config.ts ",
@@ -19,7 +19,7 @@
     "test:cov": "cross-env NODE_ENV=test jest --config jest.config.ts --coverage",
     "test:debug": "cross-env NODE_ENV=test node --inspect -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config jest.config.ts --runInBand",
     "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest.e2e-config.ts",
-    "test:e2e-debug": "cross-env NODE_ENV=test node --inspect -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config test/jest.e2e-config.ts --runInBand"
+    "test:e2e-debug": "cross-env NODE_ENV=test node --inspect=0.0.0.0:9229 -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config test/jest.e2e-config.ts --runInBand"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.15",

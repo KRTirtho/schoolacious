@@ -1,0 +1,18 @@
+version: "3"
+services:
+  nginx:
+    profiles:
+      - donotstart
+  postgres:
+    env_file: ./titumir/.env.test
+  titumir:
+    ports: 
+      - "9229:9229"
+    build:
+      context: ./titumir
+      args: 
+        NODE_ENV: test
+    volumes: 
+      - ./:/app
+      - /app/node_modules
+    command: npm run test:e2e-debug --prefix=titumir

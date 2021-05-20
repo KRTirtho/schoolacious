@@ -1,0 +1,11 @@
+version: "3"
+services:
+  nginx:
+    ports:
+      - "80:80"
+  titumir:
+    build:
+      context: ./titumir
+      args: 
+        NODE_ENV: production
+    command: node titumir/dist/src/main.js

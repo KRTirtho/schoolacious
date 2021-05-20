@@ -13,8 +13,8 @@ dev:
 build-dev: 
 						docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 
-test: 
-			docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+prod: 
+			docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
-build-test: 
-			docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d --build
+build-prod: 
+			docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build

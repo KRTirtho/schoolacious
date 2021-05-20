@@ -19,6 +19,16 @@
       "database": "veschool-test",
       "username": "krtirtho",
       "password": "encrypt"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5433,
+      "driver": "PostgreSQL",
+      "name": "PostgreSQL docker",
+      "database": "veschool",
+      "username": "postgres",
+      "password": "simple"
     }
   ],
   "typescript.tsdk": "./titumir/node_modules/typescript/lib",

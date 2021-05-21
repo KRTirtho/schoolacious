@@ -53,15 +53,19 @@ export class InvitationJoinService extends BasicEntityService<
   }
 
   checkUserHasSchool(user: User) {
-    if (user.role !== null && user.school !== null) {
+    if (user.role !== null && user.school) {
       throw new NotAcceptableException("user already has joined a school");
     }
   }
 
-  create(payload: CreateInvitationJoin): Promise<Invitations_Joins>;
-  create(payload: CreateInvitationJoin[]): Promise<Invitations_Joins[]>;
+  createInvitationJoin(
+    payload: CreateInvitationJoin
+  ): Promise<Invitations_Joins>;
+  createInvitationJoin(
+    payload: CreateInvitationJoin[]
+  ): Promise<Invitations_Joins[]>;
 
-  create(payload: CreateInvitationJoin | CreateInvitationJoin[]) {
+  createInvitationJoin(payload: CreateInvitationJoin | CreateInvitationJoin[]) {
     if (Array.isArray(payload)) {
       payload.forEach(({ user }) => {
         this.checkUserHasSchool(user);
@@ -78,7 +82,7 @@ export class InvitationJoinService extends BasicEntityService<
     const user = await this.userService.findOne({
       _id: payload.user_id,
     });
-    return this.create({
+    return this.createInvitationJoin({
       type: INVITATION_OR_JOIN_TYPE.invitation,
       ...payload,
       user,
@@ -91,7 +95,7 @@ export class InvitationJoinService extends BasicEntityService<
     const school = await this.schoolService.findOne({
       _id: payload.school_id,
     });
-    return this.create({
+    return this.createInvitationJoin({
       type: INVITATION_OR_JOIN_TYPE.join,
       ...payload,
       school,

@@ -55,8 +55,10 @@ describe("AuthController", () => {
 
   it("login should return <user> with credential headers", async () => {
     expect(await controller.login(mockUser, mockReq)).toEqual(mockUser);
-    expect(mockReq.res.getHeaders()).toHaveProperty(CONST_ACCESS_TOKEN_HEADER);
-    expect(mockReq.res.getHeaders()).toHaveProperty(CONST_REFRESH_TOKEN_HEADER);
+    expect(mockReq.res?.getHeaders()).toHaveProperty(CONST_ACCESS_TOKEN_HEADER);
+    expect(mockReq.res?.getHeaders()).toHaveProperty(
+      CONST_REFRESH_TOKEN_HEADER
+    );
   });
 
   it("should refresh access token", async () => {
@@ -64,9 +66,11 @@ describe("AuthController", () => {
     expect(
       await controller.refresh({ [CONST_REFRESH_TOKEN_HEADER]: token }, mockReq)
     ).toEqual({ message: "Refreshed access_token" });
-    expect(mockReq.res.getHeaders()).toHaveProperty(CONST_ACCESS_TOKEN_HEADER);
-    expect(mockReq.res.getHeaders()).toHaveProperty(CONST_REFRESH_TOKEN_HEADER);
-    expect(mockReq.res.getHeader(CONST_REFRESH_TOKEN_HEADER)).not.toEqual(
+    expect(mockReq.res?.getHeaders()).toHaveProperty(CONST_ACCESS_TOKEN_HEADER);
+    expect(mockReq.res?.getHeaders()).toHaveProperty(
+      CONST_REFRESH_TOKEN_HEADER
+    );
+    expect(mockReq.res?.getHeader(CONST_REFRESH_TOKEN_HEADER)).not.toEqual(
       token
     );
   });
@@ -79,7 +83,9 @@ describe("AuthController", () => {
 
   it("should create an user & return with access_token & refresh_token", async () => {
     expect(await controller.signup(mockUser, mockReq)).toEqual(mockUser);
-    expect(mockReq.res.getHeaders()).toHaveProperty(CONST_ACCESS_TOKEN_HEADER);
-    expect(mockReq.res.getHeaders()).toHaveProperty(CONST_REFRESH_TOKEN_HEADER);
+    expect(mockReq.res?.getHeaders()).toHaveProperty(CONST_ACCESS_TOKEN_HEADER);
+    expect(mockReq.res?.getHeaders()).toHaveProperty(
+      CONST_REFRESH_TOKEN_HEADER
+    );
   });
 });

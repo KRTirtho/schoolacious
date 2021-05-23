@@ -54,8 +54,8 @@ describe("InvitationJoinService", () => {
   };
 
   class FakeRepository {
-    public create(): Invitations_Joins {
-      return mockInvitationJoin;
+    public create(payload: any): Invitations_Joins {
+      return { ...payload, _id: uuid(), created_at: new Date().toISOString() };
     }
     public async save(): Promise<Invitations_Joins> {
       return mockInvitationJoin;
@@ -100,6 +100,23 @@ describe("InvitationJoinService", () => {
       school: mockSchool,
       user_id: mockUser._id,
     });
-    expect(res).toBeDefined();
+    expect(res).toEqual({
+      ...mockInvitationJoin,
+      _id: expect.any(String),
+      created_at: expect.any(Date),
+    });
+  });
+
+  it("should create a join request from given user for given school", async () => {
+    const res = await service.join({
+      role: INVITATION_OR_JOIN_ROLE.teacher,
+      user: mockUser,
+      school_id: mockSchool._id,
+    });
+    expect(res).toEqual({
+      ...mockInvitationJoin,
+      _id: expect.any(String),
+      created_at: expect.any(Date),
+    });
   });
 });

@@ -10,11 +10,17 @@ import { GradeModule } from "./grade/grade.module";
 import { SubjectModule } from "./subject/subject.module";
 import { SectionModule } from "./section/section.module";
 import JwtAuthGuard from "./auth/guards/jwt-auth.guard";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
+export const THROTTLER_GUARD = "THROTTLER_GUARD";
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
     DatabaseModule,
     AuthModule,
     UserModule,
@@ -28,6 +34,7 @@ export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
   providers: [
     AppService,
     // guards
+    { provide: THROTTLER_GUARD, useClass: ThrottlerGuard },
     { provide: JWT_AUTH_GUARD, useClass: JwtAuthGuard },
   ],
 })

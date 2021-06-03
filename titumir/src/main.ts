@@ -1,5 +1,5 @@
 import { NestFactory, Reflector } from "@nestjs/core";
-import { AppModule, JWT_AUTH_GUARD } from "./app.module";
+import { AppModule, JWT_AUTH_GUARD, THROTTLER_GUARD } from "./app.module";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import csurf from "csurf";
@@ -14,12 +14,13 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   const jwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
   const roleAuthGuard = new RoleAuthGuard(reflector);
+  const throttlerGuard = app.select(AppModule).get(THROTTLER_GUARD);
   app.use(helmet());
   app.use(cookieParser());
   // app.use(csurf({ cookie: true }));
   app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalGuards(jwtAuthGuard, roleAuthGuard);
+  app.useGlobalGuards(throttlerGuard, jwtAuthGuard, roleAuthGuard);
   await app.listen(PORT);
 }
 bootstrap();

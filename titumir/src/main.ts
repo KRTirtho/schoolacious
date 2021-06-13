@@ -10,17 +10,17 @@ import { EntityNotFoundFilter } from "./database/filters/entity-not-found.filter
 import { PORT } from "../config";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const reflector = app.get(Reflector);
-  const jwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
-  const roleAuthGuard = new RoleAuthGuard(reflector);
-  const throttlerGuard = app.select(AppModule).get(THROTTLER_GUARD);
-  app.use(helmet());
-  app.use(cookieParser());
-  // app.use(csurf({ cookie: true }));
-  app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
-  app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalGuards(throttlerGuard, jwtAuthGuard, roleAuthGuard);
-  await app.listen(PORT);
+    const app = await NestFactory.create(AppModule);
+    const reflector = app.get(Reflector);
+    const jwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
+    const roleAuthGuard = new RoleAuthGuard(reflector);
+    const throttlerGuard = app.select(AppModule).get(THROTTLER_GUARD);
+    app.use(helmet());
+    app.use(cookieParser());
+    // app.use(csurf({ cookie: true }));
+    app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
+    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalGuards(throttlerGuard, jwtAuthGuard, roleAuthGuard);
+    await app.listen(PORT);
 }
 bootstrap();

@@ -6,19 +6,19 @@ import GradeToSubject from "../database/entity/grade_subject.entity";
 import Subject from "../database/entity/subjects.entity";
 
 interface GradeToSubjectCreatePayload extends Pick<GradeToSubject, "grade"> {
-  subject: { _id: string } & Omit<DeepPartial<Subject>, "_id">;
-  mark?: number;
+    subject: { _id: string } & Omit<DeepPartial<Subject>, "_id">;
+    mark?: number;
 }
 
 @Injectable()
 export class GradeSubjectService extends BasicEntityService<
-  GradeToSubject,
-  GradeToSubjectCreatePayload | GradeToSubjectCreatePayload[]
+    GradeToSubject,
+    GradeToSubjectCreatePayload | GradeToSubjectCreatePayload[]
 > {
-  constructor(
-    @InjectRepository(GradeToSubject)
-    private readonly gradeSubjectRepo: Repository<GradeToSubject>
-  ) {
-    super(gradeSubjectRepo);
-  }
+    constructor(
+        @InjectRepository(GradeToSubject)
+        private readonly gradeSubjectRepo: Repository<GradeToSubject>,
+    ) {
+        super(gradeSubjectRepo);
+    }
 }

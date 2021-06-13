@@ -8,14 +8,14 @@ import { SchoolController } from "./school.controller";
 import { SchoolService } from "./school.service";
 
 @Module({
-  imports: [
-    forwardRef(() => InvitationJoinModule),
-    TypeOrmModule.forFeature([School]),
-    forwardRef(() => GradeModule),
-    forwardRef(() => UserModule),
-  ],
-  controllers: [SchoolController],
-  providers: [SchoolService],
-  exports: [SchoolService],
+    imports: [
+        forwardRef(() => InvitationJoinModule),
+        TypeOrmModule.forFeature([School]),
+        forwardRef(() => GradeModule),
+        forwardRef(() => UserModule),
+    ],
+    controllers: [SchoolController],
+    providers: [SchoolService],
+    exports: [SchoolService],
 })
 export class SchoolModule {}

@@ -6,30 +6,30 @@ import { InvitationJoinService } from "../invitation-join/invitation-join.servic
 
 @Controller("user")
 export class UserController {
-  logger: Logger = new Logger(UserController.name);
-  constructor(private readonly invitationJoinService: InvitationJoinService) {}
-  @Get("invitations")
-  async getInvitations(@CurrentUser() user: User) {
-    try {
-      return this.invitationJoinService.getUserInvitationsJoin({
-        _id: user._id,
-        type: INVITATION_OR_JOIN_TYPE.invitation,
-      });
-    } catch (error) {
-      this.logger.error(error.message);
-      throw error;
+    logger: Logger = new Logger(UserController.name);
+    constructor(private readonly invitationJoinService: InvitationJoinService) {}
+    @Get("invitations")
+    async getInvitations(@CurrentUser() user: User) {
+        try {
+            return this.invitationJoinService.getUserInvitationsJoin({
+                _id: user._id,
+                type: INVITATION_OR_JOIN_TYPE.invitation,
+            });
+        } catch (error: any) {
+            this.logger.error(error.message);
+            throw error;
+        }
     }
-  }
-  @Get("join-requests")
-  async getJoinRequests(@CurrentUser() user: User) {
-    try {
-      return this.invitationJoinService.getUserInvitationsJoin({
-        _id: user._id,
-        type: INVITATION_OR_JOIN_TYPE.join,
-      });
-    } catch (error) {
-      this.logger.error(error.message);
-      throw error;
+    @Get("join-requests")
+    async getJoinRequests(@CurrentUser() user: User) {
+        try {
+            return this.invitationJoinService.getUserInvitationsJoin({
+                _id: user._id,
+                type: INVITATION_OR_JOIN_TYPE.join,
+            });
+        } catch (error: any) {
+            this.logger.error(error.message);
+            throw error;
+        }
     }
-  }
 }

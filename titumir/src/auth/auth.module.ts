@@ -9,15 +9,15 @@ import JwtStrategy from "./strategies/jwt.strategy";
 import LocalStrategy from "./strategies/local.strategy";
 
 @Module({
-  imports: [
-    UserModule,
-    PassportModule.register({ defaultStrategy: "jwt" }),
-    JwtModule.register({
-      secret: NOT_A_SECRET,
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, LocalStrategy],
-  exports: [JwtModule, AuthService],
+    imports: [
+        UserModule,
+        PassportModule.register({ defaultStrategy: "jwt" }),
+        JwtModule.register({
+            secret: NOT_A_SECRET,
+        }),
+    ],
+    controllers: [AuthController],
+    providers: [AuthService, JwtStrategy, LocalStrategy],
+    exports: [JwtModule, AuthService],
 })
 export class AuthModule {}

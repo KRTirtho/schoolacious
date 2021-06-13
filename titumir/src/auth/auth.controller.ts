@@ -1,19 +1,16 @@
 import {
-  Body,
-  Controller,
-  Headers,
-  Logger,
-  Post,
-  Req,
-  UseGuards,
-  NotAcceptableException,
-  UnauthorizedException,
+    Body,
+    Controller,
+    Headers,
+    Logger,
+    Post,
+    Req,
+    UseGuards,
+    NotAcceptableException,
+    UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
-import {
-  CONST_ACCESS_TOKEN_HEADER,
-  CONST_REFRESH_TOKEN_HEADER,
-} from "../../config";
+import { CONST_ACCESS_TOKEN_HEADER, CONST_REFRESH_TOKEN_HEADER } from "../../config";
 import { Public } from "../decorator/public.decorator";
 import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
@@ -25,72 +22,63 @@ import User from "../database/entity/users.entity";
 
 @Controller("auth")
 export class AuthController {
-  private logger = new Logger(AuthController.name);
-  constructor(
-    private readonly authService: AuthService,
-    private readonly userService: UserService
-  ) {}
+    private logger = new Logger(AuthController.name);
+    constructor(
+        private readonly authService: AuthService,
+        private readonly userService: UserService,
+    ) {}
 
-  @Public()
-  @UseGuards(LocalAuthGuard)
-  @Post("login")
-  async login(
-    @CurrentUser() user: User,
-    @Req() { res }: Request
-  ): Promise<User> {
-    try {
-      const { access_token, refresh_token } = this.authService.createTokens(
-        user
-      );
-      res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
-      res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-      return user;
-    } catch (error) {
-      return error;
+    @Public()
+    @UseGuards(LocalAuthGuard)
+    @Post("login")
+    async login(@CurrentUser() user: User, @Req() { res }: Request): Promise<User> {
+        try {
+            const { access_token, refresh_token } = this.authService.createTokens(user);
+            res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
+            res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+            return user;
+        } catch (error: any) {
+            return error;
+        }
     }
-  }
-  @Public()
-  @Post("refresh")
-  async refresh(
-    @Headers() headers: Request["headers"],
-    @Req() { res }: Request
-  ) {
-    try {
-      const refreshToken = headers[CONST_REFRESH_TOKEN_HEADER] as string;
-      if (!refreshToken)
-        throw new NotAcceptableException("refresh token not set");
-      const isValid = await this.authService.verify(refreshToken);
-      if (!isValid) throw new UnauthorizedException("invalid refresh token");
-      const { access_token, refresh_token } = this.authService.createTokens(
-        isValid
-      );
-      res?.set(CONST_ACCESS_TOKEN_HEADER, access_token);
-      res?.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-      return { message: "Refreshed access_token" };
-    } catch (error) {
-      this.logger.error(error.message);
-      if (error instanceof JsonWebTokenError) {
-        throw new UnauthorizedException(error.message);
-      }
-      throw error;
+    @Public()
+    @Post("refresh")
+    async refresh(@Headers() headers: Request["headers"], @Req() { res }: Request) {
+        try {
+            const refreshToken = headers[CONST_REFRESH_TOKEN_HEADER] as string;
+            if (!refreshToken) throw new NotAcceptableException("refresh token not set");
+            const isValid = await this.authService.verify(refreshToken);
+            if (!isValid) throw new UnauthorizedException("invalid refresh token");
+            const { access_token, refresh_token } = this.authService.createTokens(
+                isValid,
+            );
+            res?.set(CONST_ACCESS_TOKEN_HEADER, access_token);
+            res?.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+            return { message: "Refreshed access_token" };
+        } catch (error: any) {
+            this.logger.error(error.message);
+            if (error instanceof JsonWebTokenError) {
+                throw new UnauthorizedException(error.message);
+            }
+            throw error;
+        }
     }
-  }
 
-  @Public()
-  @Post("signup")
-  async signup(@Body() body: SignupDTO, @Req() { res }: Request) {
-    try {
-      const { email, role, ...user } = await this.userService.createUser(body);
-      const { access_token, refresh_token } = this.authService.createTokens({
-        email,
-        role,
-      });
-      res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
-      res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-      return { ...user, email, role };
-    } catch (error) {
-      this.logger.error(error.message);
-      throw error;
+    @Public()
+    @Post("signup")
+    async signup(@Body() body: SignupDTO, @Req() { res }: Request) {
+        try {
+            const { email, role, ...user } = await this.userService.createUser(body);
+            const { access_token, refresh_token } = this.authService.createTokens({
+                email,
+                role: role ?? null,
+            });
+            res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
+            res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+            return { ...user, email, role };
+        } catch (error: any) {
+            this.logger.error(error.message);
+            throw error;
+        }
     }
-  }
 }

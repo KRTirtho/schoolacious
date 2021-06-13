@@ -13,22 +13,22 @@ import TeachersToSectionsToGrades from "./entity/teachers_sections_grades.entity
 import User from "./entity/users.entity";
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      ...ormconfig,
-      entities: [
-        User,
-        Section,
-        Grade,
-        Class,
-        School,
-        Invitations_Joins,
-        Subject,
-        GradeToSubject,
-        StudentsToSectionsToGrades,
-        TeachersToSectionsToGrades,
-      ],
-    }),
-  ],
+    imports: [
+        TypeOrmModule.forRoot({
+            ...ormconfig,
+            entities: [
+                User,
+                Section,
+                Grade,
+                Class,
+                School,
+                Invitations_Joins,
+                Subject,
+                GradeToSubject,
+                StudentsToSectionsToGrades,
+                TeachersToSectionsToGrades,
+            ],
+        }),
+    ],
 })
 export class DatabaseModule {}

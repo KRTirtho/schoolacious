@@ -1,12 +1,12 @@
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  Unique,
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    Unique,
 } from "typeorm";
 import Class from "./classes.entity";
 import Grade from "./grades.entity";
@@ -17,31 +17,31 @@ import User from "./users.entity";
 @Entity("sections")
 @Unique(["name", "grade"])
 export default class Section {
-  @PrimaryGeneratedColumn("uuid")
-  _id!: string;
+    @PrimaryGeneratedColumn("uuid")
+    _id!: string;
 
-  @Column("varchar", { length: 100 })
-  name!: string;
+    @Column("varchar", { length: 100 })
+    name!: string;
 
-  @ManyToOne(() => Grade, (grade) => grade.sections)
-  grade!: Grade;
+    @ManyToOne(() => Grade, (grade) => grade.sections)
+    grade!: Grade;
 
-  @OneToMany(() => TeachersToSectionsToGrades, (tsg) => tsg.section, {
-    nullable: true,
-  })
-  teachersToSectionsToGrades?: TeachersToSectionsToGrades[] | null;
+    @OneToMany(() => TeachersToSectionsToGrades, (tsg) => tsg.section, {
+        nullable: true,
+    })
+    teachersToSectionsToGrades?: TeachersToSectionsToGrades[] | null;
 
-  @OneToMany(
-    () => StudentsToSectionsToGrades,
-    (studentsToSections) => studentsToSections.section,
-    { nullable: true }
-  )
-  studentsToSectionsToGrade?: StudentsToSectionsToGrades[] | null;
+    @OneToMany(
+        () => StudentsToSectionsToGrades,
+        (studentsToSections) => studentsToSections.section,
+        { nullable: true },
+    )
+    studentsToSectionsToGrade?: StudentsToSectionsToGrades[] | null;
 
-  @OneToMany(() => Class, (_class) => _class.section, { nullable: true })
-  classes?: Class[] | null;
+    @OneToMany(() => Class, (_class) => _class.section, { nullable: true })
+    classes?: Class[] | null;
 
-  @OneToOne(() => User, { nullable: true })
-  @JoinColumn()
-  class_teacher?: User | null;
+    @OneToOne(() => User, { nullable: true })
+    @JoinColumn()
+    class_teacher?: User | null;
 }

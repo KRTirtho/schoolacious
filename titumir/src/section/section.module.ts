@@ -13,23 +13,19 @@ import StudentsToSectionsToGrades from "../database/entity/students_sections_gra
 import { SubjectModule } from "../subject/subject.module";
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Section,
-      TeachersToSectionsToGrades,
-      StudentsToSectionsToGrades,
-    ]),
-    UserModule,
-    SchoolModule,
-    GradeModule,
-    SubjectModule,
-  ],
-  controllers: [SectionController],
-  providers: [
-    SectionService,
-    StudentSectionGradeService,
-    TeacherSectionGradeService,
-  ],
-  exports: [StudentSectionGradeService, TeacherSectionGradeService],
+    imports: [
+        TypeOrmModule.forFeature([
+            Section,
+            TeachersToSectionsToGrades,
+            StudentsToSectionsToGrades,
+        ]),
+        UserModule,
+        SchoolModule,
+        GradeModule,
+        SubjectModule,
+    ],
+    controllers: [SectionController],
+    providers: [SectionService, StudentSectionGradeService, TeacherSectionGradeService],
+    exports: [StudentSectionGradeService, TeacherSectionGradeService],
 })
 export class SectionModule {}

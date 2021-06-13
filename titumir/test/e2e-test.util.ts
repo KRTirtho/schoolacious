@@ -10,8 +10,8 @@ import { EntityNotFoundFilter } from "../src/database/filters/entity-not-found.f
 import { QueryFailedFilter } from "../src/database/filters/query-failed.filter";
 import { AppModule, JWT_AUTH_GUARD } from "../src/app.module";
 import Invitations_Joins, {
-  INVITATION_OR_JOIN_ROLE,
-  INVITATION_OR_JOIN_TYPE,
+    INVITATION_OR_JOIN_ROLE,
+    INVITATION_OR_JOIN_TYPE,
 } from "../src/database/entity/invitations_or_joins.entity";
 import InvitationJoinDTO from "../src/invitation-join/dto/invitation-join.dto";
 import { INVITATION_OR_JOIN_ACTION } from "../src/invitation-join/invitation-join.service";
@@ -19,30 +19,24 @@ import AddCoAdminDTO from "../src/school/dto/add-co-admin.dto";
 import chalk from "chalk";
 
 export function bootstrapApp(app: INestApplication) {
-  app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
-  app.useGlobalPipes(new ValidationPipe());
-  const reflector = new Reflector();
-  const jwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
-  const roleAuthGuard = new RoleAuthGuard(reflector);
-  app.useGlobalGuards(jwtAuthGuard, roleAuthGuard);
+    app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
+    app.useGlobalPipes(new ValidationPipe());
+    const reflector = new Reflector();
+    const jwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
+    const roleAuthGuard = new RoleAuthGuard(reflector);
+    app.useGlobalGuards(jwtAuthGuard, roleAuthGuard);
 }
 
 export const uStr = (from = 7) => Date.now().toString().substr(from);
 
-function errorOut(
-  instance: CallableFunction,
-  error: any,
-  prefix = "[End To End]"
-) {
-  console.error(
-    chalk.red(prefix),
-    "  -  ",
-    chalk.yellow(instance.name),
-    "  -  ",
-    chalk.red(
-      typeof error === "object" ? JSON.stringify(error, null, 2) : error
-    )
-  );
+function errorOut(instance: CallableFunction, error: any, prefix = "[End To End]") {
+    console.error(
+        chalk.red(prefix),
+        "  -  ",
+        chalk.yellow(instance.name),
+        "  -  ",
+        chalk.red(typeof error === "object" ? JSON.stringify(error, null, 2) : error),
+    );
 }
 
 // create mocks
@@ -51,15 +45,15 @@ function errorOut(
  * Generates a mock user object which can be used with `creatMockUser`
  */
 export function generateMockUser(): SignupDTO {
-  return {
-    email: `user-${uStr()}@fokir.com`,
-    first_name: `random${uStr()}`,
-    last_name: `fandom${uStr()}`,
-    password: "tumi ki jano amar password?",
-  };
+    return {
+        email: `user-${uStr()}@fokir.com`,
+        first_name: `random${uStr()}`,
+        last_name: `fandom${uStr()}`,
+        password: "tumi ki jano amar password?",
+    };
 }
 export type MockUserResponse = Omit<request.Response, "body"> & {
-  body: Pick<User, "_id" | "email" | "first_name" | "last_name" | "joined_on">;
+    body: Pick<User, "_id" | "email" | "first_name" | "last_name" | "joined_on">;
 };
 
 /**
@@ -69,20 +63,18 @@ export type MockUserResponse = Omit<request.Response, "body"> & {
  * instead of `generateMockUser`
  */
 export async function createMockUser(
-  client: Client,
-  payload?: SignupDTO
+    client: Client,
+    payload?: SignupDTO,
 ): Promise<MockUserResponse> {
-  try {
-    if (!payload) payload = generateMockUser();
+    try {
+        if (!payload) payload = generateMockUser();
 
-    const user: MockUserResponse = await client
-      .post("/auth/signup")
-      .send(payload);
-    return user;
-  } catch (error) {
-    errorOut(createMockUser, error);
-    throw error;
-  }
+        const user: MockUserResponse = await client.post("/auth/signup").send(payload);
+        return user;
+    } catch (error) {
+        errorOut(createMockUser, error);
+        throw error;
+    }
 }
 
 /**
@@ -90,29 +82,29 @@ export async function createMockUser(
  * it can be used with `createMockSchool` as optional payload
  */
 export function generateMockSchool(): CreateSchoolDTO {
-  return {
-    email: `school-${uStr()}@failure.com`,
-    description: "Lorem ipsum dolor emit".repeat(5),
-    name: `${uStr()} School & Failure`,
-    phone: uStr(2),
-    short_name: `school-${uStr()}`,
-  };
+    return {
+        email: `school-${uStr()}@failure.com`,
+        description: "Lorem ipsum dolor emit".repeat(5),
+        name: `${uStr()} School & Failure`,
+        phone: uStr(2),
+        short_name: `school-${uStr()}`,
+    };
 }
 
 export type MockSchoolResponse = Omit<request.Response, "body"> & {
-  body: Pick<
-    School,
-    | "_id"
-    | "email"
-    | "admin"
-    | "created_at"
-    | "description"
-    | "name"
-    | "phone"
-    | "short_name"
-    | "coAdmin1"
-    | "coAdmin2"
-  >;
+    body: Pick<
+        School,
+        | "_id"
+        | "email"
+        | "admin"
+        | "created_at"
+        | "description"
+        | "name"
+        | "phone"
+        | "short_name"
+        | "coAdmin1"
+        | "coAdmin2"
+    >;
 };
 type Client = request.SuperTest<request.Test>;
 
@@ -124,22 +116,22 @@ type Client = request.SuperTest<request.Test>;
  * @param {CreateSchoolDTO} [payload] - optional payload
  */
 export async function createMockSchool(
-  client: Client,
-  authorization: string,
-  payload?: CreateSchoolDTO
+    client: Client,
+    authorization: string,
+    payload?: CreateSchoolDTO,
 ): Promise<MockSchoolResponse> {
-  try {
-    if (!payload) payload = generateMockSchool();
+    try {
+        if (!payload) payload = generateMockSchool();
 
-    const school: MockSchoolResponse = await client
-      .post("/school")
-      .set("Authorization", authorization)
-      .send(payload);
-    return school;
-  } catch (error) {
-    errorOut(createMockSchool, error);
-    throw error;
-  }
+        const school: MockSchoolResponse = await client
+            .post("/school")
+            .set("Authorization", authorization)
+            .send(payload);
+        return school;
+    } catch (error) {
+        errorOut(createMockSchool, error);
+        throw error;
+    }
 }
 
 /**
@@ -151,35 +143,35 @@ export async function createMockSchool(
  * should create a mock user & invite it
  */
 export async function createMockInvitation(
-  client: Client,
-  auth: string,
-  user?: MockUserResponse,
-  createNewUser = false
+    client: Client,
+    auth: string,
+    user?: MockUserResponse,
+    createNewUser = false,
 ): Promise<MockInvitationJoinResponse> {
-  try {
-    if (createNewUser) {
-      user = await createMockUser(client);
-    } else if (!createNewUser && !user)
-      throw new TypeError(
-        "`user` can't be `undefined` when `createNewUser` is disabled"
-      );
-    const payload: InvitationJoinDTO = {
-      role: INVITATION_OR_JOIN_ROLE.teacher,
-      type: INVITATION_OR_JOIN_TYPE.invitation,
-      user_id: user?.body._id,
-    };
-    return await client
-      .post("/invitation-join")
-      .set("Authorization", auth)
-      .send(payload);
-  } catch (error) {
-    errorOut(createMockInvitation, error);
-    throw error;
-  }
+    try {
+        if (createNewUser) {
+            user = await createMockUser(client);
+        } else if (!createNewUser && !user)
+            throw new TypeError(
+                "`user` can't be `undefined` when `createNewUser` is disabled",
+            );
+        const payload: InvitationJoinDTO = {
+            role: INVITATION_OR_JOIN_ROLE.teacher,
+            type: INVITATION_OR_JOIN_TYPE.invitation,
+            user_id: user?.body._id,
+        };
+        return await client
+            .post("/invitation-join")
+            .set("Authorization", auth)
+            .send(payload);
+    } catch (error) {
+        errorOut(createMockInvitation, error);
+        throw error;
+    }
 }
 
 export type MockInvitationJoinResponse = Omit<request.Response, "body"> & {
-  body: Invitations_Joins;
+    body: Invitations_Joins;
 };
 
 /**
@@ -192,33 +184,33 @@ export type MockInvitationJoinResponse = Omit<request.Response, "body"> & {
  * should create a mock school & send join request to it
  */
 export async function createMockJoin(
-  client: Client,
-  auth: string,
-  school?: MockSchoolResponse,
-  createNewSchool = false
+    client: Client,
+    auth: string,
+    school?: MockSchoolResponse,
+    createNewSchool = false,
 ): Promise<MockInvitationJoinResponse> {
-  try {
-    if (createNewSchool) {
-      const admin = await createMockUser(client);
-      school = await createMockSchool(client, createJwtTokenFromHeader(admin));
-    } else if (!createNewSchool && !school)
-      throw new TypeError(
-        "`school` can't be `undefined` when `createNewSchool` is disabled"
-      );
-    const payload: InvitationJoinDTO = {
-      role: INVITATION_OR_JOIN_ROLE.teacher,
-      type: INVITATION_OR_JOIN_TYPE.join,
-      school_id: school?.body._id,
-    };
-    const res = await client
-      .post("/invitation-join")
-      .set("Authorization", auth)
-      .send(payload);
-    return res;
-  } catch (error) {
-    errorOut(createMockJoin, error);
-    throw error;
-  }
+    try {
+        if (createNewSchool) {
+            const admin = await createMockUser(client);
+            school = await createMockSchool(client, createJwtTokenFromHeader(admin));
+        } else if (!createNewSchool && !school)
+            throw new TypeError(
+                "`school` can't be `undefined` when `createNewSchool` is disabled",
+            );
+        const payload: InvitationJoinDTO = {
+            role: INVITATION_OR_JOIN_ROLE.teacher,
+            type: INVITATION_OR_JOIN_TYPE.join,
+            school_id: school?.body._id,
+        };
+        const res = await client
+            .post("/invitation-join")
+            .set("Authorization", auth)
+            .send(payload);
+        return res;
+    } catch (error) {
+        errorOut(createMockJoin, error);
+        throw error;
+    }
 }
 
 /**
@@ -230,25 +222,25 @@ export async function createMockJoin(
  * @param [action=INVITATION_OR_JOIN_ACTION.accept] - decides if invitations should be `accept`ed or `reject`ed
  */
 export function completeMockInvitationJoin(
-  client: Client,
-  invitation: MockInvitationJoinResponse | string,
-  authorization: string,
-  action = INVITATION_OR_JOIN_ACTION.accept
+    client: Client,
+    invitation: MockInvitationJoinResponse | string,
+    authorization: string,
+    action = INVITATION_OR_JOIN_ACTION.accept,
 ) {
-  try {
-    if (typeof invitation !== "string") {
-      invitation = invitation.body._id;
+    try {
+        if (typeof invitation !== "string") {
+            invitation = invitation.body._id;
+        }
+        return client
+            .post("/invitation-join/complete")
+            .send({
+                _id: invitation,
+                action,
+            })
+            .set("Authorization", authorization);
+    } catch (error) {
+        errorOut(completeMockInvitationJoin, error);
     }
-    return client
-      .post("/invitation-join/complete")
-      .send({
-        _id: invitation,
-        action,
-      })
-      .set("Authorization", authorization);
-  } catch (error) {
-    errorOut(completeMockInvitationJoin, error);
-  }
 }
 
 /**
@@ -260,20 +252,20 @@ export function completeMockInvitationJoin(
  * @param {(1 | 2)} [index=1] - decides whether to add as `coAdmin1`|`coAdmin2`
  */
 export async function assignMockCoAdmin(
-  client: Client,
-  auth: string,
-  user: MockUserResponse,
-  school: School,
-  index: 1 | 2 = 1
+    client: Client,
+    auth: string,
+    user: MockUserResponse,
+    school: School,
+    index: 1 | 2 = 1,
 ) {
-  try {
-    return await client
-      .put(`/school/${school.short_name}/co-admin`)
-      .set("Authorization", auth)
-      .send({ index, user_id: user.body._id } as AddCoAdminDTO);
-  } catch (error) {
-    errorOut(assignMockCoAdmin, error);
-  }
+    try {
+        return await client
+            .put(`/school/${school.short_name}/co-admin`)
+            .set("Authorization", auth)
+            .send({ index, user_id: user.body._id } as AddCoAdminDTO);
+    } catch (error) {
+        errorOut(assignMockCoAdmin, error);
+    }
 }
 
 /**
@@ -283,31 +275,31 @@ export async function assignMockCoAdmin(
  * @param {MockUserResponse} [user] - optional user who'll be added as co-admin
  */
 export async function createMockCoAdmin(
-  client: Client,
-  auth: string,
-  user?: MockUserResponse
+    client: Client,
+    auth: string,
+    user?: MockUserResponse,
 ) {
-  try {
-    if (!user) user = await createMockUser(client);
-    const invitation = await createMockInvitation(client, auth, user);
-    await completeMockInvitationJoin(
-      client,
-      invitation,
-      createJwtTokenFromHeader(user)
-    );
-    return await assignMockCoAdmin(client, auth, user, invitation.body.school);
-  } catch (error) {
-    errorOut(createMockCoAdmin, error);
-  }
+    try {
+        if (!user) user = await createMockUser(client);
+        const invitation = await createMockInvitation(client, auth, user);
+        await completeMockInvitationJoin(
+            client,
+            invitation,
+            createJwtTokenFromHeader(user),
+        );
+        return await assignMockCoAdmin(client, auth, user, invitation.body.school);
+    } catch (error) {
+        errorOut(createMockCoAdmin, error);
+    }
 }
 
 export function createJwtToken(token: string) {
-  return `Bearer ${token}`;
+    return `Bearer ${token}`;
 }
 
 export function createJwtTokenFromHeader(
-  res: Record<string, unknown> & { headers: Record<string, string> },
-  field = "x-access-token"
+    res: Record<string, unknown> & { headers: Record<string, string> },
+    field = "x-access-token",
 ) {
-  return createJwtToken(res.headers[field]);
+    return createJwtToken(res.headers[field]);
 }

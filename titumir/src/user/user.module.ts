@@ -6,12 +6,9 @@ import { UserController } from "./user.controller";
 import { InvitationJoinModule } from "../invitation-join/invitation-join.module";
 
 @Module({
-  imports: [
-    forwardRef(() => InvitationJoinModule),
-    TypeOrmModule.forFeature([User]),
-  ],
-  providers: [UserService],
-  controllers: [UserController],
-  exports: [UserService],
+    imports: [forwardRef(() => InvitationJoinModule), TypeOrmModule.forFeature([User])],
+    providers: [UserService],
+    controllers: [UserController],
+    exports: [UserService],
 })
 export class UserModule {}

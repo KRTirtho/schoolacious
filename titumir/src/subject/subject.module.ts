@@ -5,9 +5,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import Subject from "../database/entity/subjects.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Subject])],
-  providers: [SubjectService],
-  controllers: [SubjectController],
-  exports: [SubjectService],
+    imports: [TypeOrmModule.forFeature([Subject])],
+    providers: [SubjectService],
+    controllers: [SubjectController],
+    exports: [SubjectService],
 })
 export class SubjectModule {}

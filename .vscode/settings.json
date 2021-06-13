@@ -37,5 +37,9 @@
     "**/.git/subtree-cache/**": true,
     "**/node_modules/**": true,
     "**/.hg/store/**": true
+  },
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "editor.codeActionsOnSave": {
+    "source.sortImports": false
   }
 }

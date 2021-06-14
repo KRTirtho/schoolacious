@@ -36,6 +36,7 @@
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
+    "date-fns": "^2.22.1",
     "dotenv": "^8.2.0",
     "helmet": "^4.4.1",
     "lodash": "^4.17.21",

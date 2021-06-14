@@ -26,6 +26,6 @@ import { SubjectModule } from "../subject/subject.module";
     ],
     controllers: [SectionController],
     providers: [SectionService, StudentSectionGradeService, TeacherSectionGradeService],
-    exports: [StudentSectionGradeService, TeacherSectionGradeService],
+    exports: [StudentSectionGradeService, TeacherSectionGradeService, SectionService],
 })
 export class SectionModule {}

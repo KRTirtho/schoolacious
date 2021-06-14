@@ -6,6 +6,7 @@ import User, { USER_ROLE } from "../../database/entity/users.entity";
 import { EXTEND_USER_RELATION_KEY } from "../../decorator/extend-user-relation.decorator";
 import { VERIFY_GRADE_KEY } from "../../decorator/verify-grade.decorator";
 import { VERIFY_SCHOOL_KEY } from "../../decorator/verify-school.decorator";
+import { VERIFY_SECTION_KEY } from "../../decorator/verify-section.decorator";
 import { GradeService } from "../../grade/grade.service";
 import { StudentSectionGradeService } from "../../section/student-section-grade.service";
 import { TeacherSectionGradeService } from "../../section/teacher-section-grade.service";
@@ -20,6 +21,7 @@ export const IS_PUBLIC_KEY = "isPublic";
 type RequestWithParams = Request<{
     school?: string;
     grade?: number;
+    section?: number;
 }>;
 
 @Injectable()
@@ -54,6 +56,10 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
             );
             const verifyGrade = this.reflector.getAllAndOverride<boolean>(
                 VERIFY_GRADE_KEY,
+                [context.getHandler(), context.getClass()],
+            );
+            const verifySection = this.reflector.getAllAndOverride<boolean>(
+                VERIFY_SECTION_KEY,
                 [context.getHandler(), context.getClass()],
             );
             if (isPublic) {
@@ -128,5 +134,9 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
             Object.assign(request.user, { grade });
             return !!usg;
         }
+    }
+
+    async verifySection(request: RequestWithParams, user: User, roles: USER_ROLE[]) {
+        // verifying class teacher
     }
 }

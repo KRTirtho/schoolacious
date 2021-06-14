@@ -1,33 +1,38 @@
-import { Type } from "class-transformer";
 import {
-    ArrayMinSize,
-    IsArray,
-    IsDateString,
     IsDefined,
+    IsNotEmpty,
     IsNumber,
     IsUUID,
     Max,
-    ValidateNested,
+    Min,
+    Matches,
 } from "class-validator";
 
-class ClassDto {
+export default class ScheduleClassDto {
     @IsDefined()
-    @IsDateString()
-    schedule!: Date;
+    @IsNumber()
+    @Min(0)
+    @Max(6)
+    day!: number;
+
+    @IsDefined()
+    @IsNotEmpty()
+    @Matches(/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/g, {
+        message: "time should contain following format HH:mm:ss",
+    })
+    time!: string;
+
     @IsDefined()
     @IsUUID()
     host!: string;
 
     @IsDefined()
     @IsNumber()
-    @Max(3600) // for not more than one hour bound
+    @Min(600) //10min
+    @Max(3600) // 1hrs | for not more than one hour bound
     duration!: number; // in seconds
-}
 
-export default class ScheduleClassDTO {
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => ClassDto)
-    @ArrayMinSize(1)
-    weekly!: ClassDto[];
+    @IsDefined()
+    @IsNotEmpty()
+    section_name!: string;
 }

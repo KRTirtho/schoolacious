@@ -8,6 +8,7 @@ import RoleAuthGuard from "./auth/guards/role-auth.guard";
 import { QueryFailedFilter } from "./database/filters/query-failed.filter";
 import { EntityNotFoundFilter } from "./database/filters/entity-not-found.filter";
 import { PORT } from "../config";
+import { AuthenticatedSocketIoAdapter } from "./auth/adapters/auth.adapter";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -21,6 +22,7 @@ async function bootstrap() {
     app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
     app.useGlobalPipes(new ValidationPipe());
     app.useGlobalGuards(throttlerGuard, jwtAuthGuard, roleAuthGuard);
+    app.useWebSocketAdapter(new AuthenticatedSocketIoAdapter(app));
     await app.listen(PORT);
 }
 bootstrap();

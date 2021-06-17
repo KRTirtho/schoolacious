@@ -13,6 +13,7 @@ import { SectionModule } from "./section/section.module";
 import { SubjectModule } from "./subject/subject.module";
 import { UserModule } from "./user/user.module";
 import { ClassesModule } from "./classes/classes.module";
+import { NotificationModule } from "./notification/notification.module";
 
 export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
 export const THROTTLER_GUARD = "THROTTLER_GUARD";
@@ -33,6 +34,7 @@ export const THROTTLER_GUARD = "THROTTLER_GUARD";
         SubjectModule,
         SectionModule,
         ClassesModule,
+        NotificationModule,
     ],
     controllers: [AppController],
     providers: [

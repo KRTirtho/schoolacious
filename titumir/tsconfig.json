@@ -12,6 +12,7 @@
     "outDir": "./dist",
     "incremental": true,
     "strict": true,
+    "skipLibCheck": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
   }

@@ -1,14 +1,23 @@
-import { INestApplication } from "@nestjs/common";
+import { HttpStatus, INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Server } from "http";
 import request from "supertest";
 import { AppModule } from "../../src/app.module";
-import { bootstrapApp } from "../e2e-test.util";
+import CreateGradeDTO from "../../src/grade/dto/create-grade.dto";
+import {
+    bootstrapApp,
+    createJwtTokenFromHeader,
+    createMockSchool,
+    createMockUser,
+    MockSchoolResponse,
+} from "../e2e-test.util";
 
 describe("(e2e) PATH: /school/:school/grade", () => {
     let app: INestApplication;
     let server: Server;
     let client: request.SuperTest<request.Test>;
+    let authorization = "";
+    let school: MockSchoolResponse["body"];
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -20,10 +29,35 @@ describe("(e2e) PATH: /school/:school/grade", () => {
         await app.init();
         server = app.getHttpServer();
         client = request(server);
+
+        const mockAdmin = await createMockUser(client);
+        authorization = createJwtTokenFromHeader(mockAdmin);
+
+        school = (await createMockSchool(client, authorization)).body;
     });
 
-    test.todo("/ (POST) perfectly create grades");
-    test.todo("/ (POST) with non-applicable user");
+    test("/ (POST) perfectly create grades", async () => {
+        const payload = [{ standard: 1 }, { standard: 2 }, { standard: 3 }];
+        const { body } = await client
+            .post(`/school/${school.short_name}/grade`)
+            .set("Authorization", authorization)
+            .send(payload as CreateGradeDTO[])
+            .expect(HttpStatus.CREATED);
+
+        expect(body).toBeInstanceOf(Array);
+        expect(body.length).toEqual(3);
+        expect(body.map(({ standard }: any) => ({ standard }))).toEqual(payload);
+    });
+    test("/ (POST) with non-applicable user", async () => {
+        const payload = [{ standard: 1 }, { standard: 2 }, { standard: 3 }];
+        const { body } = await client
+            .post(`/school/${school.short_name}/grade`)
+            .set("Authorization", createJwtTokenFromHeader(await createMockUser(client)))
+            .send(payload as CreateGradeDTO[])
+            .expect(HttpStatus.FORBIDDEN);
+
+        expect(body.message).toEqual("Forbidden resource");
+    });
     test.todo("/ (POST) empty array");
     test.todo("/ (POST) wrong array elements");
     test.todo("/ (POST) co-admin auth");

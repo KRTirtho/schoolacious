@@ -5,6 +5,7 @@ import Class from "./entity/classes.entity";
 import Grade from "./entity/grades.entity";
 import GradeToSubject from "./entity/grade_subject.entity";
 import Invitations_Joins from "./entity/invitations_or_joins.entity";
+import Notifications from "./entity/notifications.entity";
 import School from "./entity/schools.entity";
 import Section from "./entity/sections.entity";
 import StudentsToSectionsToGrades from "./entity/students_sections_grades.entity";
@@ -27,6 +28,7 @@ import User from "./entity/users.entity";
                 GradeToSubject,
                 StudentsToSectionsToGrades,
                 TeachersToSectionsToGrades,
+                Notifications,
             ],
         }),
     ],

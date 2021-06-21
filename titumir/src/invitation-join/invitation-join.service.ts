@@ -75,9 +75,12 @@ export class InvitationJoinService extends BasicEntityService<
     async invite(
         payload: Omit<InviteJoinPayload, "type" | "user"> & { user_id: string },
     ): Promise<Invitations_Joins> {
-        const user = await this.userService.findOne({
-            _id: payload.user_id,
-        });
+        const user = await this.userService.findOne(
+            {
+                _id: payload.user_id,
+            },
+            { relations: ["school"] },
+        );
         return this.createInvitationJoin({
             type: INVITATION_OR_JOIN_TYPE.invitation,
             ...payload,

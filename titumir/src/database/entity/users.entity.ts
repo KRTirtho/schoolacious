@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import Class from "./classes.entity";
 import Invitations_Joins from "./invitations_or_joins.entity";
+import Notifications from "./notifications.entity";
 import School from "./schools.entity";
 import StudentsToSectionsToGrades from "./students_sections_grades.entity";
 import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
@@ -21,6 +22,11 @@ export enum USER_ROLE {
     classTeacher = "class-teacher",
     teacher = "teacher",
     student = "student",
+}
+
+export enum USER_STATUS {
+    online = "online",
+    offline = "offline",
 }
 
 @Entity("users")
@@ -48,6 +54,10 @@ export default class User {
     @CreateDateColumn()
     joined_on!: Date;
 
+    @IsEnum(USER_STATUS)
+    @Column("varchar", { length: 20, default: USER_STATUS.offline })
+    status?: USER_STATUS;
+
     @OneToMany(() => TeachersToSectionsToGrades, (tsg) => tsg.user, {
         nullable: true,
     })
@@ -69,6 +79,11 @@ export default class User {
         nullable: true,
     })
     invitations_joins?: Invitations_Joins[] | null;
+
+    @OneToMany(() => Notifications, (notifications) => notifications.user, {
+        nullable: true,
+    })
+    notifications?: Notifications[] | null;
 
     @ManyToOne(() => School, (school) => school.users, { nullable: true })
     school?: School | null;

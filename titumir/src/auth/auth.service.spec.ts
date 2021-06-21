@@ -2,7 +2,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { Test, TestingModule } from "@nestjs/testing";
 import { NOT_A_SECRET } from "../../config";
 import { generateMockUser } from "../../test/e2e-test.util";
-import User from "../database/entity/users.entity";
+import User, { USER_STATUS } from "../database/entity/users.entity";
 import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
 import JwtStrategy from "./strategies/jwt.strategy";
@@ -19,6 +19,7 @@ describe("AuthService", () => {
         _id: uuid(),
         joined_on: new Date(),
         role: null,
+        status: USER_STATUS.offline,
     };
 
     const mockUserService = {

@@ -1,19 +1,32 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import BasicEntityService, {
     PartialKey,
 } from "../database/abstracts/entity-service.abstract";
 import Class from "../database/entity/classes.entity";
-import { differenceInMinutes, parse, millisecondsToSeconds } from "date-fns";
+import { differenceInMinutes, parse, millisecondsToSeconds, getDay } from "date-fns";
 import ScheduleClassDto from "./dto/schedule-class.dto";
 import Section from "../database/entity/sections.entity";
+import { cronFromObj } from "../utils/cron-names.util";
+import { CronJob } from "cron";
+import { SchedulerRegistry } from "@nestjs/schedule";
+import { NotificationGateway } from "../notification/notification.gateway";
+import { NotificationService } from "../notification/notification.service";
+import { StudentSectionGradeService } from "../section/student-section-grade.service";
+import { NOTIFICATION_STATUS } from "../database/entity/notifications.entity";
 
 export type CreateClassPayload = PartialKey<Class, "_id" | "created_at">;
 
 @Injectable()
 export class ClassesService extends BasicEntityService<Class, CreateClassPayload> {
-    constructor(@InjectRepository(Class) private classRepo: Repository<Class>) {
+    constructor(
+        private schedularRegistry: SchedulerRegistry,
+        @InjectRepository(Class) private classRepo: Repository<Class>,
+        private notificationGateway: NotificationGateway,
+        private notificationService: NotificationService,
+        private ssgService: StudentSectionGradeService,
+    ) {
         super(classRepo);
     }
 
@@ -55,5 +68,60 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
             }
         }
         return result;
+    }
+
+    // this method will create  will appropriately
+    // schedule other descendent cronjob for a day
+    async createClassCronJob(grade_id: string) {
+        // checking for todays valid cronjob
+        const today = getDay(new Date());
+        const classes = await this.find(
+            {},
+            {
+                where: {
+                    day: today,
+                    section: { grade: { _id: grade_id } },
+                },
+                relations: ["section", "section.grade"],
+            },
+        );
+        const studentsOfGrades = await this.ssgService.find(
+            {},
+            {
+                where: {
+                    section: In(classes.map(({ section }) => ({ section }))),
+                },
+                relations: ["user"],
+            },
+        );
+
+        for (const valid of classes) {
+            const [hour, minute, second] = valid.time.split(":");
+            const expression = cronFromObj({ day: valid.day, hour, minute, second });
+            const job = new CronJob(expression, async () => {
+                // TODO: Store the notification for valid students of grade's
+                const notificationsPayload = studentsOfGrades
+                    .filter(({ grade }) => grade._id === valid.section.grade._id)
+                    .map((user) => ({
+                        user,
+                        message: `Its a class in ${valid.time}`,
+                        src: "class",
+                        status: NOTIFICATION_STATUS.unsent,
+                    }));
+                const createdNotifications = await this.notificationService.create(
+                    notificationsPayload,
+                );
+                // TODO: Active? Send WS notifications
+                this.notificationGateway.sendNotification()
+                // TODO: Check if user active
+                // use user's 'status' to check if its 'online' or
+                // 'offline' implement custom websocket event which will
+                // be sent from the client each time the client comes
+                // online
+                this.notificationGateway.server;
+                // TODO: Not active? Send Push notification
+            });
+            this.schedularRegistry.addCronJob(valid._id, job);
+        }
     }
 }

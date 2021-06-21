@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import ScheduleClassDTO from "./dto/schedule-class.dto";
 import { Roles } from "../decorator/roles.decorator";
-import { SchedulerRegistry } from "@nestjs/schedule";
+import { CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
 import { USER_ROLE } from "../database/entity/users.entity";
 import { ClassesService } from "./classes.service";
@@ -92,15 +92,17 @@ export class ClassesController {
             }
 
             await this.classesService.create(validClasses);
-            // if (!this.scheduleRegistry.doesExists("cron", classJob(user.school._id))) {
-            //     const schoolClassJob = new CronJob("", () => {
-            //         throw "unimplemented";
-            //     });
-            //     this.scheduleRegistry.addCronJob(
-            //         classJob(user.school._id),
-            //         schoolClassJob,
-            //     );
-            // }
+            if (!this.scheduleRegistry.doesExists("cron", classJob(user.school._id))) {
+                const schoolClassJob = new CronJob(
+                    CronExpression.EVERY_DAY_AT_6AM,
+                    async () =>
+                        await this.classesService.createClassCronJob(user.grade._id),
+                );
+                this.scheduleRegistry.addCronJob(
+                    classJob(user.school._id),
+                    schoolClassJob,
+                );
+            }
             return { message: "successfully scheduled classes" };
         } catch (error) {
             this.logger.error(error.message);

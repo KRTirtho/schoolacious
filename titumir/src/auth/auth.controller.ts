@@ -19,6 +19,8 @@ import LocalAuthGuard from "./guards/local-auth.jwt";
 import { JsonWebTokenError } from "jsonwebtoken";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import User from "../database/entity/users.entity";
+import LoginDTO from "./dto/login.dto";
+import { ApiHeader, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 @Controller("auth")
 export class AuthController {
@@ -31,18 +33,28 @@ export class AuthController {
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post("login")
-    async login(@CurrentUser() user: User, @Req() { res }: Request): Promise<User> {
+    @ApiUnauthorizedResponse({ description: "Invalid credentials" })
+    async login(
+        @CurrentUser() user: User,
+        @Req() { res }: Request,
+        @Body() _?: LoginDTO,
+    ): Promise<User> {
         try {
             const { access_token, refresh_token } = this.authService.createTokens(user);
             res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
             res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
             return user;
         } catch (error: any) {
-            return error;
+            this.logger.error(error.message);
+            throw error;
         }
     }
     @Public()
     @Post("refresh")
+    @ApiHeader({ name: CONST_REFRESH_TOKEN_HEADER, description: "Refresh token" })
+    @ApiUnauthorizedResponse({
+        description: "Invalid refresh token, refresh token not provided",
+    })
     async refresh(@Headers() headers: Request["headers"], @Req() { res }: Request) {
         try {
             const refreshToken = headers[CONST_REFRESH_TOKEN_HEADER] as string;

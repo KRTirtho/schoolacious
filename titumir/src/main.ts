@@ -9,9 +9,22 @@ import { QueryFailedFilter } from "./database/filters/query-failed.filter";
 import { EntityNotFoundFilter } from "./database/filters/entity-not-found.filter";
 import { PORT } from "../config";
 import { AuthenticatedSocketIoAdapter } from "./auth/adapters/auth.adapter";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    // swagger stuff
+    const options = new DocumentBuilder()
+        .setTitle("Titumir - veschool backend")
+        .setDescription("mainstream backend of VESchool")
+        .setVersion("0.1.0")
+        .addBearerAuth({ type: "http", bearerFormat: "Bearer" })
+        .build();
+    const document = SwaggerModule.createDocument(app, options);
+
+    SwaggerModule.setup("/swagger", app, document);
+
     const reflector = app.get(Reflector);
     const jwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
     const roleAuthGuard = new RoleAuthGuard(reflector);

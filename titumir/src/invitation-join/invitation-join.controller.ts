@@ -6,6 +6,12 @@ import {
     Logger,
     Post,
 } from "@nestjs/common";
+import {
+    ApiBearerAuth,
+    ApiForbiddenResponse,
+    ApiNotAcceptableResponse,
+    ApiUnauthorizedResponse,
+} from "@nestjs/swagger";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
@@ -21,6 +27,10 @@ export class InvitationJoinController {
     constructor(private readonly invitationJoinService: InvitationJoinService) {}
 
     @Post()
+    @ApiBearerAuth()
+    @ApiUnauthorizedResponse()
+    @ApiForbiddenResponse({ description: "Wrong credentials" })
+    @ApiNotAcceptableResponse({ description: "already joined a school" })
     async inviteJoinUser(
         @Body() { type, ...body }: InvitationJoinDTO,
         @CurrentUser() user: User,
@@ -54,6 +64,9 @@ export class InvitationJoinController {
     }
 
     @Post("complete")
+    @ApiBearerAuth()
+    @ApiUnauthorizedResponse()
+    @ApiNotAcceptableResponse({ description: "already joined a school meanwhile" })
     async completeInvitationJoin(
         @CurrentUser() user: User,
         @Body() body: CompleteInvitationJoinDTO,
@@ -67,6 +80,9 @@ export class InvitationJoinController {
     }
 
     @Delete()
+    @ApiBearerAuth()
+    @ApiUnauthorizedResponse()
+    @ApiForbiddenResponse({ description: "Wrong credentials" })
     async cancelInvitationJoin(
         @Body() body: CancelInvitationJoinDTO,
         @CurrentUser() user: User,

@@ -1,4 +1,5 @@
 import { Body, Controller, Logger, Post, Get, Param, Put } from "@nestjs/common";
+import { ApiBearerAuth, ApiNotFoundResponse } from "@nestjs/swagger";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
@@ -18,6 +19,7 @@ export class SchoolController {
     ) {}
 
     @Get(":school")
+    @ApiNotFoundResponse({ description: "passed {school} doesn't exist" })
     async getSchool(@Param("school") short_name: string) {
         try {
             const school = await this.schoolService
@@ -37,6 +39,7 @@ export class SchoolController {
     @Get(":school/join-requests")
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+    @ApiBearerAuth()
     async getSchoolJoinRequests(@CurrentUser() user: User) {
         try {
             return this.invitationJoinService.getSchoolInvitationJoin({
@@ -52,6 +55,7 @@ export class SchoolController {
     @Get(":school/invitations")
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+    @ApiBearerAuth()
     async getSchoolSentInvitations(@CurrentUser() user: User) {
         try {
             return this.invitationJoinService.getSchoolInvitationJoin({
@@ -65,6 +69,7 @@ export class SchoolController {
     }
 
     @Post()
+    @ApiBearerAuth()
     async createSchool(@CurrentUser() user: User, @Body() body: CreateSchoolDTO) {
         try {
             const school = await this.schoolService.createSchool({
@@ -79,8 +84,9 @@ export class SchoolController {
     }
 
     @Put(":school/co-admin")
-    @Roles(USER_ROLE.admin)
     @VerifySchool()
+    @Roles(USER_ROLE.admin)
+    @ApiBearerAuth()
     async addCoAdmin(@Body() body: AddCoAdminDTO, @CurrentUser() user: User) {
         try {
             return this.schoolService.assignCoAdmin({ ...body, user });

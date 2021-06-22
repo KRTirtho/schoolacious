@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import {
     IsDefined,
     IsEmail,
@@ -12,18 +13,38 @@ import validator from "validator";
 export default class CreateSchoolDTO {
     @IsDefined()
     @IsNotEmpty()
+    @ApiProperty({
+        type: String,
+        description: "The non-unique fancy display name of school",
+        example: "Saint Gregory School or Hell",
+    })
     name!: string;
 
     @IsDefined()
     @IsEmail()
+    @ApiProperty({
+        type: String,
+        description: "unique & non-personal/organization email",
+        example: "oak@thu.com",
+    })
     email!: string;
 
     @IsDefined()
     @IsMobilePhone("any" as validator.MobilePhoneLocale)
+    @ApiProperty({
+        type: String,
+        description: "International phone number",
+        example: "8801711111111",
+    })
     phone!: string;
 
     @IsDefined()
     @IsNotEmpty()
+    @ApiProperty({
+        type: String,
+        description: "short description about the school",
+        example: "School/Hell",
+    })
     description!: string;
 
     @IsDefined()
@@ -31,5 +52,12 @@ export default class CreateSchoolDTO {
     @IsNotEmpty()
     @MaxLength(20)
     @Matches(/\w*\d*-*/g)
+    @ApiProperty({
+        type: String,
+        description: "unique human readable identifier",
+        example: "st-gregory",
+        pattern: String(/\w*\d*-*/),
+        maxLength: 20,
+    })
     short_name!: string;
 }

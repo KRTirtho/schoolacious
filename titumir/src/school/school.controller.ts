@@ -11,6 +11,7 @@ import CreateSchoolDTO from "./dto/create-school.dto";
 import { SchoolService } from "./school.service";
 
 @Controller("school")
+@ApiBearerAuth()
 export class SchoolController {
     logger: Logger = new Logger(SchoolController.name);
     constructor(
@@ -39,8 +40,7 @@ export class SchoolController {
     @Get(":school/join-requests")
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
-    @ApiBearerAuth()
-    async getSchoolJoinRequests(@CurrentUser() user: User) {
+    async getSchoolJoinRequests(@CurrentUser() user: User, @Param("school") _?: number) {
         try {
             return this.invitationJoinService.getSchoolInvitationJoin({
                 _id: user.school!._id,
@@ -55,8 +55,10 @@ export class SchoolController {
     @Get(":school/invitations")
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
-    @ApiBearerAuth()
-    async getSchoolSentInvitations(@CurrentUser() user: User) {
+    async getSchoolSentInvitations(
+        @CurrentUser() user: User,
+        @Param("school") _?: number,
+    ) {
         try {
             return this.invitationJoinService.getSchoolInvitationJoin({
                 _id: user.school!._id,
@@ -69,7 +71,6 @@ export class SchoolController {
     }
 
     @Post()
-    @ApiBearerAuth()
     async createSchool(@CurrentUser() user: User, @Body() body: CreateSchoolDTO) {
         try {
             const school = await this.schoolService.createSchool({
@@ -86,8 +87,11 @@ export class SchoolController {
     @Put(":school/co-admin")
     @VerifySchool()
     @Roles(USER_ROLE.admin)
-    @ApiBearerAuth()
-    async addCoAdmin(@Body() body: AddCoAdminDTO, @CurrentUser() user: User) {
+    async addCoAdmin(
+        @Body() body: AddCoAdminDTO,
+        @CurrentUser() user: User,
+        @Param("school") _?: number,
+    ) {
         try {
             return this.schoolService.assignCoAdmin({ ...body, user });
         } catch (error: any) {

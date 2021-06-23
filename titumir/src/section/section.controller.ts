@@ -11,6 +11,14 @@ import {
     Post,
     Put,
 } from "@nestjs/common";
+import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiBody,
+    ApiForbiddenResponse,
+    ApiNotAcceptableResponse,
+    ApiNotFoundResponse,
+} from "@nestjs/swagger";
 import { FindConditions } from "typeorm";
 import Section from "../database/entity/sections.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
@@ -42,6 +50,7 @@ async function verifyClassTeacher(
 }
 
 @Controller("/school/:school/grade/:grade/section")
+@ApiBearerAuth()
 export class SectionController {
     logger: Logger = new Logger(SectionController.name);
     constructor(
@@ -54,6 +63,7 @@ export class SectionController {
     @VerifySchool()
     async getSections(
         @Param("grade", new ParseIntPipe()) standard: number,
+        @Param("school") _?: number,
     ): Promise<Omit<Section, "grade">[]> {
         try {
             const sections = await this.sectionService
@@ -74,9 +84,11 @@ export class SectionController {
 
     @Get(":section")
     @VerifySchool()
+    @ApiNotFoundResponse({ description: "invalid section" })
     async getMonoSection(
         @Param("grade", new ParseIntPipe()) standard: number,
         @Param("section") name: string,
+        @Param("school") _?: number,
     ) {
         try {
             const section = await this.sectionService
@@ -90,7 +102,7 @@ export class SectionController {
                 )
                 .leftJoinAndSelect("section.classes", "classes")
                 .leftJoinAndSelect("section.class_teacher", "class_teacher")
-                .getOne();
+                .getOneOrFail();
             return { ...section, grade: undefined };
         } catch (error: any) {
             this.logger.error(error.message);
@@ -101,10 +113,13 @@ export class SectionController {
     @Post()
     @VerifyGrade()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin, USER_ROLE.gradeModerator)
+    @ApiBody({ type: [CreateSectionDTO] })
     async createSection(
         @Body(new ParseArrayPipe({ items: CreateSectionDTO }))
         body: CreateSectionDTO[],
         @CurrentUser() user: VerifiedGradeUser,
+        @Param("school") _?: number,
+        @Param("grade") __?: number,
     ) {
         try {
             return (
@@ -121,10 +136,17 @@ export class SectionController {
     @Put(":section/class-teacher")
     @VerifyGrade()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin, USER_ROLE.gradeModerator)
+    @ApiBadRequestResponse({
+        description: "non-belonging school, user isn't class_teacher",
+    })
+    @ApiNotFoundResponse({ description: "user not found" })
+    @ApiNotAcceptableResponse({ description: "same class_teacher twice" })
     async assignClassTeacher(
         @Param("section") section: string,
         @CurrentUser() user: VerifiedGradeUser,
         @Body() { user_id }: AssignClassTeacherDTO,
+        @Param("school") _?: number,
+        @Param("grade") __?: number,
     ) {
         try {
             return await this.sectionService.assignClassTeacher({
@@ -147,11 +169,15 @@ export class SectionController {
         USER_ROLE.gradeModerator,
         USER_ROLE.classTeacher,
     )
+    @ApiBody({ type: [StudentDTO] })
+    @ApiForbiddenResponse({ description: "not class_teacher of section" })
     async addStudents(
         @CurrentUser() user: VerifiedGradeUser,
         @Body(new ParseArrayPipe({ items: StudentDTO }))
         body: StudentDTO[],
         @Param("section") name: string,
+        @Param("school") _?: number,
+        @Param("grade") __?: number,
     ) {
         try {
             const sections = await verifyClassTeacher(
@@ -179,10 +205,14 @@ export class SectionController {
         USER_ROLE.gradeModerator,
         USER_ROLE.classTeacher,
     )
+    @ApiForbiddenResponse({ description: "not class_teacher of section" })
+    @ApiBadRequestResponse({ description: "user ain't student" })
     async removeStudent(
         @Body() body: StudentDTO,
         @CurrentUser() user: VerifiedGradeUser,
         @Param("section") name: string,
+        @Param("school") _?: number,
+        @Param("grade") __?: number,
     ) {
         try {
             await verifyClassTeacher(
@@ -205,10 +235,14 @@ export class SectionController {
         USER_ROLE.gradeModerator,
         USER_ROLE.classTeacher,
     )
+    @ApiBody({ type: [TeacherDTO] })
+    @ApiForbiddenResponse({ description: "not class_teacher of section" })
     async addTeachers(
         @Body(new ParseArrayPipe({ items: TeacherDTO })) body: TeacherDTO[],
         @CurrentUser() user: VerifiedGradeUser,
         @Param("section") name: string,
+        @Param("school") _?: number,
+        @Param("grade") __?: number,
     ) {
         try {
             const section = await verifyClassTeacher(
@@ -236,10 +270,14 @@ export class SectionController {
         USER_ROLE.gradeModerator,
         USER_ROLE.classTeacher,
     )
+    @ApiForbiddenResponse({ description: "not class_teacher of section" })
+    @ApiNotFoundResponse({ description: "user | section | subject not found" })
     async remove(
         @Body() body: TeacherDTO,
         @Param("section") name: string,
         @CurrentUser() user: VerifiedGradeUser,
+        @Param("school") _?: number,
+        @Param("grade") __?: number,
     ) {
         try {
             const section = await verifyClassTeacher(

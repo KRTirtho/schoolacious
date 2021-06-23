@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Logger, ParseArrayPipe, Post } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Logger,
+    Param,
+    ParseArrayPipe,
+    Post,
+} from "@nestjs/common";
+import { ApiBearerAuth } from "@nestjs/swagger";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
@@ -8,6 +17,7 @@ import defaultSubjects from "./static/default-subjects";
 import { SubjectService } from "./subject.service";
 
 @Controller("/school/:school/subject")
+@ApiBearerAuth()
 export class SubjectController {
     logger: Logger = new Logger(SubjectController.name);
 
@@ -15,13 +25,13 @@ export class SubjectController {
 
     @Get("defaults")
     @VerifySchool()
-    getDefaultSubjects() {
+    getDefaultSubjects(@Param("school") _?: number) {
         return defaultSubjects;
     }
 
     @Get()
     @VerifySchool()
-    async getAlSubject(@CurrentUser() user: User) {
+    async getAlSubject(@CurrentUser() user: User, @Param("school") _?: number) {
         try {
             return await this.subjectService.find({ school: user.school! });
         } catch (error: any) {
@@ -37,6 +47,7 @@ export class SubjectController {
         @Body(new ParseArrayPipe({ items: CreateSubjectDTO }))
         body: CreateSubjectDTO[],
         @CurrentUser() user: User,
+        @Param("school") _?: number,
     ) {
         try {
             const subjects = await this.subjectService.create(

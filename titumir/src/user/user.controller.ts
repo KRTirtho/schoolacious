@@ -6,11 +6,11 @@ import { CurrentUser } from "../decorator/current-user.decorator";
 import { InvitationJoinService } from "../invitation-join/invitation-join.service";
 
 @Controller("user")
+@ApiBearerAuth()
 export class UserController {
     logger: Logger = new Logger(UserController.name);
     constructor(private readonly invitationJoinService: InvitationJoinService) {}
     @Get("invitations")
-    @ApiBearerAuth()
     @ApiUnauthorizedResponse()
     async getInvitations(@CurrentUser() user: User) {
         try {
@@ -24,7 +24,6 @@ export class UserController {
         }
     }
     @Get("join-requests")
-    @ApiBearerAuth()
     @ApiUnauthorizedResponse()
     async getJoinRequests(@CurrentUser() user: User) {
         try {

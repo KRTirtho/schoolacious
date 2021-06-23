@@ -19,8 +19,15 @@ import { CLASS_STATUS } from "../database/entity/classes.entity";
 import { TeacherSectionGradeService } from "../section/teacher-section-grade.service";
 import { classJob } from "../utils/cron-names.util";
 import { CronJob } from "cron";
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiNotAcceptableResponse,
+    ApiNotFoundResponse,
+} from "@nestjs/swagger";
 
 @Controller("/school/:school/grade/:grade/class")
+@ApiBearerAuth()
 export class ClassesController {
     logger: Logger = new Logger(ClassesController.name);
 
@@ -39,6 +46,13 @@ export class ClassesController {
         USER_ROLE.gradeModerator,
         USER_ROLE.classTeacher,
     )
+    @ApiBody({ type: [ScheduleClassDTO] })
+    @ApiNotAcceptableResponse({
+        description: "non-section-teacher as host, minimum break durations not obeyed",
+    })
+    @ApiNotFoundResponse({
+        description: "teacher not found in grade/section, section not found",
+    })
     async addClasses(
         @CurrentUser() user: VerifiedGradeUser,
         @Body(new ParseArrayPipe({ items: ScheduleClassDTO })) body: ScheduleClassDTO[],

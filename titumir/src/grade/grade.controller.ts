@@ -22,6 +22,13 @@ import { GradeService } from "./grade.service";
 import { ParseIntPipe } from "@nestjs/common";
 import { ExtendUserRelation } from "../decorator/extend-user-relation.decorator";
 import Grade from "../database/entity/grades.entity";
+import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiBody,
+    ApiNotAcceptableResponse,
+    ApiNotFoundResponse,
+} from "@nestjs/swagger";
 
 export interface VerifiedGradeUser extends User {
     school: School;
@@ -29,6 +36,7 @@ export interface VerifiedGradeUser extends User {
 }
 
 @Controller("/school/:school/grade")
+@ApiBearerAuth()
 export class GradeController {
     logger: Logger = new Logger(GradeController.name);
     constructor(
@@ -38,7 +46,7 @@ export class GradeController {
 
     @Get()
     @VerifySchool()
-    async getAllGradeOfSchool(@CurrentUser() user: User) {
+    async getAllGradeOfSchool(@CurrentUser() user: User, @Param("school") _?: number) {
         try {
             const grades = await this.gradeService.find({ school: user.school! });
             return grades;
@@ -50,9 +58,11 @@ export class GradeController {
 
     @Get(":grade")
     @VerifySchool()
+    @ApiNotFoundResponse({ description: "invalid grade" })
     async getMonoGrade(
         @CurrentUser("school") school: School,
         @Param("grade") standard: number,
+        @Param("school") _?: number,
     ) {
         try {
             const grade = await this.gradeService.findOne(
@@ -80,9 +90,11 @@ export class GradeController {
     @Post()
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+    @ApiBody({ type: [CreateGradeDTO] })
     async createGrade(
         @Body(new ParseArrayPipe({ items: CreateGradeDTO })) body: CreateGradeDTO[],
         @CurrentUser() user: User,
+        @Param("school") _?: number,
     ) {
         try {
             const grade = await this.gradeService.create(
@@ -98,21 +110,19 @@ export class GradeController {
     @Post(":grade/subject")
     @VerifyGrade()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin, USER_ROLE.gradeModerator)
+    @ApiBody({ type: [AssignSubjectsDTO] })
     async assignSubjects(
         @Body(new ParseArrayPipe({ items: AssignSubjectsDTO }))
         body: AssignSubjectsDTO[],
-        @Param("grade") standard: number,
         @CurrentUser() user: VerifiedGradeUser,
+        @Param("grade") _?: number,
+        @Param("school") __?: number,
     ) {
         try {
-            const grade = await this.gradeService.findOne({
-                school: user.school,
-                standard,
-            });
             const gradesToSubjects = await this.gradeToSubjectService.create(
                 body.map(({ subject_id, mark }) => ({
                     subject: { _id: subject_id },
-                    grade,
+                    grade: user.grade,
                     mark,
                 })),
             );
@@ -131,6 +141,7 @@ export class GradeController {
         @Param("grade") standard: number,
         @CurrentUser("school") school: School,
         @Body() { user_id }: AssignGradeLeadsDTO,
+        @Param("school") _?: number,
     ) {
         try {
             return await this.gradeService.assignRole({
@@ -148,10 +159,16 @@ export class GradeController {
     @VerifySchool()
     @ExtendUserRelation("school.coAdmin1", "school.coAdmin2")
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+    @ApiBadRequestResponse({
+        description: "user not of school, duplicate role assign, user not a co-admin",
+    })
+    @ApiNotFoundResponse({ description: "user not found" })
+    @ApiNotAcceptableResponse({ description: "school has no co-admin" })
     async assignExaminer(
         @Param("grade", new ParseIntPipe()) standard: number,
         @CurrentUser("school") school: School,
         @Body() { user_id }: AssignGradeLeadsDTO,
+        @Param("school") _?: number,
     ) {
         try {
             return await this.gradeService.assignRole({

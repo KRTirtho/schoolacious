@@ -59,14 +59,11 @@ export class AuthController {
         try {
             const refreshToken = headers[CONST_REFRESH_TOKEN_HEADER] as string;
             if (!refreshToken) throw new NotAcceptableException("refresh token not set");
-            const isValid = await this.authService.verify(refreshToken);
-            if (!isValid) throw new UnauthorizedException("invalid refresh token");
-            const { access_token, refresh_token } = this.authService.createTokens(
-                isValid,
-            );
+            const user = await this.authService.verify(refreshToken, ["school"]);
+            const { access_token, refresh_token } = this.authService.createTokens(user);
             res?.set(CONST_ACCESS_TOKEN_HEADER, access_token);
             res?.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-            return { message: "Refreshed access_token" };
+            return { message: "Refreshed access_token", user };
         } catch (error: any) {
             this.logger.error(error.message);
             if (error instanceof JsonWebTokenError) {

@@ -1,12 +1,23 @@
-import { Grid, Button, Link as MuiLink, Typography } from "@material-ui/core";
+import { Grid, Button, Typography } from "@material-ui/core";
 import { Formik, Form, Field } from "formik";
 import { TextField } from "formik-material-ui";
 import React from "react";
-import { Link } from "react-router-dom";
+import { useMutation } from "react-query";
 import * as yup from "yup";
+import { titumirApi } from "../App";
+import { ContextKey } from "../configurations/enum-keys";
+import {
+    CONST_ACCESS_TOKEN_KEY,
+    CONST_REFRESH_TOKEN_KEY,
+    SignupBody,
+    TitumirResponse,
+    User,
+} from "../configurations/titumir";
+import useAuthorization from "../hooks/useAuthorization";
 
 const REQUIRED_MSG = "Required";
 const MINIMUM_CHAR_MSG = "Minimum 8  chars";
+
 function Signup() {
     let SignupSchema = yup.object().shape({
         first_name: yup.string().required(REQUIRED_MSG),
@@ -20,9 +31,26 @@ function Signup() {
             .required(REQUIRED_MSG),
     });
 
+    const ctx = useAuthorization();
+
+    const { mutate: signup } = useMutation<TitumirResponse<User>, Error, SignupBody>(
+        ContextKey.SIGNUP,
+        (body) => titumirApi.signup(body),
+        {
+            onSuccess({ json, headers }) {
+                ctx.setUser(json);
+                const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
+                const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);
+                if (accessToken && refreshToken) {
+                    ctx.setTokens({ accessToken, refreshToken });
+                }
+            },
+        },
+    );
+
     return (
         <>
-            <Typography style={{ marginBottom: 20 }} variant="h4">
+            <Typography align="center" style={{ marginBottom: 20 }} variant="h4">
                 Create an account
             </Typography>
             <Formik
@@ -33,7 +61,10 @@ function Signup() {
                     password: "",
                     confirmPassword: "",
                 }}
-                onSubmit={() => {}}
+                onSubmit={(values, { resetForm }) => {
+                    signup(values);
+                    resetForm();
+                }}
                 validationSchema={SignupSchema}
             >
                 <Form>
@@ -79,9 +110,6 @@ function Signup() {
                     </Grid>
                 </Form>
             </Formik>
-            <MuiLink style={{ marginTop: 10 }} component={Link} to="/reset?password=yes">
-                Forgot password?
-            </MuiLink>
         </>
     );
 }

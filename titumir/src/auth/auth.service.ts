@@ -70,12 +70,12 @@ export class AuthService {
         return this.userService.findOne({ email: tokenUser.email });
     }
 
-    async verify(token: string) {
+    async verify(token: string, relations?: (keyof User)[]) {
         const payload = this.jwtService.verify(token, { secret: NOT_A_SECRET });
-        const user = await this.userService.findOne({ email: payload.email });
-        if (!user) {
-            throw new NotFoundException("aborted for maliciousness");
-        }
+        const user = await this.userService.findOne(
+            { email: payload.email },
+            { relations },
+        );
         return user;
     }
 }

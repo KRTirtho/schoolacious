@@ -1,5 +1,21 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
+import { User } from "../configurations/titumir";
+import { ContextToken } from "./AuthorizationStore";
 
-const AuthenticationProvider = React.createContext({});
+export interface AuthorizationContext {
+    logged: boolean;
+    tokens?: ContextToken;
+    user?: User;
+    setLogged: Dispatch<SetStateAction<boolean>>;
+    setTokens: Dispatch<SetStateAction<ContextToken | undefined>>;
+    setUser: Dispatch<SetStateAction<User | undefined>>;
+}
 
-export default AuthenticationProvider;
+const authContext = React.createContext<AuthorizationContext>({
+    logged: false,
+    setLogged() {},
+    setTokens() {},
+    setUser() {},
+});
+
+export default authContext;

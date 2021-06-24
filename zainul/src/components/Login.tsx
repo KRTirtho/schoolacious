@@ -2,14 +2,41 @@ import { Grid, Typography, Button, Link as MuiLink } from "@material-ui/core";
 import { Formik, Form, Field } from "formik";
 import { TextField } from "formik-material-ui";
 import React from "react";
+import { useMutation } from "react-query";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
+import { titumirApi } from "../App";
+import { ContextKey } from "../configurations/enum-keys";
+import {
+    CONST_ACCESS_TOKEN_KEY,
+    CONST_REFRESH_TOKEN_KEY,
+    LoginBody,
+    TitumirResponse,
+    User,
+} from "../configurations/titumir";
+import useAuthorization from "../hooks/useAuthorization";
 
 function Login() {
     let LoginSchema = yup.object().shape({
         email: yup.string().email("Invalid email").required("Required"),
         password: yup.string().min(8, "Minimum 8  chars").required("Required"),
     });
+    const ctx = useAuthorization();
+    const { mutate: login } = useMutation<TitumirResponse<User>, Error, LoginBody>(
+        ContextKey.LOGIN,
+        (body) => titumirApi.login(body),
+        {
+            onSuccess({ json, headers }) {
+                ctx.setUser(json);
+                const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
+                const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);
+                if (accessToken && refreshToken) {
+                    ctx.setTokens({ accessToken, refreshToken });
+                }
+            },
+        },
+    );
+
     return (
         <>
             <Typography style={{ marginBottom: 20 }} variant="h4">
@@ -17,7 +44,10 @@ function Login() {
             </Typography>
             <Formik
                 initialValues={{ email: "", password: "" }}
-                onSubmit={() => {}}
+                onSubmit={(values, { resetForm }) => {
+                    login(values);
+                    resetForm();
+                }}
                 validationSchema={LoginSchema}
             >
                 <Form>

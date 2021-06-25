@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Paper, ButtonGroup, Button } from "@material-ui/core";
-import loginBgImg from "../../assets/login-bg.jpg";
+import { loginBG } from "../configurations/img-imports";
 import Login from "../components/Login";
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import Signup from "../components/Signup";
@@ -13,7 +13,7 @@ function Auth() {
         <Grid
             container
             style={{
-                backgroundImage: `url(${loginBgImg})`,
+                backgroundImage: `url(${loginBG})`,
                 backgroundPosition: "top",
                 backgroundSize: "cover",
                 height: "100vh",

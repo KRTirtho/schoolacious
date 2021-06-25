@@ -36,7 +36,8 @@ module.exports = {
         // "@typescript-eslint/explicit-module-boundary-types": "off",
         "react/prop-types": "off",
         "react/react-in-jsx-scope": "off",
-        "@typescript-eslint/no-unsafe-assignment": "warn"
+        "@typescript-eslint/no-unsafe-assignment": "warn",
+        "react/no-unescaped-entities": "off",
     },
     settings: {
         "import/ignore": [/\.(scss|less|css)$/, /\.(png|gif|jpg|svg)$/],

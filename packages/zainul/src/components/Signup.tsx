@@ -3,6 +3,7 @@ import { Formik, Form, Field } from "formik";
 import { TextField } from "formik-material-ui";
 import React from "react";
 import { useMutation } from "react-query";
+import { useHistory } from "react-router-dom";
 import * as yup from "yup";
 import { titumirApi } from "../App";
 import { ContextKey } from "../configurations/enum-keys";
@@ -18,7 +19,16 @@ import useAuthorization from "../hooks/useAuthorization";
 const REQUIRED_MSG = "Required";
 const MINIMUM_CHAR_MSG = "Minimum 8  chars";
 
+interface SignupInitValues {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
 function Signup() {
+    const history = useHistory();
     const SignupSchema = yup.object().shape({
         first_name: yup.string().required(REQUIRED_MSG),
         last_name: yup.string().required(REQUIRED_MSG),
@@ -33,20 +43,21 @@ function Signup() {
 
     const ctx = useAuthorization();
 
-    const { mutate: signup } = useMutation<TitumirResponse<User>, Error, SignupBody>(
-        ContextKey.SIGNUP,
-        (body) => titumirApi.signup(body),
-        {
-            onSuccess({ json, headers }) {
-                ctx.setUser(json);
-                const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
-                const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);
-                if (accessToken && refreshToken) {
-                    ctx.setTokens({ accessToken, refreshToken });
-                }
-            },
+    const { mutate: signup, isSuccess } = useMutation<
+        TitumirResponse<User>,
+        Error,
+        SignupBody
+    >(ContextKey.SIGNUP, (body) => titumirApi.signup(body), {
+        onSuccess({ json, headers }) {
+            ctx.setUser(json);
+            const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
+            const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);
+            if (accessToken && refreshToken) {
+                ctx.setTokens({ accessToken, refreshToken });
+            }
+            setTimeout(() => history.push("/"), 500);
         },
-    );
+    });
 
     return (
         <>
@@ -54,16 +65,19 @@ function Signup() {
                 Create an account
             </Typography>
             <Formik
-                initialValues={{
-                    first_name: "",
-                    last_name: "",
-                    email: "",
-                    password: "",
-                    confirmPassword: "",
-                }}
-                onSubmit={(values, { resetForm }) => {
+                initialValues={
+                    {
+                        first_name: "",
+                        last_name: "",
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                    } as SignupInitValues
+                }
+                onSubmit={(values, { resetForm, setSubmitting }) => {
                     signup(values);
-                    resetForm();
+                    if (isSuccess) resetForm();
+                    else setSubmitting(false);
                 }}
                 validationSchema={SignupSchema}
             >
@@ -75,12 +89,14 @@ function Signup() {
                                 component={TextField}
                                 name="first_name"
                                 label="First Name"
+                                required
                             />
                             <Field
                                 style={{ marginLeft: 5 }}
                                 component={TextField}
                                 name="last_name"
                                 label="Last Name"
+                                required
                             />
                         </Grid>
                         <Field
@@ -89,6 +105,7 @@ function Signup() {
                             name="email"
                             type="email"
                             label="Email"
+                            required
                         />
                         <Field
                             style={{ marginTop: 10 }}
@@ -96,6 +113,7 @@ function Signup() {
                             name="password"
                             type="password"
                             label="password"
+                            required
                         />
                         <Field
                             style={{ marginTop: 10 }}
@@ -103,6 +121,7 @@ function Signup() {
                             name="confirmPassword"
                             type="password"
                             label="Confirm password"
+                            required
                         />
                         <Button style={{ marginTop: 10 }} type="submit">
                             Signup

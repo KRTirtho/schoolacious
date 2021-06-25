@@ -49,26 +49,20 @@ export type SignupBody = LoginBody & Pick<User, "first_name" | "last_name">;
 export const CONST_ACCESS_TOKEN_KEY = "x-access-token";
 export const CONST_REFRESH_TOKEN_KEY = "x-refresh-token";
 
-export class TitumirError extends Error {
+export class TitumirError extends TypeError {
     status: number;
 
     constructor({
-        payload,
         statusText,
         url,
         status,
     }: {
         url: string;
-        payload: unknown;
         statusText: string;
         status: number;
     }) {
-        super(
-            `[TitumirError ${statusText}]: the following ${url} returned status ${status}
-          [payload]: ${
-              typeof payload === "object" ? JSON.stringify(payload) : (payload as string)
-          }`,
-        );
+        super();
+        this.stack = `[TitumirError "${statusText}"]: the following ${url} returned status ${status}}`;
         this.status = status;
     }
 }
@@ -95,6 +89,7 @@ export default class Titumir {
         this.refreshToken = options?.refreshToken;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async buildRequest<T, D = Record<string | number, any>>(
         path: string,
         method: HTTPMethods = "GET",
@@ -111,7 +106,12 @@ export default class Titumir {
             headers,
         });
 
-        if (!res.ok) throw new TitumirError({ payload: body, ...res });
+        if (!res.ok)
+            throw new TitumirError({
+                status: res.status,
+                statusText: res.statusText,
+                url: res.url,
+            });
         return Object.assign(res, { json: await res.json() });
     }
     setTokens({

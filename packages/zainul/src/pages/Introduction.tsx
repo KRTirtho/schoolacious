@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Grid, Typography, Button } from "@material-ui/core";
-import bgImg from "../../assets/introduction-bg.jpg";
+import { introductionBG as bgImg } from "../configurations/img-imports";
 import { Link } from "react-router-dom";
 
 export default function Introduction() {

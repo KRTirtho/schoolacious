@@ -11,12 +11,14 @@ services:
     ports: 
       - 9229:9229
     build:
-      context: ./titumir
+      context: ./
       args: 
         NODE_ENV: development
     volumes: 
       - ./:/app
       - /app/node_modules
+      - /app/packages/titumir/node_modules
+      - /app/packages/zainul/node_modules
     environment: 
       - POSTGRES_PASSWORD=simple
       - POSTGRES_DB=veschool

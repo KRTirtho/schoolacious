@@ -2,5 +2,5 @@ node_modules
 Dockerfile
 .git
 .gitignore
-titumir/.env*
+packages/titumir/.env*
 docker-compose*

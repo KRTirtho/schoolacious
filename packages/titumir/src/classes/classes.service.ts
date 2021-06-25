@@ -112,7 +112,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                     notificationsPayload,
                 );
                 // TODO: Active? Send WS notifications
-                this.notificationGateway.sendNotification()
+                this.notificationGateway.sendNotification();
                 // TODO: Check if user active
                 // use user's 'status' to check if its 'online' or
                 // 'offline' implement custom websocket event which will

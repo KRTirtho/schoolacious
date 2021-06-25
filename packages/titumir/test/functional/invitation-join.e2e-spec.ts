@@ -11,13 +11,14 @@ import {
     createMockUser,
     MockSchoolResponse,
     MockUserResponse,
+    bootstrapApp,
 } from "../e2e-test.util";
 import InvitationJoinDTO from "../../src/invitation-join/dto/invitation-join.dto";
 import {
     INVITATION_OR_JOIN_ROLE,
     INVITATION_OR_JOIN_TYPE,
 } from "../../src/database/entity/invitations_or_joins.entity";
-import { bootstrapApp } from "../e2e-test.util";
+
 import { AppModule } from "../../src/app.module";
 import { INVITATION_OR_JOIN_ACTION } from "../../src/invitation-join/invitation-join.service";
 

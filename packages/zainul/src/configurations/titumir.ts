@@ -59,13 +59,15 @@ export class TitumirError extends Error {
         status,
     }: {
         url: string;
-        payload: any;
+        payload: unknown;
         statusText: string;
         status: number;
     }) {
         super(
             `[TitumirError ${statusText}]: the following ${url} returned status ${status}
-          [payload]: ${payload}`,
+          [payload]: ${
+              typeof payload === "object" ? JSON.stringify(payload) : (payload as string)
+          }`,
         );
         this.status = status;
     }
@@ -159,7 +161,7 @@ export default class Titumir {
         return res;
     }
 
-    async buildAuthReq<T, D = Record<string | number, any>>(
+    async buildAuthReq<T, D = Record<string | number, unknown>>(
         path: string,
         method: HTTPMethods = "GET",
         body?: D,

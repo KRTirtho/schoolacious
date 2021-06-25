@@ -27,8 +27,8 @@ export class AuthenticatedSocketIoAdapter extends IoAdapter {
 
                     Object.assign(request, { user });
                     return !!user;
-                } catch (error) {
-                    this.logger.error(error.message);
+                } catch (error: any) {
+                    this.logger.error(error?.message);
                     return false;
                 }
             })();
@@ -36,6 +36,7 @@ export class AuthenticatedSocketIoAdapter extends IoAdapter {
             return allowFunction(null, true);
         };
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return super.createIOServer(port, options);
     }
 }

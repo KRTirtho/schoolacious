@@ -13,9 +13,15 @@ export interface AuthorizationContext {
 
 const authContext = React.createContext<AuthorizationContext>({
     logged: false,
-    setLogged() {},
-    setTokens() {},
-    setUser() {},
+    setLogged() {
+        return;
+    },
+    setTokens() {
+        return;
+    },
+    setUser() {
+        return;
+    },
 });
 
 export default authContext;

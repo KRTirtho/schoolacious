@@ -22,7 +22,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
         return await this.setUserStatus(client, USER_STATUS.offline);
     }
 
-    async handleConnection(client: Socket, ...args: any[]) {
+    async handleConnection(client: Socket) {
         return await this.setUserStatus(client, USER_STATUS.online);
     }
 
@@ -32,16 +32,18 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
             const { user } = client.handshake as SocketIO.Handshake & { user: User };
 
             await this.userService.update(user, { status });
-        } catch (error) {
-            this.logger.error(error.message);
+        } catch (error: any) {
+            this.logger.error(error?.message);
             throw error;
         }
     }
 
     @SubscribeMessage("message")
-    handleMessage(client: Socket, payload: string): string {
+    handleMessage(): string {
         return "Hello world!";
     }
 
-    sendNotification() {}
+    sendNotification() {
+        return;
+    }
 }

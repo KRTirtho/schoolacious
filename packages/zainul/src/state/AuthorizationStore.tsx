@@ -24,8 +24,11 @@ const AuthorizationStore: FC = ({ children }) => {
     useEffect(() => {
         const isAuthenticated = tokens?.accessToken && tokens?.refreshToken;
         if (isAuthenticated) {
-            localStorage.setItem(LocalStorageKeys.accessToken, tokens!.accessToken);
-            localStorage.setItem(LocalStorageKeys.refreshToken, tokens!.refreshToken);
+            localStorage.setItem(LocalStorageKeys.accessToken, tokens?.accessToken ?? "");
+            localStorage.setItem(
+                LocalStorageKeys.refreshToken,
+                tokens?.refreshToken ?? "",
+            );
             setLogged(true);
         } else if (!isAuthenticated) {
             localStorage.removeItem(LocalStorageKeys.accessToken);

@@ -7,11 +7,7 @@ import { ClassesController } from "./classes.controller";
 import { ClassesService } from "./classes.service";
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Class]),
-        SectionModule,
-        NotificationModule,
-    ],
+    imports: [TypeOrmModule.forFeature([Class]), SectionModule, NotificationModule],
     controllers: [ClassesController],
     providers: [ClassesService],
 })

@@ -18,18 +18,24 @@ function useTitumirQuery<T>(
 
     const query = useQuery<T, TitumirError>(key, queryFn, {
         ...options,
-        async onError(e) {
+        onError(e) {
             // unauthorized means the token has expired
             // refreshing the token before the retry
             if (e.status === 401 && tokens) {
                 titumirApi.setTokens(tokens);
-                titumirApi.refresh().then(({ json: { user } }) => {
-                    setTokens({
-                        accessToken: titumirApi.accessToken!,
-                        refreshToken: titumirApi.refreshToken!,
+                titumirApi
+                    .refresh()
+                    .then(({ json: { user } }) => {
+                        if (titumirApi.accessToken && titumirApi.refreshToken)
+                            setTokens({
+                                accessToken: titumirApi.accessToken,
+                                refreshToken: titumirApi.refreshToken,
+                            });
+                        setUser(user);
+                    })
+                    .catch((e) => {
+                        console.error(e);
                     });
-                    setUser(user);
-                });
             }
             options.onError?.(e);
         },

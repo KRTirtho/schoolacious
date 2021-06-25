@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Paper, ButtonGroup, Button } from "@material-ui/core";
-import loginBgImg from "/assets/login-bg.jpg";
+import loginBgImg from "../../assets/login-bg.jpg";
 import Login from "../components/Login";
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import Signup from "../components/Signup";

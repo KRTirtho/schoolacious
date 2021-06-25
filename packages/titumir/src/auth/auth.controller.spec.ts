@@ -66,7 +66,7 @@ describe("AuthController", () => {
         expect(mockReq.res?.getHeader(CONST_REFRESH_TOKEN_HEADER)).not.toEqual(token);
     });
 
-    it("should throw error when refresh token not passed", async () => {
+    it("should throw error when refresh token not passed", () => {
         expect(controller.refresh({}, mockReq)).rejects.toEqual("refresh token not set");
     });
 

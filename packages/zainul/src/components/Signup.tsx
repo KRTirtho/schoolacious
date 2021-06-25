@@ -19,7 +19,7 @@ const REQUIRED_MSG = "Required";
 const MINIMUM_CHAR_MSG = "Minimum 8  chars";
 
 function Signup() {
-    let SignupSchema = yup.object().shape({
+    const SignupSchema = yup.object().shape({
         first_name: yup.string().required(REQUIRED_MSG),
         last_name: yup.string().required(REQUIRED_MSG),
         email: yup.string().email("Invalid email").required(REQUIRED_MSG),

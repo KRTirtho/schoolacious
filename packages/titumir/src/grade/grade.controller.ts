@@ -7,6 +7,7 @@ import {
     ParseArrayPipe,
     Post,
     Put,
+    ParseIntPipe,
 } from "@nestjs/common";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
@@ -19,7 +20,7 @@ import AssignGradeLeadsDTO from "./dto/assign-grade-leads.dto";
 import CreateGradeDTO from "./dto/create-grade.dto";
 import { GradeSubjectService } from "./grade-subject.service";
 import { GradeService } from "./grade.service";
-import { ParseIntPipe } from "@nestjs/common";
+
 import { ExtendUserRelation } from "../decorator/extend-user-relation.decorator";
 import Grade from "../database/entity/grades.entity";
 import {

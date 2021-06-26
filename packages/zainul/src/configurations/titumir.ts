@@ -62,7 +62,7 @@ export class TitumirError extends TypeError {
         status: number;
     }) {
         super();
-        this.stack = `[TitumirError "${statusText}"]: the following ${url} returned status ${status}}`;
+        this.stack = `[TitumirError "${statusText}"]: the following ${url} returned status ${status}`;
         this.status = status;
     }
 }
@@ -98,6 +98,11 @@ export default class Titumir {
     ): Promise<TitumirResponse<T>> {
         const headers = new Headers();
         headers.set("Content-Type", "application/json");
+
+        Array.from(
+            (options?.headers?.entries as () => IterableIterator<[string, string]>)?.() ??
+                [],
+        ).forEach(([key, val]) => headers.append(key, val));
 
         const res = await fetch(this.baseURL + path, {
             method,
@@ -145,7 +150,7 @@ export default class Titumir {
     async refresh(token?: string) {
         const headers = new Headers();
         if (!token) token = this.refreshToken;
-        if (!this.refreshToken) throw new Error("refresh token doesn't exist");
+        if (!this.refreshToken && !token) throw new Error("refresh token doesn't exist");
         headers.append(CONST_REFRESH_TOKEN_KEY, token!);
         const res = await this.buildRequest<{ message: string; user: User }>(
             "/auth/refresh",
@@ -158,7 +163,10 @@ export default class Titumir {
         const accessToken = res.headers.get(CONST_ACCESS_TOKEN_KEY);
         const refreshToken = res.headers.get(CONST_REFRESH_TOKEN_KEY);
         this.setTokens({ accessToken, refreshToken });
-        return res;
+        return {
+            ...res,
+            tokens: { accessToken, refreshToken },
+        };
     }
 
     async buildAuthReq<T, D = Record<string | number, unknown>>(
@@ -170,11 +178,10 @@ export default class Titumir {
         if (!this.accessToken) throw new Error("access token doesn't exist");
         const headers = new Headers();
         headers.set("Authorization", this.accessToken);
-        (
-            options?.headers?.forEach as (
-                fn: (v: string, k: string, p: Headers) => void,
-            ) => void
-        )((val, key) => headers.append(key, val));
+        Array.from(
+            (options?.headers?.entries as () => IterableIterator<[string, string]>)?.() ??
+                [],
+        ).forEach(([key, val]) => headers.append(key, val));
 
         const res = await this.buildRequest<T>(path, method, body, {
             ...options,

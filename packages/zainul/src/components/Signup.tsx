@@ -15,6 +15,7 @@ import {
     User,
 } from "../configurations/titumir";
 import useAuthorization from "../hooks/useAuthorization";
+import MaskedPasswordField from "./shared/MaskedPasswordField";
 
 const REQUIRED_MSG = "Required";
 const MINIMUM_CHAR_MSG = "Minimum 8  chars";
@@ -107,20 +108,16 @@ function Signup() {
                             label="Email"
                             required
                         />
-                        <Field
+                        <MaskedPasswordField
                             style={{ marginTop: 10 }}
-                            component={TextField}
                             name="password"
-                            type="password"
                             label="password"
                             required
                         />
-                        <Field
+                        <MaskedPasswordField
                             style={{ marginTop: 10 }}
-                            component={TextField}
                             name="confirmPassword"
-                            type="password"
-                            label="Confirm password"
+                            label="Confirm Password"
                             required
                         />
                         <Button style={{ marginTop: 10 }} type="submit">

@@ -17,7 +17,7 @@ function App() {
         <Router>
             <AuthorizationStore>
                 <QueryClientProvider client={queryClient}>
-                    <ReactQueryDevtools />
+                    {/* <ReactQueryDevtools /> */}
                     <ThemeProvider theme={theme}>
                         <Routes></Routes>
                     </ThemeProvider>

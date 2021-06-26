@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { LocalStorageKeys } from "../configurations/enum-keys";
 import authContext, { AuthorizationContext } from "../state/auth-provider";
 
 function useAuthorization(): AuthorizationContext & { logout: VoidFunction } {
@@ -6,6 +7,8 @@ function useAuthorization(): AuthorizationContext & { logout: VoidFunction } {
 
     function logout() {
         ctx.setTokens(undefined);
+        localStorage.removeItem(LocalStorageKeys.accessToken);
+        localStorage.removeItem(LocalStorageKeys.refreshToken);
     }
 
     return { logout, ...ctx };

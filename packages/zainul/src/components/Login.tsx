@@ -15,6 +15,7 @@ import {
     User,
 } from "../configurations/titumir";
 import useAuthorization from "../hooks/useAuthorization";
+import MaskedPasswordField from "./shared/MaskedPasswordField";
 
 function Login() {
     const history = useHistory();
@@ -38,7 +39,6 @@ function Login() {
             setTimeout(() => history.push("/"), 500);
         },
     });
-
     return (
         <>
             <Typography style={{ marginBottom: 20 }} variant="h4">
@@ -63,11 +63,9 @@ function Login() {
                             label="Email"
                             required
                         />
-                        <Field
+                        <MaskedPasswordField
                             style={{ marginTop: 10 }}
-                            component={TextField}
                             name="password"
-                            type="password"
                             label="password"
                             required
                         />

@@ -4,6 +4,8 @@ import Introduction from "../pages/Introduction";
 import Auth from "../pages/Auth";
 import useAuthorization from "../hooks/useAuthorization";
 import NotFound404 from "../pages/404";
+import Start from "../pages/Start";
+import Appbar from "../components/Appbar";
 
 export default function Routes() {
     const ctx = useAuthorization();
@@ -13,7 +15,14 @@ export default function Routes() {
             {ctx.logged ? (
                 <>
                     <Route exact path="/">
-                        Home
+                        {/**
+                         * Put all the routes here that are gonna use
+                         * the <AppBar/>
+                         */}
+                        <Appbar />
+                        <Route path="/">
+                            <Start />
+                        </Route>
                     </Route>
                 </>
             ) : (

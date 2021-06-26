@@ -1,11 +1,10 @@
-import { INestApplicationContext, Logger } from "@nestjs/common";
+import { INestApplicationContext, Inject, Logger } from "@nestjs/common";
 import { IoAdapter } from "@nestjs/platform-socket.io";
 import { ExtractJwt } from "passport-jwt";
 import { UserService } from "../../user/user.service";
 import { AuthService } from "../auth.service";
 
 export class AuthenticatedSocketIoAdapter extends IoAdapter {
-    logger: Logger = new Logger(AuthenticatedSocketIoAdapter.name);
     private readonly authService: AuthService;
     private readonly userService: UserService;
     constructor(private app: INestApplicationContext) {
@@ -28,7 +27,6 @@ export class AuthenticatedSocketIoAdapter extends IoAdapter {
                     Object.assign(request, { user });
                     return !!user;
                 } catch (error: any) {
-                    this.logger.error(error?.message);
                     return false;
                 }
             })();

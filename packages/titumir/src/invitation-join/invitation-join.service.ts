@@ -168,7 +168,7 @@ export class InvitationJoinService extends BasicEntityService<
             await this.userService.findOneAndUpdate(
                 { _id: requestedUser._id },
                 {
-                    role: (role as unknown) as USER_ROLE,
+                    role: role as unknown as USER_ROLE,
                     school,
                 },
             );

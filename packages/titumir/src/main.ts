@@ -3,16 +3,17 @@ import { AppModule, JWT_AUTH_GUARD, THROTTLER_GUARD } from "./app.module";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import csurf from "csurf";
-import { ValidationPipe } from "@nestjs/common";
 import RoleAuthGuard from "./auth/guards/role-auth.guard";
 import { QueryFailedFilter } from "./database/filters/query-failed.filter";
 import { EntityNotFoundFilter } from "./database/filters/entity-not-found.filter";
 import { CONST_ACCESS_TOKEN_HEADER, CONST_REFRESH_TOKEN_HEADER, PORT } from "../config";
 import { AuthenticatedSocketIoAdapter } from "./auth/adapters/auth.adapter";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { logger: false });
 
     // swagger stuff
     const options = new DocumentBuilder()
@@ -32,6 +33,7 @@ async function bootstrap() {
     app.use(helmet());
     app.use(cookieParser());
     // app.use(csurf({ cookie: true }));
+    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
     app.enableCors({
         origin: /http:\/\/localhost:?[\d]+/,
         exposedHeaders: [CONST_ACCESS_TOKEN_HEADER, CONST_REFRESH_TOKEN_HEADER],

@@ -1,5 +1,6 @@
-import { Body, Controller, Logger, Post, Get, Param, Put } from "@nestjs/common";
+import { Body, Controller, Logger, Post, Get, Param, Put, Inject } from "@nestjs/common";
 import { ApiBearerAuth, ApiNotFoundResponse } from "@nestjs/swagger";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
@@ -13,11 +14,13 @@ import { SchoolService } from "./school.service";
 @Controller("school")
 @ApiBearerAuth()
 export class SchoolController {
-    logger: Logger = new Logger(SchoolController.name);
     constructor(
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private readonly schoolService: SchoolService,
         private readonly invitationJoinService: InvitationJoinService,
-    ) {}
+    ) {
+        this.logger.setContext(SchoolController.name);
+    }
 
     @Get(":school")
     @ApiNotFoundResponse({ description: "passed {school} doesn't exist" })
@@ -32,7 +35,7 @@ export class SchoolController {
                 .getOneOrFail();
             return school;
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -47,7 +50,7 @@ export class SchoolController {
                 type: INVITATION_OR_JOIN_TYPE.join,
             });
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -65,7 +68,7 @@ export class SchoolController {
                 type: INVITATION_OR_JOIN_TYPE.invitation,
             });
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -79,7 +82,7 @@ export class SchoolController {
             });
             return school;
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -95,7 +98,7 @@ export class SchoolController {
         try {
             return this.schoolService.assignCoAdmin({ ...body, user });
         } catch (error: any) {
-            this.logger.log(error.message);
+            this.logger.log(error?.message ?? "");
             throw error;
         }
     }

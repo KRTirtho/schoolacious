@@ -8,6 +8,7 @@ import {
     Post,
     Put,
     ParseIntPipe,
+    Inject,
 } from "@nestjs/common";
 import School from "../database/entity/schools.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
@@ -30,6 +31,7 @@ import {
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
 } from "@nestjs/swagger";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 export interface VerifiedGradeUser extends User {
     school: School;
@@ -39,11 +41,13 @@ export interface VerifiedGradeUser extends User {
 @Controller("/school/:school/grade")
 @ApiBearerAuth()
 export class GradeController {
-    logger: Logger = new Logger(GradeController.name);
     constructor(
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private readonly gradeService: GradeService,
         private readonly gradeToSubjectService: GradeSubjectService,
-    ) {}
+    ) {
+        this.logger.setContext(GradeController.name);
+    }
 
     @Get()
     @VerifySchool()
@@ -52,7 +56,7 @@ export class GradeController {
             const grades = await this.gradeService.find({ school: user.school! });
             return grades;
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -83,7 +87,7 @@ export class GradeController {
                 subjects: grade.grades_subjects?.map((gs) => gs.subject),
             };
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -129,7 +133,7 @@ export class GradeController {
             );
             return gradesToSubjects;
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -152,7 +156,7 @@ export class GradeController {
                 standard,
             });
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -179,7 +183,7 @@ export class GradeController {
                 standard,
             });
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }

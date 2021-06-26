@@ -8,6 +8,7 @@ import {
     UseGuards,
     NotAcceptableException,
     UnauthorizedException,
+    Inject,
 } from "@nestjs/common";
 import { Request } from "express";
 import { CONST_ACCESS_TOKEN_HEADER, CONST_REFRESH_TOKEN_HEADER } from "../../config";
@@ -21,14 +22,17 @@ import { CurrentUser } from "../decorator/current-user.decorator";
 import User from "../database/entity/users.entity";
 import LoginDTO from "./dto/login.dto";
 import { ApiHeader, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 @Controller("auth")
 export class AuthController {
-    private logger = new Logger(AuthController.name);
     constructor(
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private readonly authService: AuthService,
         private readonly userService: UserService,
-    ) {}
+    ) {
+        this.logger.setContext(AuthController.name);
+    }
 
     @Public()
     @UseGuards(LocalAuthGuard)
@@ -45,7 +49,7 @@ export class AuthController {
             res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
             return user;
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message);
             throw error;
         }
     }
@@ -65,7 +69,7 @@ export class AuthController {
             res?.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
             return { message: "Refreshed access_token", user };
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message);
             if (error instanceof JsonWebTokenError) {
                 throw new UnauthorizedException(error.message);
             }
@@ -86,7 +90,7 @@ export class AuthController {
             res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
             return { ...user, email, role };
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message);
             throw error;
         }
     }

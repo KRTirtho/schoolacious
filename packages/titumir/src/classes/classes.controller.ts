@@ -5,6 +5,7 @@ import {
     Post,
     NotAcceptableException,
     Logger,
+    Inject,
 } from "@nestjs/common";
 import ScheduleClassDTO from "./dto/schedule-class.dto";
 import { Roles } from "../decorator/roles.decorator";
@@ -25,18 +26,20 @@ import {
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
 } from "@nestjs/swagger";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 @Controller("/school/:school/grade/:grade/class")
 @ApiBearerAuth()
 export class ClassesController {
-    logger: Logger = new Logger(ClassesController.name);
-
     constructor(
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private classesService: ClassesService,
         private scheduleRegistry: SchedulerRegistry,
         private sectionService: SectionService,
         private tsgService: TeacherSectionGradeService,
-    ) {}
+    ) {
+        this.logger.setContext(ClassesController.name);
+    }
 
     @Post()
     @VerifyGrade()
@@ -119,7 +122,7 @@ export class ClassesController {
             }
             return { message: "successfully scheduled classes" };
         } catch (error) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }

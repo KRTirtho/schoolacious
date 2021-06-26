@@ -4,6 +4,7 @@ import {
     Delete,
     ForbiddenException,
     Get,
+    Inject,
     Logger,
     Param,
     ParseArrayPipe,
@@ -19,6 +20,7 @@ import {
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
 } from "@nestjs/swagger";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { FindConditions } from "typeorm";
 import Section from "../database/entity/sections.entity";
 import User, { USER_ROLE } from "../database/entity/users.entity";
@@ -52,12 +54,14 @@ async function verifyClassTeacher(
 @Controller("/school/:school/grade/:grade/section")
 @ApiBearerAuth()
 export class SectionController {
-    logger: Logger = new Logger(SectionController.name);
     constructor(
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private sectionService: SectionService,
         private studentSGService: StudentSectionGradeService,
         private teacherSGService: TeacherSectionGradeService,
-    ) {}
+    ) {
+        this.logger.setContext(SectionController.name);
+    }
 
     @Get()
     @VerifySchool()
@@ -77,7 +81,7 @@ export class SectionController {
                 .getMany();
             return sections.map((section) => ({ ...section, grade: undefined }));
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -105,7 +109,7 @@ export class SectionController {
                 .getOneOrFail();
             return { ...section, grade: undefined };
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -128,7 +132,7 @@ export class SectionController {
                 )
             ).map((section) => ({ ...section, grade: undefined }));
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -156,7 +160,7 @@ export class SectionController {
                 section,
             });
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -192,7 +196,7 @@ export class SectionController {
                 sections,
             );
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -222,7 +226,7 @@ export class SectionController {
             );
             return await this.studentSGService.removeStudent(body._id);
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -257,7 +261,7 @@ export class SectionController {
                 section,
             );
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -293,7 +297,7 @@ export class SectionController {
                 section,
             );
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }

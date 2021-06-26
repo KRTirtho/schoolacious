@@ -18,7 +18,7 @@ export type PartialKey<T, K extends PropertyKey = PropertyKey> = Partial<
 
 export default abstract class BasicEntityService<
     Entity,
-    CreatePayload = DeepPartial<Entity>
+    CreatePayload = DeepPartial<Entity>,
 > {
     constructor(private readonly repo: Repository<Entity>) {}
 

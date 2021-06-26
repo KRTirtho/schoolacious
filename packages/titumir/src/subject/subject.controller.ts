@@ -2,12 +2,14 @@ import {
     Body,
     Controller,
     Get,
+    Inject,
     Logger,
     Param,
     ParseArrayPipe,
     Post,
 } from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import User, { USER_ROLE } from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
@@ -19,9 +21,12 @@ import { SubjectService } from "./subject.service";
 @Controller("/school/:school/subject")
 @ApiBearerAuth()
 export class SubjectController {
-    logger: Logger = new Logger(SubjectController.name);
-
-    constructor(private readonly subjectService: SubjectService) {}
+    constructor(
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
+        private readonly subjectService: SubjectService,
+    ) {
+        this.logger.setContext(SubjectController.name);
+    }
 
     @Get("defaults")
     @VerifySchool()
@@ -35,7 +40,7 @@ export class SubjectController {
         try {
             return await this.subjectService.find({ school: user.school! });
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -55,7 +60,7 @@ export class SubjectController {
             );
             return subjects.map((subject) => ({ ...subject, school: undefined }));
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }

@@ -3,6 +3,7 @@ import {
     Controller,
     Delete,
     ForbiddenException,
+    Inject,
     Logger,
     Post,
 } from "@nestjs/common";
@@ -11,6 +12,7 @@ import {
     ApiForbiddenResponse,
     ApiNotAcceptableResponse,
 } from "@nestjs/swagger";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
 import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
@@ -23,8 +25,12 @@ import { InvitationJoinService } from "./invitation-join.service";
 @Controller("invitation-join")
 @ApiBearerAuth()
 export class InvitationJoinController {
-    logger: Logger = new Logger(InvitationJoinController.name);
-    constructor(private readonly invitationJoinService: InvitationJoinService) {}
+    constructor(
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
+        private readonly invitationJoinService: InvitationJoinService,
+    ) {
+        this.logger.setContext(InvitationJoinController.name);
+    }
 
     @Post()
     @ApiForbiddenResponse({ description: "Wrong credentials" })
@@ -56,7 +62,7 @@ export class InvitationJoinController {
                 throw new ForbiddenException("wrong credentials");
             }
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -70,7 +76,7 @@ export class InvitationJoinController {
         try {
             return await this.invitationJoinService.complete({ ...body, user });
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -84,7 +90,7 @@ export class InvitationJoinController {
         try {
             return this.invitationJoinService.cancel({ ...body, user });
         } catch (error: any) {
-            this.logger.error(error.message);
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }

@@ -1,52 +1,19 @@
-import { createMuiTheme } from "@material-ui/core";
-import { blue } from "@material-ui/core/colors";
+import {
+    extendTheme,
+    withDefaultColorScheme,
+    theme as base,
+    ChakraTheme,
+} from "@chakra-ui/react";
 
-export default createMuiTheme({
-    props: {
-        MuiButtonBase: { disableRipple: true },
-        MuiButton: {
-            disableElevation: true,
-            variant: "contained",
-            color: "primary",
-        },
-        MuiButtonGroup: {
-            disableElevation: true,
-            disableRipple: true,
-            disableFocusRipple: true,
-        },
-        MuiIconButton: {
-            disableRipple: true,
-            disableFocusRipple: true,
-            disableTouchRipple: true,
-        },
-        MuiStepButton: {
-            disableRipple: true,
-            disableTouchRipple: true,
-        },
-        MuiTextField: {
-            variant: "outlined",
-            size: "small",
+const theme = extendTheme<ChakraTheme>(
+    {
+        colors: {
+            primary: base.colors.green,
+            default: "#d9d9d9",
+            textPrimary: "#272727",
+            textSecondary: "#777777",
         },
     },
-    palette: {
-        primary: {
-            main: blue[500],
-            dark: blue[500],
-            light: blue[500],
-        },
-    },
-    overrides: {
-        MuiButtonBase: {
-            root: {
-                transition: "all 250ms ease",
-                "&:hover": {
-                    filter: "brightness(0.95)",
-                },
-                "&:active": {
-                    filter: "brightness(1.12)",
-                    transform: "scale(0.92)",
-                },
-            },
-        },
-    },
-});
+    withDefaultColorScheme({ colorScheme: "primary" }),
+);
+export default theme;

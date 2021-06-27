@@ -1,51 +1,45 @@
 import React from "react";
-import { Box, Grid, Typography, Button } from "@material-ui/core";
+import { Box, Flex, Button, Heading } from "@chakra-ui/react";
 import { introductionBG as bgImg } from "../configurations/img-imports";
 import { Link } from "react-router-dom";
 
 export default function Introduction() {
     return (
-        <Grid
-            container
+        <Flex
             direction="column"
             alignItems="center"
             justify="center"
-            className="bg-top h-screen relative"
-            style={{
-                backgroundPosition: "top",
-                height: "100vh",
-                position: "relative",
-                background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${bgImg})`,
-            }}
+            bgPos="top"
+            h="100vh"
+            pos="relative"
+            bg={`linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${bgImg})`}
         >
-            <Box position="absolute" top="0" right="0" margin={2}>
-                <Button component={Link} to="/auth">
+            <Box pos="absolute" top="0" right="0" margin={2}>
+                <Button as={Link} to="/auth">
                     Sign up
                 </Button>
             </Box>
-            <Typography style={{ color: "white" }} variant="h1">
+            <Heading as="h1" size="3xl" color="white">
                 VESchool
-            </Typography>
-            <Box maxWidth="50%">
-                <Typography style={{ color: "white" }} variant="h5" align="center">
+            </Heading>
+            <Box maxW="50%">
+                <Heading as="h5" size="md" textAlign="center" color="white">
                     A destination where all the reading sound📔 of small learners🧒 & day
                     to day learning👩‍🏫 takes place bringing up all the thing a student👩‍🎓
                     used to do before Quarantine & Pandemic🦠
-                </Typography>
+                </Heading>
             </Box>
-            <Grid
-                container
+            <Flex
                 justify="space-between"
                 alignItems="center"
-                style={{ maxWidth: "18em" }}
+                maxW="18rem"
                 wrap="nowrap"
                 direction="row"
             >
                 <Button component={Link} to="/auth">
                     Get Started
                 </Button>
-                <Button color="default">Learn More</Button>
-            </Grid>
-        </Grid>
+            </Flex>
+        </Flex>
     );
 }

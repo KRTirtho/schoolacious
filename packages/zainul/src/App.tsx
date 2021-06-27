@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import { ThemeProvider } from "@material-ui/core";
+import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./configurations/theme";
 import Routes from "./configurations/Routes";
 import Titumir from "./configurations/titumir";
@@ -18,9 +18,9 @@ function App() {
             <AuthorizationStore>
                 <QueryClientProvider client={queryClient}>
                     {/* <ReactQueryDevtools /> */}
-                    <ThemeProvider theme={theme}>
+                    <ChakraProvider theme={theme}>
                         <Routes></Routes>
-                    </ThemeProvider>
+                    </ChakraProvider>
                 </QueryClientProvider>
             </AuthorizationStore>
         </Router>

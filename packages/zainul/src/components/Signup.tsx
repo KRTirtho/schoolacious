@@ -1,6 +1,5 @@
-import { Grid, Button, Typography } from "@material-ui/core";
+import { Button, Heading, Stack } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
-import { TextField } from "formik-material-ui";
 import React from "react";
 import { useMutation } from "react-query";
 import { useHistory } from "react-router-dom";
@@ -14,6 +13,7 @@ import {
     TitumirResponse,
     User,
 } from "../configurations/titumir";
+import TextField from "./shared/TextField";
 import useAuthorization from "../hooks/useAuthorization";
 import MaskedPasswordField from "./shared/MaskedPasswordField";
 
@@ -62,9 +62,9 @@ function Signup() {
 
     return (
         <>
-            <Typography align="center" style={{ marginBottom: 20 }} variant="h4">
+            <Heading align="center" mb="2" variant="h4">
                 Create an account
-            </Typography>
+            </Heading>
             <Formik
                 initialValues={
                     {
@@ -83,47 +83,42 @@ function Signup() {
                 validationSchema={SignupSchema}
             >
                 <Form>
-                    <Grid container direction="column">
-                        <Grid container>
+                    <Stack direction="column" spacing="2">
+                        <Stack direction={{ base: "column", md: "row" }} spacing="2">
                             <Field
-                                style={{ marginRight: 5 }}
                                 component={TextField}
                                 name="first_name"
                                 label="First Name"
                                 required
                             />
                             <Field
-                                style={{ marginLeft: 5 }}
                                 component={TextField}
                                 name="last_name"
                                 label="Last Name"
                                 required
                             />
-                        </Grid>
+                        </Stack>
                         <Field
-                            style={{ marginTop: 10 }}
                             component={TextField}
                             name="email"
                             type="email"
                             label="Email"
                             required
                         />
-                        <MaskedPasswordField
-                            style={{ marginTop: 10 }}
+                        <Field
+                            component={MaskedPasswordField}
                             name="password"
                             label="password"
                             required
                         />
-                        <MaskedPasswordField
-                            style={{ marginTop: 10 }}
+                        <Field
+                            component={MaskedPasswordField}
                             name="confirmPassword"
                             label="Confirm Password"
                             required
                         />
-                        <Button style={{ marginTop: 10 }} type="submit">
-                            Signup
-                        </Button>
-                    </Grid>
+                        <Button type="submit">Signup</Button>
+                    </Stack>
                 </Form>
             </Formik>
         </>

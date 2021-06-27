@@ -1,36 +1,41 @@
-import { InputAdornment, IconButton, TextFieldProps } from "@material-ui/core";
-import { Field } from "formik";
-import { TextField } from "formik-material-ui";
 import React, { useState } from "react";
+import {
+    FormControl,
+    FormLabel,
+    Input,
+    FormErrorMessage,
+    InputGroup,
+    InputRightAddon,
+} from "@chakra-ui/react";
+import { v4 as uuid } from "uuid";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
+import { TextFieldProps } from "./TextField";
 
-export type MaskedPasswordFieldProps = Omit<TextFieldProps, "type" | "component">;
-
-function MaskedPasswordField(props: MaskedPasswordFieldProps) {
+function MaskedPasswordField({ field, form, ...props }: TextFieldProps) {
     const [showPassword, setShowPassword] = useState(false);
 
     function showHidePassword() {
         setShowPassword(!showPassword);
     }
+
+    const id = props.id ?? uuid();
+
     return (
-        <Field
-            type={showPassword ? "text" : "password"}
-            component={TextField}
-            InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={showHidePassword}
-                            onMouseDown={showHidePassword}
-                        >
-                            {showPassword ? <IoIosEye /> : <IoIosEyeOff />}
-                        </IconButton>
-                    </InputAdornment>
-                ),
-            }}
-            {...props}
-        />
+        <FormControl isInvalid={!!(form.errors.name && form.touched.name)}>
+            <FormLabel htmlFor={id}>{props?.label}</FormLabel>
+            <InputGroup>
+                <Input
+                    type={showPassword ? "text" : "password"}
+                    {...field}
+                    id={id}
+                    {...props}
+                />
+                <InputRightAddon onClick={showHidePassword} {...props}>
+                    {showPassword ? <IoIosEyeOff /> : <IoIosEye />}
+                </InputRightAddon>
+            </InputGroup>
+            <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+        </FormControl>
     );
 }
 

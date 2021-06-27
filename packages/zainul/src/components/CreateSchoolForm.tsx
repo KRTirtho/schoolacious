@@ -1,6 +1,6 @@
-import { Button, Grid } from "@material-ui/core";
+import { Button, Stack } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import { TextField } from "formik-material-ui";
+import TextField, { TextareaField } from "./shared/TextField";
 import React from "react";
 import * as yup from "yup";
 import { CreateSchool } from "../configurations/titumir";
@@ -37,59 +37,50 @@ function CreateSchoolForm() {
             validationSchema={CreateSchoolSchema}
         >
             <Form>
-                <Grid wrap="wrap" container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <Field
-                            fullWidth
-                            name="name"
-                            component={TextField}
-                            required
-                            label="name"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Field
-                            fullWidth
-                            type="email"
-                            name="email"
-                            component={TextField}
-                            required
-                            label="Email"
-                        />
-                    </Grid>
-                </Grid>
-                <Grid wrap="wrap" container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <Field
-                            fullWidth
-                            type="phone"
-                            name="phone"
-                            component={TextField}
-                            required
-                            label="Phone"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Field
-                            fullWidth
-                            name="short_name"
-                            component={TextField}
-                            required
-                            label="short_name"
-                        />
-                    </Grid>
-                </Grid>
+                <Stack direction={{ base: "column", md: "row" }} spacing={2}>
+                    <Field
+                        name="name"
+                        component={TextField}
+                        required
+                        label="name"
+                        placeholder="e.g. Shamsul Haque Khan School"
+                    />
+                    <Field
+                        type="email"
+                        name="email"
+                        component={TextField}
+                        required
+                        label="Email"
+                        placeholder="school@test.com"
+                    />
+                </Stack>
+                <Stack direction={{ base: "column", md: "row" }} spacing={2}>
+                    <Field
+                        type="tel"
+                        name="phone"
+                        component={TextField}
+                        required
+                        label="Phone"
+                        placeholder="e.g. 8801122334455"
+                    />
+                    <Field
+                        name="short_name"
+                        component={TextField}
+                        required
+                        label="Short Name"
+                        placeholder="e.g. school-231"
+                    />
+                </Stack>
                 <Field
-                    fullWidth
                     name="description"
-                    component={TextField}
+                    component={TextareaField}
                     required
-                    label="description"
-                    multiline
+                    label="Description"
                     margin="normal"
-                    rows="5"
+                    rows={5}
+                    placeholder="Describe the fundamentals of your school "
                 />
-                <Button fullWidth type="submit">
+                <Button isFullWidth mt="2" type="submit">
                     Create
                 </Button>
             </Form>

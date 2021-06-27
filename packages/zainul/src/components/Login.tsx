@@ -1,6 +1,6 @@
-import { Grid, Typography, Button, Link as MuiLink } from "@material-ui/core";
+import { Flex, Heading, Button, Link as MuiLink } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
-import { TextField } from "formik-material-ui";
+import TextField from "./shared/TextField";
 import React from "react";
 import { useMutation } from "react-query";
 import { Link, useHistory } from "react-router-dom";
@@ -43,9 +43,9 @@ function Login() {
     });
     return (
         <>
-            <Typography style={{ marginBottom: 20 }} variant="h4">
+            <Heading my="2" as="h4">
                 Welcome back🎉
-            </Typography>
+            </Heading>
             <Formik
                 initialValues={{ email: "", password: "" }}
                 onSubmit={(values, { resetForm, setSubmitting }) => {
@@ -56,25 +56,26 @@ function Login() {
                 validationSchema={LoginSchema}
             >
                 <Form>
-                    <Grid container direction="column">
+                    <Flex direction="column">
                         <Field
-                            style={{ marginTop: 10 }}
+                            mt="3"
                             component={TextField}
                             name="email"
                             type="email"
                             label="Email"
                             required
                         />
-                        <MaskedPasswordField
-                            style={{ marginTop: 10 }}
+                        <Field
+                            component={MaskedPasswordField}
+                            mt="3"
                             name="password"
-                            label="password"
+                            label="Password"
                             required
                         />
-                        <Button style={{ marginTop: 10 }} type="submit">
+                        <Button mt="3" type="submit">
                             Login
                         </Button>
-                    </Grid>
+                    </Flex>
                 </Form>
             </Formik>
             <MuiLink style={{ marginTop: 10 }} component={Link} to="/reset?password=yes">

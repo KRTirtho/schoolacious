@@ -1,20 +1,18 @@
-import { Container, Grid, SvgIcon, Typography } from "@material-ui/core";
+import { Container, Icon, Heading } from "@chakra-ui/react";
 import React from "react";
 import CreateSchoolForm from "../components/CreateSchoolForm";
 import { FaSchool } from "react-icons/fa";
 
 function SchoolCreate() {
     return (
-        <Container>
-            <Grid container direction="column" alignItems="center">
-                <Typography variant="h5" gutterBottom>
-                    <SvgIcon color="primary">
-                        <FaSchool />
-                    </SvgIcon>{" "}
-                    Create a School
-                </Typography>
-                <CreateSchoolForm />
-            </Grid>
+        <Container direction="column" align={{ base: "stretch", md: "center" }}>
+            <Heading as="h5" mb="2" textAlign="center" size="md">
+                <Icon color="primary">
+                    <FaSchool />
+                </Icon>{" "}
+                Create a School
+            </Heading>
+            <CreateSchoolForm />
         </Container>
     );
 }

@@ -1,26 +1,24 @@
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Flex, Heading, Text, Image } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { confusedKid404 } from "../configurations/img-imports";
 
 function NotFound404() {
     return (
-        <Grid container alignItems="center" direction="column">
-            <Typography variant="h2">404</Typography>
-            <Typography variant="h4">Not Found</Typography>
-            <img
-                style={{ maxWidth: "10rem", height: "auto" }}
-                src={confusedKid404}
-                alt="Confused?"
-            />
-            <Typography color="textSecondary">
-                Oops, sorry. The page isn't available
-            </Typography>
+        <Flex alignItems="center" direction="column">
+            <Heading as="h2" size="xl">
+                404
+            </Heading>
+            <Heading as="h4" size="md">
+                Not Found
+            </Heading>
+            <Image maxW="10" h="auto" src={confusedKid404} alt="Confused?" />
+            <Text colorScheme="textSecondary">Oops, sorry. The page isn't available</Text>
             <br />
             <Button component={Link} to="/">
                 Back to Home
             </Button>
-        </Grid>
+        </Flex>
     );
 }
 

@@ -13,10 +13,11 @@
         "lint": "eslint \"src/**/*.{ts,tsx}\" --fix"
     },
     "dependencies": {
-        "@material-ui/core": "^4.11.4",
+        "@chakra-ui/react": "^1.6.4",
+        "@emotion/react": "^11.4.0",
+        "@emotion/styled": "^11.3.0",
         "formik": "^2.2.6",
-        "formik-material-ui": "^3.0.1",
-        "material-ui-image": "^3.3.2",
+        "framer-motion": "^4.1.17",
         "react": "^17.0.0",
         "react-dom": "^17.0.0",
         "react-icons": "^4.2.0",
@@ -24,6 +25,7 @@
         "react-router-dom": "^5.2.0",
         "react-transition-group": "^4.4.1",
         "react-waypoint": "^10.1.0",
+        "uuid": "^8.3.2",
         "yup": "^0.32.9"
     },
     "devDependencies": {

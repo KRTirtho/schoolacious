@@ -16,12 +16,14 @@ import {
 } from "../configurations/titumir";
 import useAuthorization from "../hooks/useAuthorization";
 import MaskedPasswordField from "./shared/MaskedPasswordField";
+import { MINIMUM_CHAR_MSG, REQUIRED_MSG } from "./Signup";
 
+export const INVALID_EMAIL_MSG = "Invalid email";
 function Login() {
     const history = useHistory();
     const LoginSchema = yup.object().shape({
-        email: yup.string().email("Invalid email").required("Required"),
-        password: yup.string().min(8, "Minimum 8  chars").required("Required"),
+        email: yup.string().email(INVALID_EMAIL_MSG).required(REQUIRED_MSG),
+        password: yup.string().min(8, MINIMUM_CHAR_MSG).required(REQUIRED_MSG),
     });
     const ctx = useAuthorization();
     const { mutate: login, isSuccess } = useMutation<

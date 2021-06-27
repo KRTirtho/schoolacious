@@ -6,6 +6,7 @@ import useAuthorization from "../hooks/useAuthorization";
 import NotFound404 from "../pages/404";
 import Start from "../pages/Start";
 import Appbar from "../components/Appbar";
+import SchoolCreate from "../pages/SchoolCreate";
 
 export default function Routes() {
     const ctx = useAuthorization();
@@ -14,14 +15,17 @@ export default function Routes() {
         <Switch>
             {ctx.logged ? (
                 <>
-                    <Route exact path="/">
+                    <Route path="/">
                         {/**
                          * Put all the routes here that are gonna use
                          * the <AppBar/>
                          */}
                         <Appbar />
-                        <Route path="/">
+                        <Route exact path="/">
                             <Start />
+                        </Route>
+                        <Route path="/school/create">
+                            <SchoolCreate />
                         </Route>
                     </Route>
                 </>

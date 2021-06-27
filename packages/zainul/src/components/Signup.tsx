@@ -17,8 +17,8 @@ import {
 import useAuthorization from "../hooks/useAuthorization";
 import MaskedPasswordField from "./shared/MaskedPasswordField";
 
-const REQUIRED_MSG = "Required";
-const MINIMUM_CHAR_MSG = "Minimum 8  chars";
+export const REQUIRED_MSG = "Required";
+export const MINIMUM_CHAR_MSG = "Minimum 8 chars";
 
 interface SignupInitValues {
     first_name: string;

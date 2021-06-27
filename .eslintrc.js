@@ -12,10 +12,17 @@ module.exports = {
         "plugin:import/typescript",
     ],
     root: true,
+    
     parserOptions: {
         sourceType: "module",
     },
-    ignorePatterns: [".eslintrc.js", "*.config.js", "node_modules/"],
+    ignorePatterns: [
+        ".eslintrc.js",
+        "*.config.js",
+        "**/node_modules/**",
+        "*.json",
+        "**/*.json",
+    ],
     rules: {
         "prettier/prettier": "warn",
         "linebreak-style": "off",

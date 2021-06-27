@@ -51,12 +51,12 @@ export default class CreateSchoolDTO {
     @IsLowercase()
     @IsNotEmpty()
     @MaxLength(20)
-    @Matches(/\w*\d*-*/g)
+    @Matches(/^[a-z\d-]+$/)
     @ApiProperty({
         type: String,
         description: "unique human readable identifier",
         example: "st-gregory",
-        pattern: String(/\w*\d*-*/),
+        pattern: String(/^[a-z\d-]+$/),
         maxLength: 20,
     })
     short_name!: string;

@@ -3,9 +3,11 @@ import { Field, Form, Formik } from "formik";
 import TextField, { TextareaField } from "./shared/TextField";
 import React from "react";
 import * as yup from "yup";
-import { CreateSchool } from "../configurations/titumir";
+import { CreateSchool, School } from "../configurations/titumir";
 import { INVALID_EMAIL_MSG } from "./Login";
 import { REQUIRED_MSG } from "./Signup";
+import useTitumirMutation from "../hooks/useTitumirMutation";
+import { MutationContextKey } from "../configurations/enum-keys";
 
 export const SHORT_NAME_MATCHES_MSG = "only {a-z,-,0-9} is allowed";
 function CreateSchoolForm() {
@@ -28,11 +30,18 @@ function CreateSchoolForm() {
         short_name: "",
     };
 
+    const { mutate: createSchool, isSuccess } = useTitumirMutation<School, CreateSchool>(
+        MutationContextKey.CREATE_SCHOOL,
+        (api, payload) => api.createSchool(payload).then(({ json }) => json),
+    );
+
     return (
         <Formik
             initialValues={initValues}
-            onSubmit={() => {
-                return;
+            onSubmit={(values, { resetForm, setSubmitting }) => {
+                createSchool(values);
+                if (isSuccess) resetForm();
+                else setSubmitting(false);
             }}
             validationSchema={CreateSchoolSchema}
         >
@@ -42,7 +51,7 @@ function CreateSchoolForm() {
                         name="name"
                         component={TextField}
                         required
-                        label="name"
+                        label="School Name"
                         placeholder="e.g. Shamsul Haque Khan School"
                     />
                     <Field

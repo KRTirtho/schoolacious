@@ -6,7 +6,7 @@ import { useMutation } from "react-query";
 import { Link, useHistory } from "react-router-dom";
 import * as yup from "yup";
 import { titumirApi } from "../App";
-import { ContextKey } from "../configurations/enum-keys";
+import { MutationContextKey } from "../configurations/enum-keys";
 import {
     CONST_ACCESS_TOKEN_KEY,
     CONST_REFRESH_TOKEN_KEY,
@@ -30,7 +30,7 @@ function Login() {
         TitumirResponse<User>,
         Error,
         LoginBody
-    >(ContextKey.LOGIN, (body) => titumirApi.login(body), {
+    >(MutationContextKey.LOGIN, (body) => titumirApi.login(body), {
         onSuccess({ json, headers }) {
             ctx.setUser(json);
             const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
@@ -43,7 +43,7 @@ function Login() {
     });
     return (
         <>
-            <Heading my="2" as="h4">
+            <Heading my="2" as="h4" textAlign="center">
                 Welcome back🎉
             </Heading>
             <Formik

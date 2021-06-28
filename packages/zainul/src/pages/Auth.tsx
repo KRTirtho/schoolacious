@@ -1,20 +1,14 @@
 import React from "react";
-import {
-    Flex,
-    Container,
-    ButtonGroup,
-    Button,
-    useColorModeValue,
-} from "@chakra-ui/react";
+import { Flex, ButtonGroup, Button } from "@chakra-ui/react";
 import { loginBG } from "../configurations/img-imports";
 import Login from "../components/Login";
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import Signup from "../components/Signup";
+import Paper from "../components/shared/Paper";
 
 function Auth() {
     const match = useRouteMatch();
     const history = useHistory();
-    const containerBgValue = useColorModeValue("white", "black");
 
     return (
         <Flex
@@ -25,7 +19,7 @@ function Auth() {
             justify="center"
             alignItems="center"
         >
-            <Container bgColor={containerBgValue} rounded="md">
+            <Paper>
                 <Flex p="3" direction="column" alignItems="stretch">
                     <ButtonGroup isAttached>
                         <Button
@@ -60,7 +54,7 @@ function Auth() {
                         <Signup />
                     </Route>
                 </Flex>
-            </Container>
+            </Paper>
         </Flex>
     );
 }

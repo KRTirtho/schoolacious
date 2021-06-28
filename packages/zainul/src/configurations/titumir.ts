@@ -177,7 +177,7 @@ export default class Titumir {
     ): Promise<TitumirResponse<T>> {
         if (!this.accessToken) throw new Error("access token doesn't exist");
         const headers = new Headers();
-        headers.set("Authorization", this.accessToken);
+        headers.set("Authorization", `Bearer ${this.accessToken}`);
         Array.from(
             (options?.headers?.entries as () => IterableIterator<[string, string]>)?.() ??
                 [],

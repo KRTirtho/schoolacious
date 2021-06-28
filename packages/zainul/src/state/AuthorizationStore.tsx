@@ -18,13 +18,14 @@ const AuthorizationStore: FC = ({ children }) => {
     useEffect(() => {
         const refreshToken = localStorage.getItem(LocalStorageKeys.refreshToken);
         if (refreshToken)
-            titumirApi.refresh(refreshToken).then(({ tokens }) => {
+            titumirApi.refresh(refreshToken).then(({ tokens, json: { user } }) => {
                 if (tokens?.accessToken && tokens?.refreshToken) {
                     setTokens({
                         accessToken: tokens.accessToken,
                         refreshToken: tokens.refreshToken,
                     });
                 }
+                setUser(user);
             });
     }, []);
 

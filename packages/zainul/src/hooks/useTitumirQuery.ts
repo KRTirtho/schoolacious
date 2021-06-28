@@ -1,7 +1,33 @@
 import { useQuery, UseQueryOptions } from "react-query";
 import { titumirApi } from "../App";
 import Titumir, { TitumirError } from "../configurations/titumir";
+import { AuthorizationContext } from "../state/auth-provider";
+import { ContextToken } from "../state/AuthorizationStore";
 import useAuthorization from "./useAuthorization";
+
+export function refreshTokenOnError(
+    titumirApi: Titumir,
+    tokens: ContextToken,
+    setUser: AuthorizationContext["setUser"],
+    setTokens: AuthorizationContext["setTokens"],
+) {
+    // unauthorized means the token has expired
+    // refreshing the token before the retry
+    titumirApi.setTokens(tokens);
+    titumirApi
+        .refresh()
+        .then(({ json: { user } }) => {
+            if (titumirApi.accessToken && titumirApi.refreshToken)
+                setTokens({
+                    accessToken: titumirApi.accessToken,
+                    refreshToken: titumirApi.refreshToken,
+                });
+            setUser(user);
+        })
+        .catch((e) => {
+            console.error(e);
+        });
+}
 
 function useTitumirQuery<T>(
     key: string,
@@ -19,23 +45,8 @@ function useTitumirQuery<T>(
     const query = useQuery<T, TitumirError>(key, queryFn, {
         ...options,
         onError(e) {
-            // unauthorized means the token has expired
-            // refreshing the token before the retry
             if (e.status === 401 && tokens) {
-                titumirApi.setTokens(tokens);
-                titumirApi
-                    .refresh()
-                    .then(({ json: { user } }) => {
-                        if (titumirApi.accessToken && titumirApi.refreshToken)
-                            setTokens({
-                                accessToken: titumirApi.accessToken,
-                                refreshToken: titumirApi.refreshToken,
-                            });
-                        setUser(user);
-                    })
-                    .catch((e) => {
-                        console.error(e);
-                    });
+                refreshTokenOnError(titumirApi, tokens, setUser, setTokens);
             }
             options.onError?.(e);
         },

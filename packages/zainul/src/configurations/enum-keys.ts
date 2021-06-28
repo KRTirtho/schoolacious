@@ -1,6 +1,7 @@
-export enum ContextKey {
-    SIGNUP = "signup",
-    LOGIN = "login",
+export enum MutationContextKey {
+    SIGNUP = "mutate-signup",
+    LOGIN = "mutate-login",
+    CREATE_SCHOOL = "mutate-create-school",
 }
 
 export enum LocalStorageKeys {

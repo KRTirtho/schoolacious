@@ -7,6 +7,7 @@ import NotFound404 from "../pages/404";
 import Start from "../pages/Start";
 import Appbar from "../components/Appbar";
 import SchoolCreate from "../pages/SchoolCreate";
+import School from "../pages/School";
 
 export default function Routes() {
     const ctx = useAuthorization();
@@ -24,7 +25,10 @@ export default function Routes() {
                         <Route exact path="/">
                             <Start />
                         </Route>
-                        <Route path="/school/create">
+                        <Route exact path="/school">
+                            <School />
+                        </Route>
+                        <Route exact path="/school/create">
                             <SchoolCreate />
                         </Route>
                     </Route>

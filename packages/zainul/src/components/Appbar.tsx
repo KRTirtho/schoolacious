@@ -9,7 +9,8 @@ import {
     MenuList,
     useColorMode,
     useColorModeValue,
-    theme,
+    useTheme,
+    theme as base,
 } from "@chakra-ui/react";
 import { IoIosNotifications, IoIosSunny, IoIosMoon, IoIosLogOut } from "react-icons/io";
 import { RiUser3Line } from "react-icons/ri";
@@ -21,6 +22,8 @@ function Appbar() {
     const history = useHistory();
 
     const { toggleColorMode } = useColorMode();
+
+    const theme = useTheme<typeof base>();
 
     const SchemeToggleIcon = useColorModeValue(IoIosMoon, IoIosSunny);
     const bg = useColorModeValue(theme.colors.gray[50], theme.colors.gray[700]);

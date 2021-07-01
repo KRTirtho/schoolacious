@@ -8,6 +8,7 @@ import Start from "../pages/Start";
 import Appbar from "../components/Appbar";
 import SchoolCreate from "../pages/SchoolCreate";
 import School from "../pages/School";
+import SchoolConfigure from "../pages/SchoolConfigure";
 
 export default function Routes() {
     const ctx = useAuthorization();
@@ -30,6 +31,9 @@ export default function Routes() {
                         </Route>
                         <Route exact path="/school/create">
                             <SchoolCreate />
+                        </Route>
+                        <Route exact path="/school/configure">
+                            <SchoolConfigure />
                         </Route>
                     </Route>
                 </>

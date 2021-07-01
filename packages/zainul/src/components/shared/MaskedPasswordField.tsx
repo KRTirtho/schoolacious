@@ -5,7 +5,7 @@ import {
     Input,
     FormErrorMessage,
     InputGroup,
-    InputRightAddon,
+    InputRightElement,
 } from "@chakra-ui/react";
 import { v4 as uuid } from "uuid";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
@@ -30,9 +30,9 @@ function MaskedPasswordField({ field, form, ...props }: TextFieldProps) {
                     id={id}
                     {...props}
                 />
-                <InputRightAddon onClick={showHidePassword} {...props}>
+                <InputRightElement onClick={showHidePassword} {...props}>
                     {showPassword ? <IoIosEyeOff /> : <IoIosEye />}
-                </InputRightAddon>
+                </InputRightElement>
             </InputGroup>
             <FormErrorMessage>{form.errors.name}</FormErrorMessage>
         </FormControl>

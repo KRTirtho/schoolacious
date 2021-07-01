@@ -9,7 +9,6 @@ const theme = extendTheme<ChakraTheme>(
     {
         colors: {
             primary: base.colors.green,
-            default: "#d9d9d9",
             textPrimary: "#272727",
             textSecondary: "#777777",
         },

@@ -1,4 +1,10 @@
-import { Container, ContainerProps, useColorModeValue, theme } from "@chakra-ui/react";
+import {
+    Container,
+    ContainerProps,
+    useColorModeValue,
+    theme as base,
+    useTheme,
+} from "@chakra-ui/react";
 import React, { PropsWithChildren, ReactElement } from "react";
 
 export interface PaperProps extends ContainerProps {
@@ -13,6 +19,8 @@ function Paper({
     rounded = "md",
     ...props
 }: PropsWithChildren<PaperProps>): ReactElement {
+    const theme = useTheme<typeof base>();
+
     const borderColor = useColorModeValue(theme.colors.gray[800], theme.colors.gray[200]);
 
     const colorSchemesRaw = {

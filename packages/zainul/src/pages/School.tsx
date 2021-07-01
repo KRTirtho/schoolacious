@@ -7,6 +7,7 @@ import {
     Link as Clink,
     Text,
     IconButton,
+    Tooltip,
 } from "@chakra-ui/react";
 import React from "react";
 import { IoIosSettings } from "react-icons/io";
@@ -44,13 +45,17 @@ function School() {
                     </Clink>
                     <Text>{school?.description}</Text>
                 </Stack>
-                <IconButton
-                    variant="ghost"
-                    colorScheme="white"
-                    aria-label="configure school"
-                >
-                    <IoIosSettings />
-                </IconButton>
+                <Tooltip label="Configure School">
+                    <IconButton
+                        variant="ghost"
+                        colorScheme="white"
+                        aria-label="configure school"
+                        as={Link}
+                        to="/school/configure"
+                    >
+                        <IoIosSettings />
+                    </IconButton>
+                </Tooltip>
             </Stack>
         </Flex>
     );

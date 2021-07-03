@@ -247,13 +247,11 @@ export default class Titumir {
 
     // =======/invitation-join/*=======
 
-    async invite(data: InvitationBody) {
-        return await this.buildAuthReq<
-            Invitations_Joins,
-            InvitationBody & { type: INVITATION_OR_JOIN_TYPE }
-        >("/invitation-join", "POST", {
-            ...data,
-            type: INVITATION_OR_JOIN_TYPE.invitation,
-        });
+    async invite(data: InvitationBody[]) {
+        return await this.buildAuthReq<Invitations_Joins[], InvitationBody[]>(
+            "/invitation-join/invite",
+            "POST",
+            data,
+        );
     }
 }

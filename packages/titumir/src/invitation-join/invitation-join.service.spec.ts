@@ -108,11 +108,13 @@ describe("InvitationJoinService", () => {
     });
 
     it("should create a join request from given user for given school", async () => {
-        const res = await service.join({
-            role: INVITATION_OR_JOIN_ROLE.teacher,
-            user: mockUser,
-            school_id: mockSchool._id,
-        });
+        const res = await service.join(
+            {
+                role: INVITATION_OR_JOIN_ROLE.teacher,
+                school_id: mockSchool._id,
+            },
+            mockUser,
+        );
         expect(res).toEqual({
             ...mockInvitationJoin,
             _id: expect.any(String),

@@ -53,16 +53,11 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
         },
     );
 
-    const { resetQueries } = useQueryClient();
+    const queryClient = useQueryClient();
 
     const { mutate: invite } = useTitumirMutation<Invitations_Joins[], InvitationBody[]>(
         MutationContextKey.INVITATION,
-        (api, invitations) =>
-            Promise.all(
-                invitations.map((invitation) =>
-                    api.invite(invitation).then(({ json }) => json),
-                ),
-            ),
+        (api, invitations) => api.invite(invitations).then(({ json }) => json),
     );
 
     const [selectedItems, setSelectedItems] = useState<OptionsType<OptionType>>([]);
@@ -104,7 +99,9 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
             })),
             {
                 onSuccess() {
-                    resetQueries(QueryContextKey.QUERY_USER, { exact: true })
+                    setSelectedItems([]);
+                    queryClient
+                        .resetQueries(QueryContextKey.QUERY_USER, { exact: true })
                         .then(() => {
                             handleClose();
                         })

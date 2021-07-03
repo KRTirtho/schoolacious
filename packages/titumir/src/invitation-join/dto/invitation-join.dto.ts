@@ -5,6 +5,33 @@ import {
     INVITATION_OR_JOIN_TYPE,
 } from "../../database/entity/invitations_or_joins.entity";
 
+export class InvitationDTO {
+    @IsDefined()
+    @IsUUID()
+    @ApiProperty({
+        type: String,
+    })
+    user_id!: string;
+
+    @IsDefined()
+    @IsEnum(INVITATION_OR_JOIN_ROLE)
+    @ApiProperty({ enum: INVITATION_OR_JOIN_ROLE })
+    role!: INVITATION_OR_JOIN_ROLE;
+}
+export class JoinDTO {
+    @IsDefined()
+    @IsUUID()
+    @ApiProperty({
+        type: String,
+    })
+    school_id!: string;
+
+    @IsDefined()
+    @IsEnum(INVITATION_OR_JOIN_ROLE)
+    @ApiProperty({ enum: INVITATION_OR_JOIN_ROLE })
+    role!: INVITATION_OR_JOIN_ROLE;
+}
+
 export default class InvitationJoinDTO {
     @IsOptional()
     @IsUUID()

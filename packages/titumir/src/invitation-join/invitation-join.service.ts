@@ -5,7 +5,7 @@ import {
     NotAcceptableException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import BasicEntityService, {
     PartialKey,
 } from "../database/abstracts/entity-service.abstract";
@@ -18,6 +18,7 @@ import User, { USER_ROLE } from "../database/entity/users.entity";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
 import { isAdministrative } from "../utils/helper-functions.util";
+import { InvitationDTO, JoinDTO } from "./dto/invitation-join.dto";
 
 export interface InviteJoinPayload {
     role: INVITATION_OR_JOIN_ROLE;
@@ -88,15 +89,41 @@ export class InvitationJoinService extends BasicEntityService<
         });
     }
 
-    async join(
-        payload: Omit<InviteJoinPayload, "type" | "school"> & { school_id: string },
-    ): Promise<Invitations_Joins> {
+    async sendInvitations(
+        payload: InvitationDTO[],
+        school: School,
+    ): Promise<Invitations_Joins[]> {
+        const users = (
+            await this.userService.find(
+                {},
+                {
+                    where: {
+                        _id: In(payload.map(({ user_id }) => user_id)),
+                    },
+                    relations: ["school"],
+                },
+            )
+        ).map((user) => {
+            return {
+                type: INVITATION_OR_JOIN_TYPE.invitation,
+                role:
+                    payload.find(({ user_id }) => user_id === user._id)?.role ??
+                    INVITATION_OR_JOIN_ROLE.student,
+                school,
+                user,
+            };
+        });
+        return this.createInvitationJoin(users);
+    }
+
+    async join({ role, school_id }: JoinDTO, user: User): Promise<Invitations_Joins> {
         const school = await this.schoolService.findOne({
-            _id: payload.school_id,
+            _id: school_id,
         });
         return this.createInvitationJoin({
             type: INVITATION_OR_JOIN_TYPE.join,
-            ...payload,
+            user,
+            role,
             school,
         });
     }

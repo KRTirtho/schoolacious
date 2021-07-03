@@ -3,7 +3,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
 import { Server } from "http";
 import CreateSchoolDTO from "../../src/school/dto/create-school.dto";
-import { USER_ROLE } from "../../src/database/entity/users.entity";
+import { USER_ROLE, USER_STATUS } from "../../src/database/entity/users.entity";
 import { AppModule } from "../../src/app.module";
 import SignupDTO from "../../src/auth/dto/signup.dto";
 import {
@@ -98,7 +98,7 @@ describe("(e2e) PATH: school/", () => {
             "description should not be null or undefined",
             "description should not be empty",
             "short_name should not be null or undefined",
-            "short_name must match /\\w*\\d*-*/g regular expression",
+            "short_name must match /^[a-z\\d-]+$/ regular expression",
             "short_name must be shorter than or equal to 20 characters",
             "short_name should not be empty",
             "short_name must be a lowercase string",
@@ -136,6 +136,7 @@ describe("(e2e) PATH: school/", () => {
         delete (averageUser as any).password;
         expect(body.admin).toEqual({
             ...averageUser,
+            status: USER_STATUS.offline,
             role: USER_ROLE.admin,
         });
 

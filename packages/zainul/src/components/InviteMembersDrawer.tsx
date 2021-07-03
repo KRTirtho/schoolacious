@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Drawer,
@@ -18,21 +18,106 @@ import CUISelect from "./shared/CUISelect";
 import { OptionsType, OptionTypeBase } from "react-select";
 import ListAvatarTile from "./shared/ListAvatarTile";
 import { TiCancel } from "react-icons/ti";
+import useTitumirQuery from "../hooks/useTitumirQuery";
+import { MutationContextKey, QueryContextKey } from "../configurations/enum-keys";
+import {
+    InvitationBody,
+    Invitations_Joins,
+    INVITATION_OR_JOIN_ROLE,
+    User,
+} from "../configurations/titumir";
+import useTitumirMutation from "../hooks/useTitumirMutation";
+import { useQueryClient } from "react-query";
 
-function InviteMembersDrawer() {
+interface OptionType extends OptionTypeBase {
+    label: string;
+    value: string;
+}
+
+interface InviteMembersDrawerProps {
+    role: INVITATION_OR_JOIN_ROLE;
+}
+
+function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
     const { isOpen, onClose: handleClose, onOpen: handleOpen } = useDisclosure();
 
-    const options: OptionsType<OptionTypeBase> = Array.from({ length: 20 }, (_, i) => ({
-        label: `Naha ${i}`,
-        value: `wow ${i}`,
-    }));
+    const {
+        data: optionsRaw,
+        refetch,
+        isLoading,
+    } = useTitumirQuery<User[]>(
+        QueryContextKey.QUERY_USER,
+        (api) => api.queryUser(query).then(({ json }) => json),
+        {
+            enabled: false,
+        },
+    );
 
-    const [selectedItems, setSelectedItems] = useState<OptionsType<OptionTypeBase>>([]);
+    const { resetQueries } = useQueryClient();
+
+    const { mutate: invite } = useTitumirMutation<Invitations_Joins[], InvitationBody[]>(
+        MutationContextKey.INVITATION,
+        (api, invitations) =>
+            Promise.all(
+                invitations.map((invitation) =>
+                    api.invite(invitation).then(({ json }) => json),
+                ),
+            ),
+    );
+
+    const [selectedItems, setSelectedItems] = useState<OptionsType<OptionType>>([]);
+
+    const selectedValue = selectedItems.map(({ value }) => value);
+
+    const options: OptionsType<OptionType> = (
+        optionsRaw?.map(({ first_name, last_name, _id }) => ({
+            value: _id,
+            label: first_name + " " + last_name,
+        })) ?? []
+    ).filter(({ value }) => !selectedValue.includes(value));
+
+    const [query, setQuery] = useState("");
+
+    useEffect(() => {
+        if (query.trim().length > 0) refetch();
+    }, [query]);
+
+    function handleSelectChange(
+        value: OptionsType<OptionTypeBase> | OptionTypeBase | null,
+    ) {
+        setSelectedItems((value as OptionsType<OptionType>) ?? []);
+    }
+
+    function handleSelectInputChange(value: string) {
+        value !== query && setQuery(value);
+    }
+
+    function removeSelectedItems(value: string) {
+        setSelectedItems(selectedItems.filter((item) => item.value != value));
+    }
+
+    function inviteAll() {
+        invite(
+            selectedItems.map(({ value }) => ({
+                user_id: value,
+                role,
+            })),
+            {
+                onSuccess() {
+                    resetQueries(QueryContextKey.QUERY_USER, { exact: true })
+                        .then(() => {
+                            handleClose();
+                        })
+                        .catch((e) => console.error(e));
+                },
+            },
+        );
+    }
 
     return (
         <>
             <Button variant="ghost" onClick={handleOpen} leftIcon={<FiUserPlus />}>
-                Invite Members
+                Invite {role.valueOf()[0].toUpperCase() + role.valueOf().slice(1)}s
             </Button>
 
             <Drawer placement="right" onClose={handleClose} isOpen={isOpen}>
@@ -44,15 +129,14 @@ function InviteMembersDrawer() {
                     <DrawerBody>
                         <CUISelect
                             isMulti
-                            onChange={(values) => {
-                                setSelectedItems(
-                                    (values as OptionsType<OptionTypeBase>) ?? [],
-                                );
-                            }}
+                            onChange={handleSelectChange}
                             closeMenuOnSelect={false}
                             isSearchBar
+                            isLoading={isLoading}
                             options={options}
                             value={selectedItems}
+                            inputValue={query}
+                            onInputChange={handleSelectInputChange}
                             placeholder="Search with email/username..."
                             noOptionsMessage={() => "No one found ;("}
                         />
@@ -72,19 +156,13 @@ function InviteMembersDrawer() {
                                 return (
                                     <ListAvatarTile
                                         key={label + value + index}
-                                        name={[label, value]}
+                                        name={label}
                                         ending={
                                             <IconButton
                                                 aria-label="remove selected user"
                                                 variant="ghost"
                                                 icon={<TiCancel />}
-                                                onClick={() =>
-                                                    setSelectedItems(
-                                                        selectedItems.filter(
-                                                            (item) => item.label != label,
-                                                        ),
-                                                    )
-                                                }
+                                                onClick={() => removeSelectedItems(value)}
                                             />
                                         }
                                     />
@@ -97,7 +175,12 @@ function InviteMembersDrawer() {
                             <Button onClick={handleClose} colorScheme="gray">
                                 Cancel
                             </Button>
-                            <Button disabled>Invite all</Button>
+                            <Button
+                                disabled={selectedItems.length === 0}
+                                onClick={inviteAll}
+                            >
+                                Invite all
+                            </Button>
                         </HStack>
                     </DrawerFooter>
                 </DrawerContent>

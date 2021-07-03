@@ -59,7 +59,10 @@ export class AuthController {
     @ApiUnauthorizedResponse({
         description: "Invalid refresh token, refresh token not provided",
     })
-    async refresh(@Headers() headers: Request["headers"], @Req() { res }: Request) {
+    async refresh(
+        @Headers() headers: Request["headers"],
+        @Req() { res }: Request,
+    ): Promise<{ message: string }> {
         try {
             const refreshToken = headers[CONST_REFRESH_TOKEN_HEADER] as string;
             if (!refreshToken) throw new NotAcceptableException("refresh token not set");
@@ -67,7 +70,7 @@ export class AuthController {
             const { access_token, refresh_token } = this.authService.createTokens(user);
             res?.set(CONST_ACCESS_TOKEN_HEADER, access_token);
             res?.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
-            return { message: "Refreshed access_token", user };
+            return { message: "Refreshed access_token" };
         } catch (error: any) {
             this.logger.error(error?.message);
             if (error instanceof JsonWebTokenError) {
@@ -79,7 +82,10 @@ export class AuthController {
 
     @Public()
     @Post("signup")
-    async signup(@Body() body: SignupDTO, @Req() { res }: Request) {
+    async signup(
+        @Body() body: SignupDTO,
+        @Req() { res }: Request,
+    ): Promise<Omit<User, "password">> {
         try {
             const { email, role, ...user } = await this.userService.createUser(body);
             const { access_token, refresh_token } = this.authService.createTokens({

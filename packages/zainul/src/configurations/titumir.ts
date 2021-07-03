@@ -81,6 +81,35 @@ export interface TitumirOptions {
     refreshToken?: string;
 }
 
+export enum INVITATION_OR_JOIN_TYPE {
+    invitation = "invitation",
+    join = "join",
+}
+
+export enum INVITATION_OR_JOIN_ROLE {
+    teacher = "teacher",
+    student = "student",
+}
+
+export interface Invitations_Joins {
+    _id: string;
+    type: INVITATION_OR_JOIN_TYPE;
+    school: School;
+    user: User;
+    created_at: Date;
+    role: INVITATION_OR_JOIN_ROLE;
+}
+
+export interface InvitationBody {
+    user_id: string;
+    role: INVITATION_OR_JOIN_ROLE;
+}
+
+export interface JoinBody {
+    school_id: string;
+    role: INVITATION_OR_JOIN_ROLE;
+}
+
 export default class Titumir {
     accessToken?: string;
     refreshToken?: string;
@@ -128,6 +157,7 @@ export default class Titumir {
     }) {
         if (accessToken) this.accessToken = accessToken;
         if (refreshToken) this.refreshToken = refreshToken;
+        return this;
     }
 
     async login(body: LoginBody) {
@@ -152,7 +182,7 @@ export default class Titumir {
         if (!token) token = this.refreshToken;
         if (!this.refreshToken && !token) throw new Error("refresh token doesn't exist");
         headers.append(CONST_REFRESH_TOKEN_KEY, token!);
-        const res = await this.buildRequest<{ message: string; user: User }>(
+        const res = await this.buildRequest<{ message: string }>(
             "/auth/refresh",
             "POST",
             undefined,
@@ -190,6 +220,18 @@ export default class Titumir {
         return res;
     }
 
+    // =======/user/*=======
+
+    async getMe() {
+        return await this.buildAuthReq<User>("/user/me");
+    }
+
+    async queryUser(query: string) {
+        return await this.buildAuthReq<User[]>(`/user/query?q=${query}`);
+    }
+
+    // =======/school/*=======
+
     async getSchool(short_name: string) {
         return await this.buildAuthReq<School>(`/school/${short_name}`);
     }
@@ -201,5 +243,17 @@ export default class Titumir {
             payload,
         );
         return res;
+    }
+
+    // =======/invitation-join/*=======
+
+    async invite(data: InvitationBody) {
+        return await this.buildAuthReq<
+            Invitations_Joins,
+            InvitationBody & { type: INVITATION_OR_JOIN_TYPE }
+        >("/invitation-join", "POST", {
+            ...data,
+            type: INVITATION_OR_JOIN_TYPE.invitation,
+        });
     }
 }

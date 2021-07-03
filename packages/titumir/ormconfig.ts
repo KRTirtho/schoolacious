@@ -17,11 +17,11 @@ const ormconfig: PostgresConnectionOptions = {
     password: DATABASE_PASSWORD,
     uuidExtension: "uuid-ossp",
     logging: NODE_ENV !== "test",
-    migrations: ["./dist/veschool/migrations/*.js"],
+    migrations: ["./dist/src/database/migrations/*.js"],
     cli: {
-        migrationsDir: "veschool/migrations",
+        migrationsDir: "./src/database/migrations",
     },
     synchronize: true,
 };
 
-export default ormconfig;
+export = ormconfig;

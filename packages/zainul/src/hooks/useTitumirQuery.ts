@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from "react-query";
+import { MutationKey, useQuery, UseQueryOptions } from "react-query";
 import { titumirApi } from "../App";
 import Titumir, { TitumirError } from "../configurations/titumir";
 import { AuthorizationContext } from "../state/auth-provider";
@@ -8,7 +8,6 @@ import useAuthorization from "./useAuthorization";
 export function refreshTokenOnError(
     titumirApi: Titumir,
     tokens: ContextToken,
-    setUser: AuthorizationContext["setUser"],
     setTokens: AuthorizationContext["setTokens"],
 ) {
     // unauthorized means the token has expired
@@ -16,13 +15,12 @@ export function refreshTokenOnError(
     titumirApi.setTokens(tokens);
     titumirApi
         .refresh()
-        .then(({ json: { user } }) => {
+        .then(() => {
             if (titumirApi.accessToken && titumirApi.refreshToken)
                 setTokens({
                     accessToken: titumirApi.accessToken,
                     refreshToken: titumirApi.refreshToken,
                 });
-            setUser(user);
         })
         .catch((e) => {
             console.error(e);
@@ -30,9 +28,9 @@ export function refreshTokenOnError(
 }
 
 function useTitumirQuery<T>(
-    key: string,
+    key: MutationKey,
     hFn: (titumirApi: Titumir) => Promise<T>,
-    options: UseQueryOptions<T, TitumirError>,
+    options?: UseQueryOptions<T, TitumirError>,
 ) {
     // custom function for passing the titumir api with safe tokens
     function queryFn() {
@@ -40,15 +38,15 @@ function useTitumirQuery<T>(
         return hFn(titumirApi);
     }
 
-    const { tokens, logged, setTokens, setUser } = useAuthorization();
+    const { tokens, logged, setTokens } = useAuthorization();
 
     const query = useQuery<T, TitumirError>(key, queryFn, {
         ...options,
         onError(e) {
             if (e.status === 401 && tokens) {
-                refreshTokenOnError(titumirApi, tokens, setUser, setTokens);
+                refreshTokenOnError(titumirApi, tokens, setTokens);
             }
-            options.onError?.(e);
+            options?.onError?.(e);
         },
     });
 

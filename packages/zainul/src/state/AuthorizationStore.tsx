@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from "react";
 import { titumirApi } from "../App";
 import { LocalStorageKeys } from "../configurations/enum-keys";
 import { User } from "../configurations/titumir";
+import { refreshTokenOnError } from "../hooks/useTitumirQuery";
 import authContext from "./auth-provider";
 
 export interface ContextToken {
@@ -17,17 +18,24 @@ const AuthorizationStore: FC = ({ children }) => {
     // getting the auth tokens from localstorage & setting them for state
     useEffect(() => {
         const refreshToken = localStorage.getItem(LocalStorageKeys.refreshToken);
-        if (refreshToken)
-            titumirApi.refresh(refreshToken).then(({ tokens, json: { user } }) => {
-                if (tokens?.accessToken && tokens?.refreshToken) {
-                    setTokens({
-                        accessToken: tokens.accessToken,
-                        refreshToken: tokens.refreshToken,
-                    });
-                }
-                setUser(user);
-            });
+        const accessToken = localStorage.getItem(LocalStorageKeys.accessToken);
+        if (refreshToken && accessToken) {
+            setTokens({ refreshToken, accessToken });
+        }
     }, []);
+
+    useEffect(() => {
+        if (logged && tokens) {
+            titumirApi
+                .setTokens(tokens)
+                .getMe()
+                .then((user) => setUser(user.json))
+                .catch((e) => {
+                    console.error("e:", e);
+                    refreshTokenOnError(titumirApi, tokens, setTokens);
+                });
+        }
+    }, [logged]);
 
     // storing & retrieving tokens from the localstorage
     useEffect(() => {

@@ -20,16 +20,18 @@ export interface ListAvatarTileProps
               firstName: string;
               lastName: string;
           }
-        | [string, string];
+        | [string, string]
+        | string;
     leading?: ReactElement;
     ending?: ReactElement;
 }
 
 const ListAvatarTile = forwardRef<ListAvatarTileProps, "div">(function ListAvatarTile(
-    { src, name, spacing = 2, direction="row", leading, ending, ...props },
+    { src, name, spacing = 2, direction = "row", leading, ending, ...props },
     ref,
 ) {
-    const username = name && Object.values(name).join(" ");
+    const username =
+        typeof name !== "string" && name ? Object.values(name).join(" ") : name;
     return (
         <ListItem p="2" {...props} ref={ref}>
             <HStack spacing={spacing} direction={direction} justify="space-between">

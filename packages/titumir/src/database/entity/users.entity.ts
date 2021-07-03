@@ -58,6 +58,8 @@ export default class User {
     @Column("varchar", { length: 20, default: USER_STATUS.offline })
     status?: USER_STATUS;
 
+    // relations
+
     @OneToMany(() => TeachersToSectionsToGrades, (tsg) => tsg.user, {
         nullable: true,
     })
@@ -87,4 +89,9 @@ export default class User {
 
     @ManyToOne(() => School, (school) => school.users, { nullable: true })
     school?: School | null;
+
+    // query / text search related
+
+    @Column("tsvector", { select: false, nullable: true })
+    query_common?: any | null;
 }

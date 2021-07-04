@@ -1,4 +1,5 @@
-import { useAuthStore, useTokenStore } from "../state/auth-provider";
+import { useAuthStore } from "../state/authorization-store";
+import { useTokenStore } from "../state/token-store";
 
 function useLoggedIn(): boolean {
     const accessToken = useTokenStore((s) => s.accessToken);

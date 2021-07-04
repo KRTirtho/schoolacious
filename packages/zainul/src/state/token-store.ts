@@ -1,22 +1,7 @@
 import create, { StateCreator } from "zustand";
-import { devtools, persist } from "zustand/middleware";
-import { User } from "../configurations/titumir";
-import { ContextToken } from "./AuthorizationStore";
-
-export interface AuthorizationStore {
-    user?: User;
-    setUser(user: User): void;
-}
-
-const authStore: StateCreator<AuthorizationStore> = (set) => {
-    return {
-        setUser(user) {
-            set({ user });
-        },
-    };
-};
-
-export const useAuthStore = create<AuthorizationStore>(devtools(authStore));
+import { persist } from "zustand/middleware";
+import { AUTH_CONTEXT_LOCALSTORAGE_KEY } from "../configs/constants";
+import { ContextToken } from "./AuthorizationConfig";
 
 export interface TokenStore {
     accessToken?: string;
@@ -46,7 +31,6 @@ const tokenStore: StateCreator<TokenStore> = (set, get) => {
     };
 };
 
-export const AUTH_CONTEXT_LOCALSTORAGE_KEY = "authorization_dangerous_store";
 export const useTokenStore = create(
     persist(tokenStore, {
         name: AUTH_CONTEXT_LOCALSTORAGE_KEY,

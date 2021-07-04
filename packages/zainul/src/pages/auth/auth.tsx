@@ -1,10 +1,10 @@
 import React from "react";
 import { Flex, ButtonGroup, Button } from "@chakra-ui/react";
-import { loginBG } from "../configurations/img-imports";
-import Login from "../components/Login";
+import { loginBG } from "../../assets";
+import Login from "./components/Login";
 import { Route, useHistory, useRouteMatch } from "react-router-dom";
-import Signup from "../components/Signup";
-import Paper from "../components/shared/Paper";
+import Signup from "./components/Signup";
+import Paper from "../../components/Paper/Paper";
 
 function Auth() {
     const match = useRouteMatch();

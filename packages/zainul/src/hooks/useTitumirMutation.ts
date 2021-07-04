@@ -1,7 +1,7 @@
 import { MutationKey, useMutation, UseMutationOptions } from "react-query";
 import { titumirApi } from "../App";
-import Titumir, { TitumirError } from "../configurations/titumir";
-import { useTokenStore } from "../state/auth-provider";
+import Titumir, { TitumirError } from "../services/api/titumir";
+import { useTokenStore } from "../state/token-store";
 import useLoggedIn from "./useLoggedIn";
 import { refreshTokenOnError } from "./useTitumirQuery";
 

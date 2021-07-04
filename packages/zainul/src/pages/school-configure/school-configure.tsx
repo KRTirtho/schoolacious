@@ -1,8 +1,8 @@
 import { Link as CLink, Flex } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
-import InviteMembersDrawer from "../components/InviteMembersDrawer";
-import { INVITATION_OR_JOIN_ROLE } from "../configurations/titumir";
+import InviteMembersDrawer from "./components/InviteMembersDrawer";
+import { INVITATION_OR_JOIN_ROLE } from "../../services/api/titumir";
 
 function SchoolConfigure() {
     return (

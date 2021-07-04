@@ -1,10 +1,10 @@
 import { HStack, List, Text } from "@chakra-ui/react";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import ListAvatarTile from "../components/shared/ListAvatarTile";
-import { QueryContextKey } from "../configurations/enum-keys";
-import useTitumirQuery from "../hooks/useTitumirQuery";
-import { useAuthStore } from "../state/auth-provider";
+import ListAvatarTile from "../../components/ListAvatarTile/ListAvatarTile";
+import { QueryContextKey } from "../../configs/enums";
+import useTitumirQuery from "../../hooks/useTitumirQuery";
+import { useAuthStore } from "../../state/authorization-store";
 
 export interface InvitationsProps {
     platform: "school" | "user";

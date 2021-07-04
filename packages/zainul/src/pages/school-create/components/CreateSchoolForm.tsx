@@ -1,13 +1,13 @@
 import { Button, Stack } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import TextField, { TextareaField } from "./shared/TextField";
+import TextField, { TextareaField } from "../../../components/TextField/TextField";
 import React from "react";
 import * as yup from "yup";
-import { CreateSchool, School } from "../configurations/titumir";
-import { INVALID_EMAIL_MSG } from "./Login";
-import { REQUIRED_MSG } from "./Signup";
-import useTitumirMutation from "../hooks/useTitumirMutation";
-import { MutationContextKey } from "../configurations/enum-keys";
+import { CreateSchool, School } from "../../../services/api/titumir";
+import { INVALID_EMAIL_MSG } from "../../auth/components/Login";
+import { REQUIRED_MSG } from "../../auth/components/Signup";
+import useTitumirMutation from "../../../hooks/useTitumirMutation";
+import { MutationContextKey } from "../../../configs/enums";
 
 export const SHORT_NAME_MATCHES_MSG = "only {a-z,-,0-9} is allowed";
 function CreateSchoolForm() {

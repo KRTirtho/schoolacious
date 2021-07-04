@@ -1,14 +1,14 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import Introduction from "../pages/Introduction";
-import Auth from "../pages/Auth";
-import NotFound404 from "../pages/404";
-import Start from "../pages/Start";
-import Appbar from "../components/Appbar";
-import SchoolCreate from "../pages/SchoolCreate";
-import School from "../pages/School";
-import SchoolConfigure from "../pages/SchoolConfigure";
-import Invitations from "../pages/Invitations";
+import Introduction from "../pages/introduction/introduction";
+import Auth from "../pages/auth/auth";
+import NotFound404 from "./404";
+import Start from "../pages/start/start";
+import Appbar from "../components/Appbar/Appbar";
+import SchoolCreate from "../pages/school-create/school-create";
+import School from "../pages/school/school";
+import SchoolConfigure from "../pages/school-configure/school-configure";
+import Invitations from "../pages/invitations/invitations";
 import useLoggedIn from "../hooks/useLoggedIn";
 
 export default function Routes() {

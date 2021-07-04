@@ -1,14 +1,15 @@
 import React, { FC, useEffect } from "react";
 import { titumirApi } from "../App";
 import { refreshTokenOnError } from "../hooks/useTitumirQuery";
-import { useAuthStore, useTokenStore } from "./auth-provider";
+import { useAuthStore } from "./authorization-store";
+import { useTokenStore } from "../state/token-store";
 
 export interface ContextToken {
     accessToken: string;
     refreshToken: string;
 }
 
-const AuthorizationStore: FC = ({ children }) => {
+const AuthorizationConfig: FC = ({ children }) => {
     const setUser = useAuthStore((s) => s.setUser);
     const setTokens = useTokenStore((s) => s.setTokens);
     const accessToken = useTokenStore((s) => s.accessToken);
@@ -36,4 +37,4 @@ const AuthorizationStore: FC = ({ children }) => {
     return <>{children}</>;
 };
 
-export default AuthorizationStore;
+export default AuthorizationConfig;

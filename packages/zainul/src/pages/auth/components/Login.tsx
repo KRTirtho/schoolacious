@@ -1,23 +1,23 @@
 import { Flex, Heading, Button, Link as MuiLink } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
-import TextField from "./shared/TextField";
 import React from "react";
 import { useMutation } from "react-query";
 import { Link, useHistory } from "react-router-dom";
 import * as yup from "yup";
-import { titumirApi } from "../App";
-import { MutationContextKey } from "../configurations/enum-keys";
+import { titumirApi } from "../../../App";
+import MaskedPasswordField from "../../../components/MaskedPasswordField/MaskedPasswordField";
+import TextField from "../../../components/TextField/TextField";
+import { MutationContextKey } from "../../../configs/enums";
 import {
-    CONST_ACCESS_TOKEN_KEY,
-    CONST_REFRESH_TOKEN_KEY,
-    LoginBody,
     TitumirResponse,
     User,
-} from "../configurations/titumir";
-import MaskedPasswordField from "./shared/MaskedPasswordField";
+    LoginBody,
+    CONST_ACCESS_TOKEN_KEY,
+    CONST_REFRESH_TOKEN_KEY,
+} from "../../../services/api/titumir";
+import { useAuthStore } from "../../../state/authorization-store";
+import { useTokenStore } from "../../../state/token-store";
 import { MINIMUM_CHAR_MSG, REQUIRED_MSG } from "./Signup";
-import { useAuthStore, useTokenStore } from "../state/auth-provider";
-
 export const INVALID_EMAIL_MSG = "Invalid email";
 function Login() {
     const history = useHistory();

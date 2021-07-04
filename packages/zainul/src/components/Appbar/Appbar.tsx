@@ -16,7 +16,7 @@ import { IoIosNotifications, IoIosSunny, IoIosMoon, IoIosLogOut } from "react-ic
 import { RiUser3Line } from "react-icons/ri";
 import { Link, useHistory } from "react-router-dom";
 import { FaSchool } from "react-icons/fa";
-import useLogout from "../hooks/useLogout";
+import useLogout from "../../hooks/useLogout";
 
 function Appbar() {
     const history = useHistory();

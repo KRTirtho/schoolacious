@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Flex, Button, Heading } from "@chakra-ui/react";
-import { introductionBG as bgImg } from "../configurations/img-imports";
+import { introductionBG as bgImg } from "../../assets";
 import { Link } from "react-router-dom";
 
 export default function Introduction() {

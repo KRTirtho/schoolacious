@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { v4 as uuid } from "uuid";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
-import { TextFieldProps } from "./TextField";
+import { TextFieldProps } from "../TextField/TextField";
 
 function MaskedPasswordField({ field, form, ...props }: TextFieldProps) {
     const [showPassword, setShowPassword] = useState(false);

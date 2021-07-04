@@ -1,7 +1,7 @@
 import { Button, Flex, Heading, Text, Image } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { confusedKid404 } from "../configurations/img-imports";
+import { confusedKid404 } from "../assets";
 
 function NotFound404() {
     return (

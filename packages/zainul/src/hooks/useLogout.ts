@@ -1,4 +1,4 @@
-import { useTokenStore } from "../state/auth-provider";
+import { useTokenStore } from "../state/token-store";
 
 function useLogout() {
     const clearTokens = useTokenStore((s) => s.clearTokens);

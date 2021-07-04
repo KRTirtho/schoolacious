@@ -4,18 +4,19 @@ import React from "react";
 import { useMutation } from "react-query";
 import { useHistory } from "react-router-dom";
 import * as yup from "yup";
-import { titumirApi } from "../App";
-import { MutationContextKey } from "../configurations/enum-keys";
+import { titumirApi } from "../../../App";
+import { MutationContextKey } from "../../../configs/enums";
 import {
     CONST_ACCESS_TOKEN_KEY,
     CONST_REFRESH_TOKEN_KEY,
     SignupBody,
     TitumirResponse,
     User,
-} from "../configurations/titumir";
-import TextField from "./shared/TextField";
-import MaskedPasswordField from "./shared/MaskedPasswordField";
-import { useAuthStore, useTokenStore } from "../state/auth-provider";
+} from "../../../services/api/titumir";
+import TextField from "../../../components/TextField/TextField";
+import MaskedPasswordField from "../../../components/MaskedPasswordField/MaskedPasswordField";
+import { useAuthStore } from "../../../state/authorization-store";
+import { useTokenStore } from "../../../state/token-store";
 
 export const REQUIRED_MSG = "Required";
 export const MINIMUM_CHAR_MSG = "Minimum 8 chars";

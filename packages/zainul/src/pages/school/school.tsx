@@ -12,7 +12,7 @@ import {
 import React from "react";
 import { IoIosSettings } from "react-icons/io";
 import { Redirect, Link } from "react-router-dom";
-import { useAuthStore } from "../state/auth-provider";
+import { useAuthStore } from "../../state/authorization-store";
 
 function School() {
     const user = useAuthStore((s) => s.user);

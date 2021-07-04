@@ -43,7 +43,7 @@ export class SchoolController {
     @Get(":school/join-requests")
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
-    async getSchoolJoinRequests(@CurrentUser() user: User, @Param("school") _?: number) {
+    async getSchoolJoinRequests(@CurrentUser() user: User, @Param("school") _?: string) {
         try {
             return this.invitationJoinService.getSchoolInvitationJoin({
                 _id: user.school!._id,
@@ -60,7 +60,7 @@ export class SchoolController {
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
     async getSchoolSentInvitations(
         @CurrentUser() user: User,
-        @Param("school") _?: number,
+        @Param("school") _?: string,
     ) {
         try {
             return this.invitationJoinService.getSchoolInvitationJoin({
@@ -93,7 +93,7 @@ export class SchoolController {
     async addCoAdmin(
         @Body() body: AddCoAdminDTO,
         @CurrentUser() user: User,
-        @Param("school") _?: number,
+        @Param("school") _?: string,
     ) {
         try {
             return this.schoolService.assignCoAdmin({ ...body, user });

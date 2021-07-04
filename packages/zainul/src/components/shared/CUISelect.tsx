@@ -30,7 +30,7 @@ const CUISelect = ({ isSearchBar = false, ...props }: CUISelectProps): ReactElem
     const bg = useColorModeValue(
         {},
         {
-            neutral0: unsafeAppColors.gray[600],
+            neutral0: unsafeAppColors.gray[800],
             neutral5: unsafeAppColors.gray[900],
             neutral10: unsafeAppColors.gray[700],
         },
@@ -57,6 +57,9 @@ const CUISelect = ({ isSearchBar = false, ...props }: CUISelectProps): ReactElem
             styles={{
                 input(base) {
                     return { ...base, color: textColor };
+                },
+                control(base) {
+                    return { ...base, background: "inherit" };
                 },
                 option(base, props) {
                     return {

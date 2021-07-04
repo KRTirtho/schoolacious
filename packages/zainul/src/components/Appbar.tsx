@@ -15,20 +15,20 @@ import {
 import { IoIosNotifications, IoIosSunny, IoIosMoon, IoIosLogOut } from "react-icons/io";
 import { RiUser3Line } from "react-icons/ri";
 import { Link, useHistory } from "react-router-dom";
-import useAuthorization from "../hooks/useAuthorization";
 import { FaSchool } from "react-icons/fa";
+import useLogout from "../hooks/useLogout";
 
 function Appbar() {
     const history = useHistory();
 
     const { toggleColorMode } = useColorMode();
+    const logout = useLogout();
 
     const theme = useTheme<typeof base>();
 
     const SchemeToggleIcon = useColorModeValue(IoIosMoon, IoIosSunny);
     const bg = useColorModeValue(theme.colors.gray[50], theme.colors.gray[700]);
     const colorMode = useColorModeValue("Dark", "Light");
-    const { logout } = useAuthorization();
 
     return (
         <Flex

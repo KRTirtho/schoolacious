@@ -2,11 +2,11 @@ import { Container, Icon, Heading } from "@chakra-ui/react";
 import React from "react";
 import CreateSchoolForm from "../components/CreateSchoolForm";
 import { FaSchool } from "react-icons/fa";
-import useAuthorization from "../hooks/useAuthorization";
 import { Redirect } from "react-router-dom";
+import { useAuthStore } from "../state/auth-provider";
 
 function SchoolCreate() {
-    const { user } = useAuthorization();
+    const user = useAuthStore((s) => s.user);
 
     return (
         <Container direction="column" align={{ base: "stretch", md: "center" }}>

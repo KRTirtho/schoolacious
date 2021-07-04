@@ -18,7 +18,7 @@
         "migrate:create": "npm run typeorm -- migration:create -n",
         "migrate:up": "npm run typeorm -- migration:run",
         "migrate:down": "npm run typeorm -- migration:revert",
-        "prod": "node dist/main",
+        "prod": "node dist/src/main",
         "lint": "eslint \"{src,test}/**/*.ts\" --fix",
         "test": "cross-env NODE_ENV=test jest --config jest.config.ts ",
         "test:watch": "cross-env NODE_ENV=test jest --config jest.config.ts --watch",

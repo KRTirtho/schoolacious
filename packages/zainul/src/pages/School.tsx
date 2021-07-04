@@ -12,10 +12,10 @@ import {
 import React from "react";
 import { IoIosSettings } from "react-icons/io";
 import { Redirect, Link } from "react-router-dom";
-import useAuthorization from "../hooks/useAuthorization";
+import { useAuthStore } from "../state/auth-provider";
 
 function School() {
-    const { user } = useAuthorization();
+    const user = useAuthStore((s) => s.user);
 
     const school = user?.school;
 

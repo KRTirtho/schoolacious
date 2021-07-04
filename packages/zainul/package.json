@@ -18,6 +18,7 @@
         "@emotion/styled": "^11.3.0",
         "formik": "^2.2.6",
         "framer-motion": "^4.1.17",
+        "lodash-es": "^4.17.21",
         "react": "^17.0.0",
         "react-dom": "^17.0.0",
         "react-icons": "^4.2.0",
@@ -27,7 +28,8 @@
         "react-transition-group": "^4.4.1",
         "react-waypoint": "^10.1.0",
         "uuid": "^8.3.2",
-        "yup": "^0.32.9"
+        "yup": "^0.32.9",
+        "zustand": "^3.5.5"
     },
     "devDependencies": {
         "@types/react": "^17.0.0",

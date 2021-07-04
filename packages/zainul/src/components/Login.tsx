@@ -14,9 +14,9 @@ import {
     TitumirResponse,
     User,
 } from "../configurations/titumir";
-import useAuthorization from "../hooks/useAuthorization";
 import MaskedPasswordField from "./shared/MaskedPasswordField";
 import { MINIMUM_CHAR_MSG, REQUIRED_MSG } from "./Signup";
+import { useAuthStore, useTokenStore } from "../state/auth-provider";
 
 export const INVALID_EMAIL_MSG = "Invalid email";
 function Login() {
@@ -25,18 +25,19 @@ function Login() {
         email: yup.string().email(INVALID_EMAIL_MSG).required(REQUIRED_MSG),
         password: yup.string().min(8, MINIMUM_CHAR_MSG).required(REQUIRED_MSG),
     });
-    const ctx = useAuthorization();
+    const setTokens = useTokenStore((s) => s.setTokens);
+    const setUser = useAuthStore((s) => s.setUser);
     const { mutate: login, isSuccess } = useMutation<
         TitumirResponse<User>,
         Error,
         LoginBody
     >(MutationContextKey.LOGIN, (body) => titumirApi.login(body), {
         onSuccess({ json, headers }) {
-            ctx.setUser(json);
+            setUser(json);
             const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
             const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);
             if (accessToken && refreshToken) {
-                ctx.setTokens({ accessToken, refreshToken });
+                setTokens({ accessToken, refreshToken });
             }
             setTimeout(() => history.push("/"), 500);
         },

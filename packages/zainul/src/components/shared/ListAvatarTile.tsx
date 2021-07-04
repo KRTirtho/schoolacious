@@ -34,7 +34,12 @@ const ListAvatarTile = forwardRef<ListAvatarTileProps, "div">(function ListAvata
         typeof name !== "string" && name ? Object.values(name).join(" ") : name;
     return (
         <ListItem p="2" {...props} ref={ref}>
-            <HStack spacing={spacing} direction={direction} justify="space-between">
+            <HStack
+                spacing={spacing}
+                direction={direction}
+                justify={props.justifyContent ?? "space-between"}
+                align={props.alignItems}
+            >
                 <HStack>
                     {leading}
                     <Avatar name={username} size="sm" src={src} />

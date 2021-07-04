@@ -236,6 +236,12 @@ export default class Titumir {
         return await this.buildAuthReq<School>(`/school/${short_name}`);
     }
 
+    async getSchoolInvitations(school: string) {
+        return await this.buildAuthReq<Invitations_Joins[]>(
+            `/school/${school}/invitations`,
+        );
+    }
+
     async createSchool(payload: CreateSchool) {
         const res = await this.buildAuthReq<School, CreateSchool>(
             "/school",

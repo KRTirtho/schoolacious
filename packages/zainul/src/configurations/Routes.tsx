@@ -2,20 +2,21 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Introduction from "../pages/Introduction";
 import Auth from "../pages/Auth";
-import useAuthorization from "../hooks/useAuthorization";
 import NotFound404 from "../pages/404";
 import Start from "../pages/Start";
 import Appbar from "../components/Appbar";
 import SchoolCreate from "../pages/SchoolCreate";
 import School from "../pages/School";
 import SchoolConfigure from "../pages/SchoolConfigure";
+import Invitations from "../pages/Invitations";
+import useLoggedIn from "../hooks/useLoggedIn";
 
 export default function Routes() {
-    const ctx = useAuthorization();
+    const logged = useLoggedIn();
 
     return (
         <Switch>
-            {ctx.logged ? (
+            {logged ? (
                 <>
                     <Route path="/">
                         {/**
@@ -34,6 +35,9 @@ export default function Routes() {
                         </Route>
                         <Route exact path="/school/configure">
                             <SchoolConfigure />
+                        </Route>
+                        <Route path="/school/invitations">
+                            <Invitations platform="school" />
                         </Route>
                     </Route>
                 </>

@@ -111,17 +111,18 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
         );
     }
 
+    const character = role.valueOf()[0].toUpperCase() + role.valueOf().slice(1);
     return (
         <>
             <Button variant="ghost" onClick={handleOpen} leftIcon={<FiUserPlus />}>
-                Invite {role.valueOf()[0].toUpperCase() + role.valueOf().slice(1)}s
+                Invite {character}s
             </Button>
 
             <Drawer placement="right" onClose={handleClose} isOpen={isOpen}>
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton />
-                    <DrawerHeader>Invite new members</DrawerHeader>
+                    <DrawerHeader>Invite new {character}</DrawerHeader>
 
                     <DrawerBody>
                         <CUISelect

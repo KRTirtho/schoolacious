@@ -110,6 +110,19 @@ export interface JoinBody {
     role: INVITATION_OR_JOIN_ROLE;
 }
 
+export interface Grade {
+    _id: string;
+    standard: number;
+    created_at: Date;
+    moderator?: User | null;
+    examiner?: User | null;
+    // sections?: Section[] | null;
+    // grades_subjects?: GradeToSubject[] | null;
+    school?: School;
+}
+
+export type GradeBody = Pick<Grade, "standard">;
+
 export default class Titumir {
     accessToken?: string;
     refreshToken?: string;
@@ -256,6 +269,16 @@ export default class Titumir {
     async invite(data: InvitationBody[]) {
         return await this.buildAuthReq<Invitations_Joins[], InvitationBody[]>(
             "/invitation-join/invite",
+            "POST",
+            data,
+        );
+    }
+
+    // =======/grade/=======
+
+    async createGrades(school: string, data: GradeBody[]) {
+        return await this.buildAuthReq<Grade[], GradeBody[]>(
+            `/school/${school}/grade`,
             "POST",
             data,
         );

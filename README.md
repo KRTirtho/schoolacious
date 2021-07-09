@@ -45,12 +45,12 @@ Learn more from [CONTRIBUTION.md](/CONTRIBUTION.md/)
 
 ## Contribution Needed For | TODO
 
-- [ ] Frontend Setup (React)
-- [ ] Unit Tests for Backend (NestJS)
+- [x] Frontend Setup (React)
+- [x] Unit Tests for Backend (NestJS)
 - [ ] WebRTC API implementation
-- [ ] API Client (Browser & Dart)
+- [ ] API Client (Browser)
 - [ ] Backend Security
-- [ ] Docker integration
+- [x] Docker integration
 - [ ] CI/CD integration (Github Actions)
 
 For knowing more tasks, go to repo's [projects](https://github.com/KRTirtho/veschool/projects)

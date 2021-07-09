@@ -114,7 +114,12 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
     const character = role.valueOf()[0].toUpperCase() + role.valueOf().slice(1);
     return (
         <>
-            <Button variant="ghost" onClick={handleOpen} leftIcon={<FiUserPlus />}>
+            <Button
+                variant="ghost"
+                isFullWidth
+                onClick={handleOpen}
+                leftIcon={<FiUserPlus />}
+            >
                 Invite {character}s
             </Button>
 
@@ -175,6 +180,7 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
                             </Button>
                             <Button
                                 disabled={selectedItems.length === 0}
+                                isLoading={isLoading}
                                 onClick={inviteAll}
                             >
                                 Invite all

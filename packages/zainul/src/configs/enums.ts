@@ -3,6 +3,7 @@ export enum MutationContextKey {
     LOGIN = "mutate-login",
     CREATE_SCHOOL = "mutate-create-school",
     INVITATION = "mutate-invitation",
+    CREATE_GRADES = "mutate-create-grades",
 }
 
 export enum QueryContextKey {

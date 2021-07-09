@@ -1,18 +1,45 @@
-import { Link as CLink, Flex } from "@chakra-ui/react";
+import { Link as CLink, Heading, List, ListItem, Stack } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
 import InviteMembersDrawer from "./components/InviteMembersDrawer";
 import { INVITATION_OR_JOIN_ROLE } from "../../services/api/titumir";
+import Paper from "../../components/Paper/Paper";
+import AddGradesModal from "./components/AddGradesModal";
 
 function SchoolConfigure() {
     return (
-        <Flex align="center">
-            <InviteMembersDrawer role={INVITATION_OR_JOIN_ROLE.teacher} />
-            <InviteMembersDrawer role={INVITATION_OR_JOIN_ROLE.student} />
-            <CLink color="primary.400" as={Link} to="/school/invitations">
-                View Sent Invitations
-            </CLink>
-        </Flex>
+        <Stack direction="row" spacing="2" justify="center" p="2" wrap="wrap">
+            <Paper
+                maxW={["full", null, "xl"]}
+                shadow="none"
+                colorScheme="tinted"
+                py="2"
+                m="0"
+            >
+                <Heading size="md">Configure Members</Heading>
+                <List>
+                    <ListItem>
+                        <InviteMembersDrawer role={INVITATION_OR_JOIN_ROLE.teacher} />
+                    </ListItem>
+                    <ListItem>
+                        <InviteMembersDrawer role={INVITATION_OR_JOIN_ROLE.student} />
+                    </ListItem>
+                    <ListItem>
+                        <CLink color="primary.400" as={Link} to="/school/invitations">
+                            View Sent Invitations
+                        </CLink>
+                    </ListItem>
+                </List>
+            </Paper>
+
+            <Paper maxW={["full", null, "xl"]} shadow="none" colorScheme="tinted" py="2">
+                <Heading size="md">Grade Configurations</Heading>
+                <AddGradesModal />
+                <CLink color="primary.400" as={Link} to="/school/grades">
+                    View all grades
+                </CLink>
+            </Paper>
+        </Stack>
     );
 }
 

@@ -21,7 +21,7 @@ function Paper({
 }: PropsWithChildren<PaperProps>): ReactElement {
     const theme = useTheme<typeof base>();
 
-    const borderColor = useColorModeValue(theme.colors.gray[800], theme.colors.gray[200]);
+    const borderColor = useColorModeValue(theme.colors.gray[400], theme.colors.gray[200]);
 
     const colorSchemesRaw = {
         container: {
@@ -30,7 +30,7 @@ function Paper({
         },
         tinted: {
             dark: { bg: theme.colors.gray[600] },
-            light: { bg: theme.colors.gray[200] },
+            light: { bg: theme.colors.gray[50] },
         },
     };
 

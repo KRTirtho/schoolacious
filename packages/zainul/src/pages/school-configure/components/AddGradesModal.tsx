@@ -16,6 +16,8 @@ import {
     NumberInputField,
     FormControl,
     FormErrorMessage,
+    Text,
+    HStack,
 } from "@chakra-ui/react";
 import { IoIosAddCircle } from "react-icons/io";
 import React, { useState } from "react";
@@ -24,7 +26,9 @@ import * as yup from "yup";
 import useTitumirMutation from "../../../hooks/useTitumirMutation";
 import { useAuthStore } from "../../../state/authorization-store";
 import { Grade, GradeBody } from "../../../services/api/titumir";
-import { MutationContextKey } from "../../../configs/enums";
+import { MutationContextKey, QueryContextKey } from "../../../configs/enums";
+import { FaRegTimesCircle } from "react-icons/fa";
+import { useQueryClient } from "react-query";
 
 function AddGradesModal() {
     const user = useAuthStore((s) => s.user);
@@ -52,10 +56,20 @@ function AddGradesModal() {
         }),
     });
 
+    const queryClient = useQueryClient();
+
     const { mutate: createGrades, isLoading } = useTitumirMutation<Grade[], GradeBody[]>(
         MutationContextKey.CREATE_GRADES,
         (api, body) =>
             api.createGrades(user!.school!.short_name, body).then(({ json }) => json),
+        {
+            onSuccess(data) {
+                queryClient.setQueryData<Grade[]>(QueryContextKey.GRADES, (previous) => [
+                    ...(previous ?? []),
+                    ...data,
+                ]);
+            },
+        },
     );
 
     function handleClose() {
@@ -84,11 +98,32 @@ function AddGradesModal() {
                     <ModalBody>
                         <List>
                             {standards.map((standard, i) => (
-                                <ListItem key={standard + i}>{standard}</ListItem>
+                                <ListItem
+                                    _even={{ bg: "primary.100" }}
+                                    key={standard + i}
+                                    px="2"
+                                >
+                                    <HStack justify="space-between">
+                                        <Text>{standard}</Text>
+                                        <IconButton
+                                            variant="ghost"
+                                            aria-label="delete create grade"
+                                            icon={<FaRegTimesCircle />}
+                                            onClick={() => {
+                                                setStandards(
+                                                    standards.filter(
+                                                        (olStandard) =>
+                                                            olStandard !== standard,
+                                                    ),
+                                                );
+                                            }}
+                                        />
+                                    </HStack>
+                                </ListItem>
                             ))}
                         </List>
-                        <Flex justify="center">
-                            <form onSubmit={handleSubmit} onReset={handleReset}>
+                        <form onSubmit={handleSubmit} onReset={handleReset}>
+                            <Flex justify="center">
                                 <FormControl
                                     isInvalid={!!errors.standard && touched.standard}
                                 >
@@ -108,8 +143,8 @@ function AddGradesModal() {
                                     icon={<IoIosAddCircle />}
                                     variant="ghost"
                                 />
-                            </form>
-                        </Flex>
+                            </Flex>
+                        </form>
                     </ModalBody>
                     <ModalFooter>
                         <Button onClick={handleClose} colorScheme="gray" variant="ghost">

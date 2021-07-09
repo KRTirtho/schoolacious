@@ -283,4 +283,8 @@ export default class Titumir {
             data,
         );
     }
+
+    async getGrades(school: string) {
+        return await this.buildAuthReq<Grade[]>(`/school/${school}/grade`);
+    }
 }

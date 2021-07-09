@@ -5,6 +5,7 @@ import InviteMembersDrawer from "./components/InviteMembersDrawer";
 import { INVITATION_OR_JOIN_ROLE } from "../../services/api/titumir";
 import Paper from "../../components/Paper/Paper";
 import AddGradesModal from "./components/AddGradesModal";
+import GradesList from "./components/GradesList";
 
 function SchoolConfigure() {
     return (
@@ -35,9 +36,7 @@ function SchoolConfigure() {
             <Paper maxW={["full", null, "xl"]} shadow="none" colorScheme="tinted" py="2">
                 <Heading size="md">Grade Configurations</Heading>
                 <AddGradesModal />
-                <CLink color="primary.400" as={Link} to="/school/grades">
-                    View all grades
-                </CLink>
+                <GradesList />
             </Paper>
         </Stack>
     );

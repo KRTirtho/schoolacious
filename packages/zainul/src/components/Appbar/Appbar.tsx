@@ -64,8 +64,6 @@ function Appbar() {
                         <MenuItem as={Link} to="/school" icon={<FaSchool />}>
                             Your School
                         </MenuItem>
-                        <MenuItem>Mark as Draft</MenuItem>
-                        <MenuItem>Delete</MenuItem>
                         <MenuItem onClick={logout} icon={<IoIosLogOut />}>
                             Logout
                         </MenuItem>

@@ -110,7 +110,7 @@ function Signup() {
                         <Field
                             component={MaskedPasswordField}
                             name="password"
-                            label="password"
+                            label="Password"
                             required
                         />
                         <Field

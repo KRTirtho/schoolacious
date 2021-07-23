@@ -1,0 +1,24 @@
+{
+    "name": "@veschool/types",
+    "version": "0.1.0",
+    "description": "common type declaration package for both client & server for keeping sync between types",
+    "keywords": [
+        "veschool",
+        "typescript"
+    ],
+    "author": "KR Tirtho <krtirtho@gmail.com>",
+    "homepage": "https://github.com/KRTirtho/veschool/tree/master/packages/types#readme",
+    "license": "MIT",
+    "main": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KRTirtho/veschool.git"
+    },
+    "scripts": {},
+    "bugs": {
+        "url": "https://github.com/KRTirtho/veschool/issues"
+    },
+    "devDependencies": {
+        "typescript": "^4.3.5"
+    }
+}

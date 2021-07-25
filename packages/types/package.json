@@ -9,7 +9,7 @@
     "author": "KR Tirtho <krtirtho@gmail.com>",
     "homepage": "https://github.com/KRTirtho/veschool/tree/master/packages/types#readme",
     "license": "MIT",
-    "main": "index.d.ts",
+    "main": "index.ts",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/KRTirtho/veschool.git"

@@ -11,7 +11,8 @@ import {
     Inject,
 } from "@nestjs/common";
 import School from "../database/entity/schools.entity";
-import User, { USER_ROLE } from "../database/entity/users.entity";
+import User from "../database/entity/users.entity";
+import { USER_ROLE } from "@veschool/types";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";

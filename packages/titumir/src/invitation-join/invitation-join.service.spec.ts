@@ -5,15 +5,17 @@ import { UserService } from "../user/user.service";
 import { InvitationJoinService } from "./invitation-join.service";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
-import User, { USER_ROLE } from "../database/entity/users.entity";
+import User from "../database/entity/users.entity";
+import {
+    USER_ROLE,
+    INVITATION_OR_JOIN_ROLE,
+    INVITATION_OR_JOIN_TYPE,
+} from "@veschool/types";
 import { DeepPartial } from "typeorm";
 import { SchoolService } from "../school/school.service";
 import School from "../database/entity/schools.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import Invitations_Joins, {
-    INVITATION_OR_JOIN_ROLE,
-    INVITATION_OR_JOIN_TYPE,
-} from "../database/entity/invitations_or_joins.entity";
+import Invitations_Joins from "../database/entity/invitations_or_joins.entity";
 
 describe("InvitationJoinService", () => {
     let service: InvitationJoinService;

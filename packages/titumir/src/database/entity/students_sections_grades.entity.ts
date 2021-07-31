@@ -6,13 +6,16 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from "typeorm";
+import { StudentsToSectionsToGradesSchema } from "@veschool/types";
 import Grade from "./grades.entity";
 import Section from "./sections.entity";
 import User from "./users.entity";
 
 @Entity()
 @Unique(["grade", "section", "user"])
-export default class StudentsToSectionsToGrades {
+export default class StudentsToSectionsToGrades
+    implements StudentsToSectionsToGradesSchema
+{
     @PrimaryGeneratedColumn("uuid")
     _id!: string;
 

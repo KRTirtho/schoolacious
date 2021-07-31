@@ -9,12 +9,14 @@ import { In, Repository } from "typeorm";
 import BasicEntityService, {
     PartialKey,
 } from "../database/abstracts/entity-service.abstract";
-import Invitations_Joins, {
+import Invitations_Joins from "../database/entity/invitations_or_joins.entity";
+import School from "../database/entity/schools.entity";
+import User from "../database/entity/users.entity";
+import {
+    USER_ROLE,
     INVITATION_OR_JOIN_ROLE,
     INVITATION_OR_JOIN_TYPE,
-} from "../database/entity/invitations_or_joins.entity";
-import School from "../database/entity/schools.entity";
-import User, { USER_ROLE } from "../database/entity/users.entity";
+} from "@veschool/types";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
 import { isAdministrative } from "../utils/helper-functions.util";

@@ -13,24 +13,10 @@ import Notifications from "./notifications.entity";
 import School from "./schools.entity";
 import StudentsToSectionsToGrades from "./students_sections_grades.entity";
 import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
-
-export enum USER_ROLE {
-    admin = "admin",
-    coAdmin = "co-admin",
-    gradeModerator = "grade-moderator",
-    gradeExaminer = "grade-examiner",
-    classTeacher = "class-teacher",
-    teacher = "teacher",
-    student = "student",
-}
-
-export enum USER_STATUS {
-    online = "online",
-    offline = "offline",
-}
+import { UserSchema, USER_ROLE, USER_STATUS } from "@veschool/types"
 
 @Entity("users")
-export default class User {
+export default class User implements UserSchema {
     @PrimaryGeneratedColumn("uuid")
     _id!: string;
 

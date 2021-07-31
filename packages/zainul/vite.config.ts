@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     hmr: {
       // for making hmr work in gitpod 
-      host: "3000-violet-chicken-ifvho6mo.ws-us11.gitpod.io"
+      port: 443
     }
   }
 })

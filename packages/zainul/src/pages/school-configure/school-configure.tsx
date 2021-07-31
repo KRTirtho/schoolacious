@@ -14,7 +14,7 @@ import {
 import React from "react";
 import { Link } from "react-router-dom";
 import InviteMembersDrawer from "./components/InviteMembersDrawer";
-import { INVITATION_OR_JOIN_ROLE } from "../../services/api/titumir";
+import { INVITATION_OR_JOIN_ROLE } from "@veschool/types";
 import Paper from "../../components/Paper/Paper";
 import AddGradesModal from "./components/AddGradesModal";
 import GradesList from "./components/GradesList";

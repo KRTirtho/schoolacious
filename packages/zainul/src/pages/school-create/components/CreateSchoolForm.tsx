@@ -3,7 +3,8 @@ import { Field, Form, Formik } from "formik";
 import TextField, { TextareaField } from "../../../components/TextField/TextField";
 import React from "react";
 import * as yup from "yup";
-import { CreateSchool, School } from "../../../services/api/titumir";
+import { CreateSchool } from "../../../services/api/titumir";
+import { SchoolSchema } from "@veschool/types";
 import { INVALID_EMAIL_MSG } from "../../auth/components/Login";
 import { REQUIRED_MSG } from "../../auth/components/Signup";
 import useTitumirMutation from "../../../hooks/useTitumirMutation";
@@ -30,9 +31,11 @@ function CreateSchoolForm() {
         short_name: "",
     };
 
-    const { mutate: createSchool, isSuccess } = useTitumirMutation<School, CreateSchool>(
-        MutationContextKey.CREATE_SCHOOL,
-        (api, payload) => api.createSchool(payload).then(({ json }) => json),
+    const { mutate: createSchool, isSuccess } = useTitumirMutation<
+        SchoolSchema,
+        CreateSchool
+    >(MutationContextKey.CREATE_SCHOOL, (api, payload) =>
+        api.createSchool(payload).then(({ json }) => json),
     );
 
     return (

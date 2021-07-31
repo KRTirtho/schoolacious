@@ -11,7 +11,8 @@ import BasicEntityService, {
     PartialKey,
 } from "../database/abstracts/entity-service.abstract";
 import School from "../database/entity/schools.entity";
-import User, { USER_ROLE } from "../database/entity/users.entity";
+import User from "../database/entity/users.entity";
+import { USER_ROLE } from "@veschool/types";
 import { GradeService } from "../grade/grade.service";
 import { UserService } from "../user/user.service";
 import { isGradeAdministrative } from "../utils/helper-functions.util";

@@ -1,10 +1,10 @@
 import create, { StateCreator } from "zustand";
 import { devtools } from "zustand/middleware";
-import { User } from "../services/api/titumir";
+import { UserSchema } from "@veschool/types";
 
 export interface AuthorizationStore {
-    user?: User;
-    setUser(user: User): void;
+    user?: UserSchema;
+    setUser(user: UserSchema): void;
 }
 
 const authStore: StateCreator<AuthorizationStore> = (set) => {

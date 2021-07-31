@@ -7,22 +7,17 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from "typeorm";
+import {
+    Invitations_JoinsSchema,
+    INVITATION_OR_JOIN_ROLE,
+    INVITATION_OR_JOIN_TYPE,
+} from "@veschool/types";
 import School from "./schools.entity";
 import User from "./users.entity";
 
-export enum INVITATION_OR_JOIN_TYPE {
-    invitation = "invitation",
-    join = "join",
-}
-
-export enum INVITATION_OR_JOIN_ROLE {
-    teacher = "teacher",
-    student = "student",
-}
-
 @Entity("invitations_or_joins")
 @Unique(["user", "school"])
-export default class Invitations_Joins {
+export default class Invitations_Joins implements Invitations_JoinsSchema {
     @PrimaryGeneratedColumn("uuid")
     _id!: string;
 

@@ -14,7 +14,7 @@ import { SchedulerRegistry } from "@nestjs/schedule";
 import { NotificationGateway } from "../notification/notification.gateway";
 import { NotificationService } from "../notification/notification.service";
 import { StudentSectionGradeService } from "../section/student-section-grade.service";
-import { NOTIFICATION_STATUS } from "../database/entity/notifications.entity";
+import { NOTIFICATION_STATUS } from "@veschool/types";
 
 export type CreateClassPayload = PartialKey<Class, "_id" | "created_at">;
 

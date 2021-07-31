@@ -10,11 +10,11 @@ import TextField from "../../../components/TextField/TextField";
 import { MutationContextKey } from "../../../configs/enums";
 import {
     TitumirResponse,
-    User,
     LoginBody,
     CONST_ACCESS_TOKEN_KEY,
     CONST_REFRESH_TOKEN_KEY,
 } from "../../../services/api/titumir";
+import { UserSchema } from "@veschool/types";
 import { useAuthStore } from "../../../state/authorization-store";
 import { useTokenStore } from "../../../state/token-store";
 import { MINIMUM_CHAR_MSG, REQUIRED_MSG } from "./Signup";
@@ -28,7 +28,7 @@ function Login() {
     const setTokens = useTokenStore((s) => s.setTokens);
     const setUser = useAuthStore((s) => s.setUser);
     const { mutate: login, isSuccess } = useMutation<
-        TitumirResponse<User>,
+        TitumirResponse<UserSchema>,
         Error,
         LoginBody
     >(MutationContextKey.LOGIN, (body) => titumirApi.login(body), {

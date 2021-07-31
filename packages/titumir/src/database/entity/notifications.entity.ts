@@ -1,14 +1,10 @@
 import { IsEnum } from "class-validator";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { NotificationsSchema, NOTIFICATION_STATUS } from "@veschool/types";
 import User from "./users.entity";
 
-export enum NOTIFICATION_STATUS {
-    unsent = "unsent",
-    sent = "sent",
-}
-
 @Entity("notifications")
-export default class Notifications {
+export default class Notifications implements NotificationsSchema {
     @PrimaryGeneratedColumn("uuid")
     _id!: string;
 

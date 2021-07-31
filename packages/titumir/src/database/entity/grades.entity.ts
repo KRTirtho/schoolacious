@@ -9,6 +9,7 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from "typeorm";
+import { GradeSchema } from "@veschool/types";
 import GradeToSubject from "./grade_subject.entity";
 import School from "./schools.entity";
 import Section from "./sections.entity";
@@ -18,7 +19,7 @@ import User from "./users.entity";
 
 @Entity("grades")
 @Unique(["standard", "school"])
-export default class Grade {
+export default class Grade implements GradeSchema {
     @PrimaryGeneratedColumn("uuid")
     _id!: string;
 

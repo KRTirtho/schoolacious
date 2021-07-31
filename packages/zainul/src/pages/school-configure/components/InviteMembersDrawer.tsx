@@ -24,8 +24,8 @@ import {
     InvitationBody,
     Invitations_Joins,
     INVITATION_OR_JOIN_ROLE,
-    User,
 } from "../../../services/api/titumir";
+import { UserSchema } from "@veschool/types";
 import useTitumirMutation from "../../../hooks/useTitumirMutation";
 import { useQueryClient } from "react-query";
 
@@ -45,7 +45,7 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
         data: optionsRaw,
         refetch,
         isLoading,
-    } = useTitumirQuery<User[]>(
+    } = useTitumirQuery<UserSchema[]>(
         QueryContextKey.QUERY_USER,
         (api) => api.queryUser(query).then(({ json }) => json),
         {

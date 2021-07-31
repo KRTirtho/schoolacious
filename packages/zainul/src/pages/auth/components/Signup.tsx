@@ -11,8 +11,8 @@ import {
     CONST_REFRESH_TOKEN_KEY,
     SignupBody,
     TitumirResponse,
-    User,
 } from "../../../services/api/titumir";
+import { UserSchema } from "@veschool/types";
 import TextField from "../../../components/TextField/TextField";
 import MaskedPasswordField from "../../../components/MaskedPasswordField/MaskedPasswordField";
 import { useAuthStore } from "../../../state/authorization-store";
@@ -47,7 +47,7 @@ function Signup() {
     const setUser = useAuthStore((s) => s.setUser);
 
     const { mutate: signup, isSuccess } = useMutation<
-        TitumirResponse<User>,
+        TitumirResponse<UserSchema>,
         Error,
         SignupBody
     >(MutationContextKey.SIGNUP, (body) => titumirApi.signup(body), {

@@ -1,12 +1,14 @@
 {
     "compilerOptions": {
         "lib": ["ES2020"],
-        "target": "es2017",
+        "target": "ES2015",
         "incremental": true,
         "strict": true,
         "skipLibCheck": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
-        "noEmit": true
+        "declaration": true,
+        "module": "CommonJS",
+        "outDir": "dist"
     }
 }

@@ -7,13 +7,14 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from "typeorm";
+import { SubjectSchema } from "@veschool/types";
 import GradeToSubject from "./grade_subject.entity";
 import School from "./schools.entity";
 import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
 
 @Entity("subjects")
 @Unique(["name", "school"])
-export default class Subject {
+export default class Subject implements SubjectSchema {
     @PrimaryGeneratedColumn("uuid")
     _id!: string;
 

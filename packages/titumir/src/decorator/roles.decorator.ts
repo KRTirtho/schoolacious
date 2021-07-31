@@ -1,4 +1,4 @@
 import { SetMetadata } from "@nestjs/common";
-import { USER_ROLE } from "../database/entity/users.entity";
+import { USER_ROLE } from "@veschool/types";
 
 export const Roles = (...args: USER_ROLE[]) => SetMetadata("roles", args);

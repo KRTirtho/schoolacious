@@ -10,7 +10,8 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import User, { USER_ROLE } from "../database/entity/users.entity";
+import User from "../database/entity/users.entity";
+import {USER_ROLE} from "@veschool/types"
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifySchool } from "../decorator/verify-school.decorator";

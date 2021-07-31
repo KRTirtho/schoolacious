@@ -1,8 +1,8 @@
 import { Body, Controller, Logger, Post, Get, Param, Put, Inject } from "@nestjs/common";
 import { ApiBearerAuth, ApiNotFoundResponse } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import { INVITATION_OR_JOIN_TYPE } from "../database/entity/invitations_or_joins.entity";
-import User, { USER_ROLE } from "../database/entity/users.entity";
+import { USER_ROLE, INVITATION_OR_JOIN_TYPE } from "@veschool/types";
+import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifySchool } from "../decorator/verify-school.decorator";

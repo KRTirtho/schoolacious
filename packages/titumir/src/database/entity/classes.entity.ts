@@ -6,17 +6,12 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn,
 } from "typeorm";
+import { ClassSchema, CLASS_STATUS } from "@veschool/types";
 import Section from "./sections.entity";
 import User from "./users.entity";
 
-export enum CLASS_STATUS {
-    scheduled = "scheduled",
-    ongoing = "ongoing",
-    complete = "complete",
-}
-
 @Entity("classes")
-export default class Class {
+export default class Class implements ClassSchema {
     @PrimaryGeneratedColumn("uuid")
     _id!: string;
 

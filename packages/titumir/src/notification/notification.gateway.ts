@@ -8,7 +8,8 @@ import {
 } from "@nestjs/websockets";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import SocketIO, { Socket, Server as WsServer } from "socket.io";
-import User, { USER_STATUS } from "../database/entity/users.entity";
+import User from "../database/entity/users.entity";
+import { USER_STATUS } from "@veschool/types";
 import { UserService } from "../user/user.service";
 
 @WebSocketGateway()

@@ -1,4 +1,4 @@
-import { USER_ROLE } from "../database/entity/users.entity";
+import { USER_ROLE } from "@veschool/types";
 
 export function isAdministrative(role?: USER_ROLE | null): boolean {
     if (!role) return false;

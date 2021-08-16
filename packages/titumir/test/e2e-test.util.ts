@@ -9,10 +9,8 @@ import School from "../src/database/entity/schools.entity";
 import { EntityNotFoundFilter } from "../src/database/filters/entity-not-found.filter";
 import { QueryFailedFilter } from "../src/database/filters/query-failed.filter";
 import { AppModule, JWT_AUTH_GUARD } from "../src/app.module";
-import Invitations_Joins, {
-    INVITATION_OR_JOIN_ROLE,
-    INVITATION_OR_JOIN_TYPE,
-} from "../src/database/entity/invitations_or_joins.entity";
+import Invitations_Joins from "../src/database/entity/invitations_or_joins.entity";
+import { INVITATION_OR_JOIN_ROLE, INVITATION_OR_JOIN_TYPE } from "@veschool/types";
 import InvitationJoinDTO from "../src/invitation-join/dto/invitation-join.dto";
 import { INVITATION_OR_JOIN_ACTION } from "../src/invitation-join/invitation-join.service";
 import AddCoAdminDTO from "../src/school/dto/add-co-admin.dto";

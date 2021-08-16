@@ -7,16 +7,17 @@ import Start from "../pages/start/start";
 import Appbar from "../components/Appbar/Appbar";
 import SchoolCreate from "../pages/school-create/school-create";
 import School from "../pages/school/school";
-import SchoolConfigure from "../pages/school-configure/school-configure";
+import ConfigureSchool from "../pages/configure-school/configure-school";
 import Invitations from "../pages/invitations/invitations";
 import useLoggedIn from "../hooks/useLoggedIn";
+import AddRemoveMembers from "../pages/add-remove-members/add-remove-members";
 
 export default function Routes() {
     const logged = useLoggedIn();
 
     return (
         <Switch>
-            {logged ? (
+            {!logged ? (
                 <>
                     <Route path="/">
                         {/**
@@ -33,8 +34,11 @@ export default function Routes() {
                         <Route exact path="/school/create">
                             <SchoolCreate />
                         </Route>
-                        <Route exact path="/school/configure">
-                            <SchoolConfigure />
+                        <Route exact path="/school/configure-school">
+                            <ConfigureSchool />
+                        </Route>
+                        <Route exact path="/school/add-remove-members">
+                            <AddRemoveMembers />
                         </Route>
                         <Route path="/school/invitations">
                             <Invitations platform="school" />

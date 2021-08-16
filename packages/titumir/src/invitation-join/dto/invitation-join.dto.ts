@@ -1,9 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsDefined, IsEnum, IsOptional, IsUUID } from "class-validator";
-import {
-    INVITATION_OR_JOIN_ROLE,
-    INVITATION_OR_JOIN_TYPE,
-} from "../../database/entity/invitations_or_joins.entity";
+import { INVITATION_OR_JOIN_ROLE, INVITATION_OR_JOIN_TYPE } from "@veschool/types";
 
 export class InvitationDTO {
     @IsDefined()

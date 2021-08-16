@@ -8,8 +8,13 @@ import {
     Text,
     IconButton,
     Tooltip,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
 } from "@chakra-ui/react";
 import React from "react";
+import { FaSchool, FaUserPlus } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
 import { Redirect, Link } from "react-router-dom";
 import { useAuthStore } from "../../state/authorization-store";
@@ -45,16 +50,32 @@ function School() {
                     </Clink>
                     <Text>{school?.description}</Text>
                 </Stack>
-                <Tooltip label="Configure School">
-                    <IconButton
-                        variant="ghost"
-                        colorScheme="white"
-                        aria-label="configure school"
-                        as={Link}
-                        to="/school/configure"
-                    >
-                        <IoIosSettings />
-                    </IconButton>
+                <Tooltip label="School Configuration Options">
+                    <Menu isLazy>
+                        <MenuButton
+                            colorScheme="white"
+                            aria-label="school options"
+                            as={IconButton}
+                            icon={<IoIosSettings />}
+                            variant="ghost"
+                        />
+                        <MenuList>
+                            <MenuItem
+                                as={Link}
+                                to="/school/configure-members"
+                                icon={<FaUserPlus />}
+                            >
+                                Add/Remove members
+                            </MenuItem>
+                            <MenuItem
+                                as={Link}
+                                to="/school/configure-school"
+                                icon={<FaSchool />}
+                            >
+                                Configure school
+                            </MenuItem>
+                        </MenuList>
+                    </Menu>
                 </Tooltip>
             </Stack>
         </Flex>

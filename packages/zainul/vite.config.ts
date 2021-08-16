@@ -4,10 +4,10 @@ import reactRefresh from '@vitejs/plugin-react-refresh'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [reactRefresh()],
-  server: {
-    hmr: {
+  // server: {
+  //   hmr: {
       // for making hmr work in gitpod 
-      port: 443
-    }
-  }
+  //     port: 443
+  //   }
+  // }
 })

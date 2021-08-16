@@ -17,7 +17,7 @@ function SchoolCreate() {
                 Create a School
             </Heading>
             <CreateSchoolForm />
-            {user?.school !== undefined && <Redirect to="/school" />}
+            {user?.school && <Redirect to="/school" />}
         </Container>
     );
 }

@@ -1,6 +1,9 @@
 {
     "name": "veschool",
     "private": true,
+    "workspaces":[
+      "packages/*"
+    ],
     "scripts": {
         "bootstrap": "cross-env FORCE_COLOR=1 lerna bootstrap",
         "dev": "cross-env FORCE_COLOR=1 lerna run dev --parallel",

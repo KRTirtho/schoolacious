@@ -16,8 +16,7 @@ import {
 } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { INVITATION_OR_JOIN_TYPE, USER_ROLE } from "@veschool/types";
-import Invitations_Joins, {
-} from "../database/entity/invitations_or_joins.entity";
+import Invitations_Joins from "../database/entity/invitations_or_joins.entity";
 import School from "../database/entity/schools.entity";
 import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";

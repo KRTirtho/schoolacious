@@ -50,8 +50,8 @@ function School() {
                     </Clink>
                     <Text>{school?.description}</Text>
                 </Stack>
-                <Tooltip label="School Configuration Options">
-                    <Menu isLazy>
+                <Menu isLazy>
+                    <Tooltip label="School Configuration Options">
                         <MenuButton
                             colorScheme="white"
                             aria-label="school options"
@@ -59,24 +59,24 @@ function School() {
                             icon={<IoIosSettings />}
                             variant="ghost"
                         />
-                        <MenuList>
-                            <MenuItem
-                                as={Link}
-                                to="/school/configure-members"
-                                icon={<FaUserPlus />}
-                            >
-                                Add/Remove members
-                            </MenuItem>
-                            <MenuItem
-                                as={Link}
-                                to="/school/configure-school"
-                                icon={<FaSchool />}
-                            >
-                                Configure school
-                            </MenuItem>
-                        </MenuList>
-                    </Menu>
-                </Tooltip>
+                    </Tooltip>
+                    <MenuList>
+                        <MenuItem
+                            as={Link}
+                            to="/school/configure-members"
+                            icon={<FaUserPlus />}
+                        >
+                            Add/Remove members
+                        </MenuItem>
+                        <MenuItem
+                            as={Link}
+                            to="/school/configure-school"
+                            icon={<FaSchool />}
+                        >
+                            Configure school
+                        </MenuItem>
+                    </MenuList>
+                </Menu>
             </Stack>
         </Flex>
     );

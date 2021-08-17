@@ -17,7 +17,7 @@ export default function Routes() {
 
     return (
         <Switch>
-            {!logged ? (
+            {logged ? (
                 <>
                     <Route path="/">
                         {/**

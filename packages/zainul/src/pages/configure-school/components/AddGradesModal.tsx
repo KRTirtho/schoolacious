@@ -25,10 +25,18 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import useTitumirMutation from "../../../hooks/useTitumirMutation";
 import { useAuthStore } from "../../../state/authorization-store";
-import { Grade, GradeBody } from "../../../services/api/titumir";
+import { GradeBody } from "../../../services/api/titumir";
+import { GradeSchema } from "@veschool/types";
 import { MutationContextKey, QueryContextKey } from "../../../configs/enums";
 import { FaRegTimesCircle } from "react-icons/fa";
 import { useQueryClient } from "react-query";
+
+/* TODO: instead of creating multiple grades at once, make the titumir
+         able to create one grade with grade-moderator & grade-examiner & 
+         grade-subjects. That makes these three field non-nullable
+
+         From now on, grade must've grade moderator, examiner & subjects from the very beginning
+ */
 
 function AddGradesModal() {
     const user = useAuthStore((s) => s.user);
@@ -58,16 +66,19 @@ function AddGradesModal() {
 
     const queryClient = useQueryClient();
 
-    const { mutate: createGrades, isLoading } = useTitumirMutation<Grade[], GradeBody[]>(
+    const { mutate: createGrades, isLoading } = useTitumirMutation<
+        GradeSchema[],
+        GradeBody[]
+    >(
         MutationContextKey.CREATE_GRADES,
         (api, body) =>
             api.createGrades(user!.school!.short_name, body).then(({ json }) => json),
         {
             onSuccess(data) {
-                queryClient.setQueryData<Grade[]>(QueryContextKey.GRADES, (previous) => [
-                    ...(previous ?? []),
-                    ...data,
-                ]);
+                queryClient.setQueryData<GradeSchema[]>(
+                    QueryContextKey.GRADES,
+                    (previous) => [...(previous ?? []), ...data],
+                );
             },
         },
     );

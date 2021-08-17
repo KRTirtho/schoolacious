@@ -13,14 +13,15 @@ import { FiEdit } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { QueryContextKey } from "../../../configs/enums";
 import useTitumirQuery from "../../../hooks/useTitumirQuery";
-import { Grade } from "../../../services/api/titumir";
+import { GradeSchema } from "@veschool/types";
 import { useAuthStore } from "../../../state/authorization-store";
 
 function GradesList() {
     const school = useAuthStore((s) => s.user?.school);
 
-    const { data: grades } = useTitumirQuery<Grade[]>(QueryContextKey.GRADES, (api) =>
-        api.getGrades(school!.short_name).then(({ json }) => json),
+    const { data: grades } = useTitumirQuery<GradeSchema[]>(
+        QueryContextKey.GRADES,
+        (api) => api.getGrades(school!.short_name).then(({ json }) => json),
     );
 
     return (

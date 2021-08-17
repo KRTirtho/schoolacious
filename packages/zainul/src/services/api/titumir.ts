@@ -1,4 +1,5 @@
-import { SchoolSchema, UserSchema } from "@veschool/types";
+import { SchoolSchema, UserSchema, GradeSchema } from "@veschool/types";
+import qs from "query-string";
 
 export type TitumirResponse<T> = Omit<Response, "json"> & { json: T };
 
@@ -73,18 +74,7 @@ export interface JoinBody {
     role: INVITATION_OR_JOIN_ROLE;
 }
 
-export interface Grade {
-    _id: string;
-    standard: number;
-    created_at: Date;
-    moderator?: UserSchema | null;
-    examiner?: UserSchema | null;
-    // sections?: Section[] | null;
-    // grades_subjects?: GradeToSubject[] | null;
-    school?: SchoolSchema;
-}
-
-export type GradeBody = Pick<Grade, "standard">;
+export type GradeBody = Pick<GradeSchema, "standard">;
 
 export default class Titumir {
     accessToken?: string;
@@ -240,14 +230,15 @@ export default class Titumir {
     // =======/grade/=======
 
     async createGrades(school: string, data: GradeBody[]) {
-        return await this.buildAuthReq<Grade[], GradeBody[]>(
+        return await this.buildAuthReq<GradeSchema[], GradeBody[]>(
             `/school/${school}/grade`,
             "POST",
             data,
         );
     }
 
-    async getGrades(school: string) {
-        return await this.buildAuthReq<Grade[]>(`/school/${school}/grade`);
+    async getGrades(school: string, query?: Partial<{ extended: string }>) {
+        const url = qs.stringifyUrl({ url: `/school/${school}/grade`, query });
+        return await this.buildAuthReq<GradeSchema[]>(url);
     }
 }

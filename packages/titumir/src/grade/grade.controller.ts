@@ -9,6 +9,7 @@ import {
     Put,
     ParseIntPipe,
     Inject,
+    Query,
 } from "@nestjs/common";
 import School from "../database/entity/schools.entity";
 import User from "../database/entity/users.entity";
@@ -52,9 +53,35 @@ export class GradeController {
 
     @Get()
     @VerifySchool()
-    async getAllGradeOfSchool(@CurrentUser() user: User, @Param("school") _?: number) {
+    async getAllGradeOfSchool(
+        @CurrentUser() user: User,
+        @Param("school") _?: number,
+        @Query("extended") extendRelation?: string,
+    ) {
         try {
-            const grades = await this.gradeService.find({ school: user.school! });
+            const gradeRelations = [
+                "moderator",
+                "examiner",
+                "sections",
+                "grades_subjects",
+                "teachersToSectionsToGrades",
+                "studentsToSectionsToGrade",
+                "sections.class_teacher",
+            ];
+            const extendedRelationArr = extendRelation?.split(",");
+            const isValidExtendedRelation = extendedRelationArr?.every((relation) =>
+                gradeRelations.includes(relation),
+            );
+
+            const grades = await this.gradeService.find(
+                { school: user.school! },
+                {
+                    relations:
+                        extendedRelationArr && isValidExtendedRelation
+                            ? extendedRelationArr
+                            : [],
+                },
+            );
             return grades;
         } catch (error: any) {
             this.logger.error(error?.message ?? "");

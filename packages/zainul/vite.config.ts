@@ -1,13 +1,14 @@
-import { defineConfig } from 'vite'
-import reactRefresh from '@vitejs/plugin-react-refresh'
+import { defineConfig } from "vite";
+import reactRefresh from "@vitejs/plugin-react-refresh";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh()],
-  // server: {
-  //   hmr: {
-      // for making hmr work in gitpod 
-  //     port: 443
-  //   }
-  // }
-})
+    plugins: [reactRefresh(), tsconfigPaths()],
+    // server: {
+    //   hmr: {
+    // for making hmr work in gitpod
+    //     port: 443
+    //   }
+    // }
+});

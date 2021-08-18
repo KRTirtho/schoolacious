@@ -1,8 +1,8 @@
 import { Heading, List, ListItem, Stack, Link as CLink } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
-import Paper from "../../components/Paper/Paper";
-import { INVITATION_OR_JOIN_ROLE } from "../../services/api/titumir";
+import Paper from "components/Paper/Paper";
+import { INVITATION_OR_JOIN_ROLE } from "services/api/titumir";
 import InviteMembersDrawer from "./components/InviteMembersDrawer";
 
 function AddRemoveMembers() {

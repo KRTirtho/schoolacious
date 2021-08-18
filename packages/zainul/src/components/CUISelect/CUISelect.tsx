@@ -1,12 +1,22 @@
-import { theme, Theme, useColorModeValue, useTheme } from "@chakra-ui/react";
+import {
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    theme,
+    Theme,
+    useColorModeValue,
+    useTheme,
+} from "@chakra-ui/react";
 import Select, {
     defaultTheme as selectTheme,
     OptionTypeBase,
     Props as SelectComponentsProps,
 } from "react-select";
 import React, { ReactElement } from "react";
+import { FieldProps } from "formik";
+import { v4 as uuid } from "uuid";
 
-interface CUISelectProps extends SelectComponentsProps<OptionTypeBase, boolean> {
+export interface CUISelectProps extends SelectComponentsProps<OptionTypeBase, boolean> {
     name?: string;
     isSearchBar?: boolean;
 }
@@ -90,3 +100,32 @@ CUISelect.defaultProps = {
 };
 
 export default CUISelect;
+
+export interface CUISelectFieldProps extends FieldProps, CUISelectProps {
+    label?: string;
+}
+
+export function CUISelectField({
+    field: { value, onChange, ...field },
+    form,
+    ...props
+}: CUISelectFieldProps) {
+    const id = props.id ?? uuid();
+    const name = field.name;
+
+    return (
+        <FormControl isInvalid={!!(form.errors?.[name] && form.touched?.[name])}>
+            <FormLabel htmlFor={id}>{props?.label}</FormLabel>
+            <CUISelect
+                inputValue={value}
+                onInputChange={(nValue) =>
+                    onChange({ target: { value: nValue, name, id } })
+                }
+                {...field}
+                inputId={id}
+                {...props}
+            />
+            <FormErrorMessage>{form.errors?.[name]}</FormErrorMessage>
+        </FormControl>
+    );
+}

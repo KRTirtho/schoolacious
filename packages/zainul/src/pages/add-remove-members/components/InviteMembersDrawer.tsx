@@ -29,7 +29,7 @@ import { UserSchema } from "@veschool/types";
 import useTitumirMutation from "../../../hooks/useTitumirMutation";
 import { useQueryClient } from "react-query";
 
-interface OptionType extends OptionTypeBase {
+export interface OptionType extends OptionTypeBase {
     label: string;
     value: string;
 }

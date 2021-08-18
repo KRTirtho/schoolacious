@@ -74,7 +74,7 @@ export interface JoinBody {
     role: INVITATION_OR_JOIN_ROLE;
 }
 
-export type GradeBody = Pick<GradeSchema, "standard">;
+export type GradeBody = Pick<GradeSchema, "standard" | "moderator" | "examiner">;
 
 export default class Titumir {
     accessToken?: string;
@@ -229,8 +229,8 @@ export default class Titumir {
 
     // =======/grade/=======
 
-    async createGrades(school: string, data: GradeBody[]) {
-        return await this.buildAuthReq<GradeSchema[], GradeBody[]>(
+    async createGrade(school: string, data: GradeBody) {
+        return await this.buildAuthReq<GradeSchema, GradeBody>(
             `/school/${school}/grade`,
             "POST",
             data,

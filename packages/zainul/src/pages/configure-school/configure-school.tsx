@@ -5,7 +5,7 @@ import React from "react";
 import { useAuthStore } from "../../state/authorization-store";
 import { GradeSchema } from "@veschool/types";
 import { userToName } from "../../utils/userToName";
-import AddGradesModal from "./components/AddGradesModal";
+import AddGradeModal from "./components/AddGradeModal";
 
 function ConfigureSchool() {
     const school = useAuthStore((s) => s.user?.school);
@@ -44,7 +44,7 @@ function ConfigureSchool() {
                     ))}
                 </Tbody>
             </Table>
-            <AddGradesModal />
+            <AddGradeModal />
             <Table>
                 <Thead>
                     <Tr>

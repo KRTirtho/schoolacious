@@ -55,7 +55,7 @@ export class GradeController {
     @VerifySchool()
     async getAllGradeOfSchool(
         @CurrentUser() user: User,
-        @Param("school") _?: number,
+        @Param("school") _: string,
         @Query("extended") extendRelation?: string,
     ) {
         try {
@@ -95,7 +95,7 @@ export class GradeController {
     async getMonoGrade(
         @CurrentUser("school") school: School,
         @Param("grade") standard: number,
-        @Param("school") _?: number,
+        @Param("school") _: string,
     ) {
         try {
             const grade = await this.gradeService.findOne(
@@ -123,19 +123,41 @@ export class GradeController {
     @Post()
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
-    @ApiBody({ type: [CreateGradeDTO] })
+    @ApiBody({ type: CreateGradeDTO })
     async createGrade(
-        @Body(new ParseArrayPipe({ items: CreateGradeDTO })) body: CreateGradeDTO[],
+        @Body() { moderator, examiner, standard }: CreateGradeDTO,
         @CurrentUser() user: User,
-        @Param("school") _?: number,
+        @Param("school") _: string,
     ) {
         try {
-            const grade = await this.gradeService.create(
-                body.map((grade) => ({ ...grade, school: user.school! })),
-            );
-            return grade.map((grade) => ({ ...grade, school: undefined }));
+            const grade = await this.gradeService.create({
+                standard,
+                school: user.school!,
+            });
+            // assigning moderator/examiner to grade's
+            const [gradeModerator, gradeExaminer] = await Promise.all([
+                moderator
+                    ? this.gradeService.assignRole({
+                          user_id: moderator,
+                          role: USER_ROLE.gradeModerator,
+                          school: user.school!,
+                          standard,
+                      })
+                    : undefined,
+                examiner
+                    ? this.gradeService.assignRole({
+                          user_id: examiner,
+                          role: USER_ROLE.gradeExaminer,
+                          school: user.school!,
+                          standard,
+                      })
+                    : undefined,
+            ]);
+            grade.moderator = gradeModerator?.moderator;
+            grade.examiner = gradeExaminer?.examiner;
+            return grade;
         } catch (error: any) {
-            this.logger.error({ ...error });
+            this.logger.error(error?.message ?? "");
             throw error;
         }
     }
@@ -149,7 +171,7 @@ export class GradeController {
         body: AssignSubjectsDTO[],
         @CurrentUser() user: VerifiedGradeUser,
         @Param("grade") _?: number,
-        @Param("school") __?: number,
+        @Param("school") __?: string,
     ) {
         try {
             const gradesToSubjects = await this.gradeToSubjectService.create(
@@ -174,7 +196,7 @@ export class GradeController {
         @Param("grade") standard: number,
         @CurrentUser("school") school: School,
         @Body() { user_id }: AssignGradeLeadsDTO,
-        @Param("school") _?: number,
+        @Param("school") _: string,
     ) {
         try {
             return await this.gradeService.assignRole({
@@ -201,7 +223,7 @@ export class GradeController {
         @Param("grade", new ParseIntPipe()) standard: number,
         @CurrentUser("school") school: School,
         @Body() { user_id }: AssignGradeLeadsDTO,
-        @Param("school") _?: number,
+        @Param("school") _: string,
     ) {
         try {
             return await this.gradeService.assignRole({

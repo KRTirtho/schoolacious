@@ -13,6 +13,7 @@
     "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
@@ -23,10 +24,10 @@
     "jsx": "react",
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
-
   },
   "include": [
-    "src"
+    "src",
+    "vite.config.ts"
   ],
   "exclude": [
     "node_modules/"

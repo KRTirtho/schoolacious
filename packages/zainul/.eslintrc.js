@@ -6,6 +6,8 @@ module.exports = {
     extends: [
         "plugin:react/recommended",
         "plugin:jest/recommended",
+        "plugin:import/recommended",
+        "plugin:import/typescript",
         "../../.eslintrc.js",
         // "plugin:@typescript-eslint/recommended",
         // "plugin:prettier/recommended",
@@ -41,5 +43,13 @@ module.exports = {
     },
     settings: {
         "import/ignore": [/\.(scss|less|css)$/, /\.(png|gif|jpg|svg)$/],
+        "import/parsers": {
+            "@typescript-eslint/parser": [".ts", ".tsx"],
+        },
+        "import/resolver": {
+            node: {
+                moduleDirectory: ["node_modules", "src/"],
+            },
+        },
     },
 };

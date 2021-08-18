@@ -63,7 +63,7 @@ function School() {
                     <MenuList>
                         <MenuItem
                             as={Link}
-                            to="/school/configure-members"
+                            to="/school/add-remove-members"
                             icon={<FaUserPlus />}
                         >
                             Add/Remove members

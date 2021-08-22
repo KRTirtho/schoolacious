@@ -9,18 +9,20 @@ import {
     ModalFooter,
     useDisclosure,
     Stack,
+    FormErrorMessage,
 } from "@chakra-ui/react";
 import React from "react";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { useAuthStore } from "state/authorization-store";
 import { GradeBody } from "services/api/titumir";
 import { GradeSchema } from "@veschool/types";
-import { MutationContextKey } from "configs/enums";
+import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { useQueryClient } from "react-query";
 import TextField from "components/TextField/TextField";
 import QueryUser from "components/QueryUser/QueryUser";
+import { FC } from "react";
 
 /* TODO: instead of creating multiple grades at once, make the titumir
          able to create one grade with grade-moderator & grade-examiner & 
@@ -29,22 +31,36 @@ import QueryUser from "components/QueryUser/QueryUser";
          From now on, grade must've grade moderator, examiner & subjects from the very beginning
  */
 
-function AddGradeModal() {
+export interface GradeCreationFormSchema {
+    standard: number;
+    moderator: string;
+    examiner: string;
+}
+
+export interface AddGradeModalProps {
+    grades?: number[];
+}
+
+const AddGradeModal: FC<AddGradeModalProps> = ({ grades }) => {
     const user = useAuthStore((s) => s.user);
     const { isOpen, onClose, onToggle } = useDisclosure();
 
     const queryClient = useQueryClient();
 
-    const { mutate: createGrade, isLoading } = useTitumirMutation<GradeSchema, GradeBody>(
+    const {
+        mutate: createGrade,
+        isLoading,
+        error,
+    } = useTitumirMutation<GradeSchema, GradeBody>(
         MutationContextKey.CREATE_GRADES,
         (api, body) =>
             api.createGrade(user!.school!.short_name, body).then(({ json }) => json),
         {
             onSuccess(data) {
-                // queryClient.setQueryData<GradeSchema[]>(
-                //     QueryContextKey.GRADES,
-                //     (previous) => [...(previous ?? []), ...data],
-                // );
+                queryClient.setQueryData<GradeSchema[]>(
+                    QueryContextKey.GRADES,
+                    (previous) => [...(previous ?? []), data],
+                );
             },
         },
     );
@@ -53,14 +69,24 @@ function AddGradeModal() {
         onClose();
     }
 
-    function handleSubmission() {
-        return;
+    function handleSubmission(
+        values: GradeCreationFormSchema,
+        { resetForm, setSubmitting }: FormikHelpers<GradeCreationFormSchema>,
+    ) {
+        createGrade(values, {
+            onSuccess() {
+                resetForm();
+            },
+            onError() {
+                setSubmitting(false);
+            },
+        });
     }
 
     const GradeBodySchema = yup.object().shape({
         standard: yup.number().max(50).min(1).required(),
-        moderator: yup.string().required(),
-        examiner: yup.string().required(),
+        moderator: yup.string().email().required(),
+        examiner: yup.string().email().required(),
     });
 
     return (
@@ -68,16 +94,23 @@ function AddGradeModal() {
             <Button variant="ghost" onClick={onToggle}>
                 Add Grades
             </Button>
-            <Modal isOpen={isOpen} onClose={onClose} isCentered size="4xl">
+            <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+                isCentered
+                size="4xl"
+                closeOnEsc={false}
+            >
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Add Grade</ModalHeader>
                     <Formik
-                        initialValues={{ standard: "", moderator: "", examiner: "" }}
-                        onSubmit={(values, { resetForm, setSubmitting }) => {
-                            console.log("values:", values);
-                            return;
+                        initialValues={{
+                            standard: Math.max(...(grades ? grades : [0])) + 1,
+                            moderator: "",
+                            examiner: "",
                         }}
+                        onSubmit={handleSubmission}
                         validationSchema={GradeBodySchema}
                     >
                         <Form>
@@ -95,12 +128,14 @@ function AddGradeModal() {
                                     <Field
                                         component={QueryUser}
                                         name="moderator"
-                                        placeholder="Moderator's Name"
+                                        placeholder="Moderator's Email"
+                                        required
                                     />
                                     <Field
                                         component={QueryUser}
                                         name="examiner"
-                                        placeholder="Examiner's Name"
+                                        placeholder="Examiner's Email"
+                                        required
                                     />
                                 </Stack>
                             </ModalBody>
@@ -112,20 +147,17 @@ function AddGradeModal() {
                                 >
                                     Cancel
                                 </Button>
-                                <Button
-                                    isLoading={isLoading}
-                                    // disabled={false}
-                                    type="submit"
-                                >
+                                <Button isLoading={isLoading} type="submit">
                                     Create
                                 </Button>
                             </ModalFooter>
+                            <FormErrorMessage>{error && error.message}</FormErrorMessage>
                         </Form>
                     </Formik>
                 </ModalContent>
             </Modal>
         </>
     );
-}
+};
 
 export default AddGradeModal;

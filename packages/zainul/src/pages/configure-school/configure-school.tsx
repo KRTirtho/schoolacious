@@ -1,7 +1,6 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import useTitumirQuery from "../../hooks/useTitumirQuery";
-
-import React from "react";
+import React, { useMemo } from "react";
 import { useAuthStore } from "../../state/authorization-store";
 import { GradeSchema } from "@veschool/types";
 import { userToName } from "../../utils/userToName";
@@ -17,6 +16,8 @@ function ConfigureSchool() {
             })
             .then(({ json }) => json),
     );
+
+    const standards = useMemo(() => grades?.map(({ standard }) => standard), [grades]);
 
     return (
         <>
@@ -44,7 +45,7 @@ function ConfigureSchool() {
                     ))}
                 </Tbody>
             </Table>
-            <AddGradeModal />
+            <AddGradeModal grades={standards} />
             <Table>
                 <Thead>
                     <Tr>

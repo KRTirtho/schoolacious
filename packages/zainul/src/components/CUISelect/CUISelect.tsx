@@ -21,6 +21,10 @@ export interface CUISelectProps extends SelectComponentsProps<OptionTypeBase, bo
     isSearchBar?: boolean;
 }
 
+/**
+ * @deprecated
+ */
+
 const CUISelect = ({ isSearchBar = false, ...props }: CUISelectProps): ReactElement => {
     const appTheme = useTheme<typeof theme>();
     const unsafeAppColors = appTheme.colors as Theme["colors"] & {
@@ -118,9 +122,9 @@ export function CUISelectField({
             <FormLabel htmlFor={id}>{props?.label}</FormLabel>
             <CUISelect
                 inputValue={value}
-                onInputChange={(nValue) =>
-                    onChange({ target: { value: nValue, name, id } })
-                }
+                onInputChange={(nValue) => {
+                    onChange({ target: { value: nValue, name, id } });
+                }}
                 {...field}
                 inputId={id}
                 {...props}

@@ -33,14 +33,28 @@ export class UserController {
     @Get("query")
     @Throttle(60, 60)
     @ApiUnauthorizedResponse()
-    async queryUser(@Query("q") query: string) {
+    async queryUser(
+        @Query("q") query: string,
+        @Query("school_id") school_id?: string,
+        @Query("role") role?: string,
+    ) {
         try {
             const users = await this.userService
                 .queryBuilder("user")
                 .select()
                 .where("user.query_common @@ to_tsquery(:query)", { query: `${query}:*` })
-                .andWhere("user.school IS NULL")
-                .andWhere("user.role IS NULL")
+                .andWhere(
+                    school_id ? "user.school = :school_id" : "user.school IS NULL",
+                    school_id ? { school_id: school_id } : undefined,
+                )
+                .andWhere(
+                    role ? "user.role = :role" : "user.role IS NULL",
+                    role
+                        ? {
+                              role: role,
+                          }
+                        : undefined,
+                )
                 .getMany();
             return users;
         } catch (error) {

@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, IsNotEmpty, IsUUID } from "class-validator";
+import { IsDefined, IsEmail, IsNotEmpty } from "class-validator";
 
 export default class AssignGradeLeadsDTO {
     @IsDefined()
     @IsNotEmpty()
-    @IsUUID()
+    @IsEmail()
     @ApiProperty({ type: String })
-    user_id!: string;
+    email!: string;
 }

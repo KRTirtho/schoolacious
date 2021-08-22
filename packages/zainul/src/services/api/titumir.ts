@@ -74,7 +74,11 @@ export interface JoinBody {
     role: INVITATION_OR_JOIN_ROLE;
 }
 
-export type GradeBody = Pick<GradeSchema, "standard" | "moderator" | "examiner">;
+export type GradeBody = {
+    standard: number;
+    examiner: string;
+    moderator: string;
+};
 
 export default class Titumir {
     accessToken?: string;
@@ -192,8 +196,12 @@ export default class Titumir {
         return await this.buildAuthReq<UserSchema>("/user/me");
     }
 
-    async queryUser(query: string) {
-        return await this.buildAuthReq<UserSchema[]>(`/user/query?q=${query}`);
+    async queryUser(q: string, filters?: { school_id?: string; role?: string }) {
+        const url = qs.stringifyUrl({
+            url: "/user/query",
+            query: { q, ...filters },
+        });
+        return await this.buildAuthReq<UserSchema[]>(url);
     }
 
     // =======/school/*=======

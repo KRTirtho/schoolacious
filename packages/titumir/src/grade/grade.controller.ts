@@ -138,7 +138,7 @@ export class GradeController {
             const [gradeModerator, gradeExaminer] = await Promise.all([
                 moderator
                     ? this.gradeService.assignRole({
-                          user_id: moderator,
+                          email: moderator,
                           role: USER_ROLE.gradeModerator,
                           school: user.school!,
                           standard,
@@ -146,7 +146,7 @@ export class GradeController {
                     : undefined,
                 examiner
                     ? this.gradeService.assignRole({
-                          user_id: examiner,
+                          email: examiner,
                           role: USER_ROLE.gradeExaminer,
                           school: user.school!,
                           standard,
@@ -195,12 +195,12 @@ export class GradeController {
     async assignModerator(
         @Param("grade") standard: number,
         @CurrentUser("school") school: School,
-        @Body() { user_id }: AssignGradeLeadsDTO,
+        @Body() { email }: AssignGradeLeadsDTO,
         @Param("school") _: string,
     ) {
         try {
             return await this.gradeService.assignRole({
-                user_id,
+                email,
                 role: USER_ROLE.gradeModerator,
                 school,
                 standard,
@@ -222,12 +222,12 @@ export class GradeController {
     async assignExaminer(
         @Param("grade", new ParseIntPipe()) standard: number,
         @CurrentUser("school") school: School,
-        @Body() { user_id }: AssignGradeLeadsDTO,
+        @Body() { email }: AssignGradeLeadsDTO,
         @Param("school") _: string,
     ) {
         try {
             return await this.gradeService.assignRole({
-                user_id,
+                email,
                 role: USER_ROLE.gradeExaminer,
                 school,
                 standard,

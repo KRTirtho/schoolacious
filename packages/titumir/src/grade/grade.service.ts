@@ -28,16 +28,16 @@ export class GradeService extends BasicEntityService<Grade, CreateGrade> {
         role,
         school,
         standard,
-        user_id,
+        email,
     }: {
-        user_id: string;
+        email: string;
         school: School;
         standard: number;
         role: USER_ROLE.gradeExaminer | USER_ROLE.gradeModerator;
     }) {
         const leaderField = role === USER_ROLE.gradeExaminer ? "examiner" : "moderator";
         const assignee = await this.userService.findOne(
-            { _id: user_id },
+            { email },
             { relations: ["school"] },
         );
         // verifying user's school

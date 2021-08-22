@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, IsNumber, IsOptional, IsPositive, IsUUID } from "class-validator";
+import { IsDefined, IsEmail, IsNumber, IsOptional, IsPositive } from "class-validator";
 
 export default class CreateGradeDTO {
     @IsDefined()
@@ -9,18 +9,18 @@ export default class CreateGradeDTO {
     standard!: number;
 
     @IsOptional()
-    @IsUUID()
+    @IsEmail()
     @ApiProperty({
         type: String,
-        description: "id of user, whom to be grade's moderator",
+        description: "email of user, whom to be grade's moderator",
     })
     moderator?: string;
 
     @IsOptional()
-    @IsUUID()
+    @IsEmail()
     @ApiProperty({
         type: String,
-        description: "id of user, whom to be grade's examiner",
+        description: "email of user, whom to be grade's examiner",
     })
     examiner?: string;
 }

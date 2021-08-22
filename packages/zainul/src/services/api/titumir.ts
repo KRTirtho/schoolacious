@@ -1,4 +1,9 @@
-import { SchoolSchema, UserSchema, GradeSchema } from "@veschool/types";
+import {
+    SchoolSchema,
+    UserSchema,
+    GradeSchema,
+    Invitations_JoinsSchema,
+} from "@veschool/types";
 import qs from "query-string";
 
 export type TitumirResponse<T> = Omit<Response, "json"> & { json: T };
@@ -13,21 +18,35 @@ export type SignupBody = LoginBody & Pick<UserSchema, "first_name" | "last_name"
 export const CONST_ACCESS_TOKEN_KEY = "x-access-token";
 export const CONST_REFRESH_TOKEN_KEY = "x-refresh-token";
 
+export enum INVITATION_OR_JOIN_ACTION {
+    accept = "accept",
+    reject = "reject",
+}
+
+export interface CompleteInvitationJoinBody {
+    _id: string;
+    action: INVITATION_OR_JOIN_ACTION;
+}
+
 export class TitumirError extends TypeError {
     status: number;
+    body: Record<string | number, unknown>;
 
     constructor({
         statusText,
         url,
         status,
+        body,
     }: {
         url: string;
         statusText: string;
         status: number;
+        body: Record<string | number, unknown>;
     }) {
         super();
         this.stack = `[TitumirError "${statusText}"]: the following ${url} returned status ${status}`;
         this.status = status;
+        this.body = body;
     }
 }
 
@@ -80,6 +99,8 @@ export type GradeBody = {
     moderator: string;
 };
 
+export type CancelInvitationJoinBody = Pick<Invitations_JoinsSchema, "_id">;
+
 export default class Titumir {
     accessToken?: string;
     refreshToken?: string;
@@ -115,6 +136,7 @@ export default class Titumir {
                 status: res.status,
                 statusText: res.statusText,
                 url: res.url,
+                body: await res.json(),
             });
         return Object.assign(res, { json: await res.json() });
     }
@@ -216,6 +238,10 @@ export default class Titumir {
         );
     }
 
+    async getAllSchoolMembers(school: string) {
+        return await this.buildAuthReq<UserSchema[]>(`/school/${school}/members`);
+    }
+
     async createSchool(payload: CreateSchool) {
         const res = await this.buildAuthReq<SchoolSchema, CreateSchool>(
             "/school",
@@ -248,5 +274,21 @@ export default class Titumir {
     async getGrades(school: string, query?: Partial<{ extended: string }>) {
         const url = qs.stringifyUrl({ url: `/school/${school}/grade`, query });
         return await this.buildAuthReq<GradeSchema[]>(url);
+    }
+
+    async completeInvitationJoin(data: CompleteInvitationJoinBody) {
+        return await this.buildAuthReq<{ message: string }, CompleteInvitationJoinBody>(
+            "/invitation-join/complete",
+            "POST",
+            data,
+        );
+    }
+
+    async cancelInvitationJoin({ _id }: CancelInvitationJoinBody) {
+        return await this.buildAuthReq<{ message: string }, CancelInvitationJoinBody>(
+            "/invitation-join",
+            "DELETE",
+            { _id },
+        );
     }
 }

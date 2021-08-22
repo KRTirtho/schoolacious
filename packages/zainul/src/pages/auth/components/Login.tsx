@@ -4,19 +4,19 @@ import React from "react";
 import { useMutation } from "react-query";
 import { Link, useHistory } from "react-router-dom";
 import * as yup from "yup";
-import { titumirApi } from "../../../App";
-import MaskedPasswordField from "../../../components/MaskedPasswordField/MaskedPasswordField";
-import TextField from "../../../components/TextField/TextField";
-import { MutationContextKey } from "../../../configs/enums";
+import { titumirApi } from "App";
+import MaskedPasswordField from "components/MaskedPasswordField/MaskedPasswordField";
+import TextField from "components/TextField/TextField";
+import { MutationContextKey } from "configs/enums";
 import {
     TitumirResponse,
     LoginBody,
     CONST_ACCESS_TOKEN_KEY,
     CONST_REFRESH_TOKEN_KEY,
-} from "../../../services/api/titumir";
+} from "services/api/titumir";
 import { UserSchema } from "@veschool/types";
-import { useAuthStore } from "../../../state/authorization-store";
-import { useTokenStore } from "../../../state/token-store";
+import { useAuthStore } from "state/authorization-store";
+import { useTokenStore } from "state/token-store";
 import { MINIMUM_CHAR_MSG, REQUIRED_MSG } from "./Signup";
 export const INVALID_EMAIL_MSG = "Invalid email";
 function Login() {

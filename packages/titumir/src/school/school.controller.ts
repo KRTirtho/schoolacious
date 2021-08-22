@@ -10,6 +10,7 @@ import { InvitationJoinService } from "../invitation-join/invitation-join.servic
 import AddCoAdminDTO from "./dto/add-co-admin.dto";
 import CreateSchoolDTO from "./dto/create-school.dto";
 import { SchoolService } from "./school.service";
+import { UserService } from "../user/user.service";
 
 @Controller("school")
 @ApiBearerAuth()
@@ -17,6 +18,7 @@ export class SchoolController {
     constructor(
         @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private readonly schoolService: SchoolService,
+        private readonly userService: UserService,
         private readonly invitationJoinService: InvitationJoinService,
     ) {
         this.logger.setContext(SchoolController.name);
@@ -96,7 +98,19 @@ export class SchoolController {
         @Param("school") _?: string,
     ) {
         try {
-            return this.schoolService.assignCoAdmin({ ...body, user });
+            return await this.schoolService.assignCoAdmin({ ...body, user });
+        } catch (error: any) {
+            this.logger.log(error?.message ?? "");
+            throw error;
+        }
+    }
+
+    @Get(":school/members")
+    @VerifySchool()
+    @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+    async getAllMembers(@CurrentUser() user: User, @Param("school") _?: string) {
+        try {
+            return await this.userService.find({}, { where: { school: user.school } });
         } catch (error: any) {
             this.logger.log(error?.message ?? "");
             throw error;

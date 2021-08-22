@@ -4,6 +4,7 @@ export enum MutationContextKey {
     CREATE_SCHOOL = "mutate-create-school",
     INVITATION = "mutate-invitation",
     CREATE_GRADES = "mutate-create-grades",
+    COMPLETE_INVITATION_JOIN = "mutate-complete-invitation-join",
 }
 
 export enum QueryContextKey {
@@ -11,6 +12,7 @@ export enum QueryContextKey {
     INVITATION_SENT = "query-invitation-sent",
     INVITATION_RECEIVED = "query-invitation-received",
     GRADES = "query-grades",
+    SCHOOL_MEMBERS = "query-school-members",
 }
 
 export enum LocalStorageKeys {

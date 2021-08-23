@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { UserSchema } from "@veschool/types";
+import { UserSchema, USER_ROLE } from "@veschool/types";
 import { QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { TextFieldProps } from "components/TextField/TextField";
@@ -14,7 +14,9 @@ function QueryUser(props: TextFieldProps) {
     const { data: optionsRaw, refetch } = useTitumirQuery<UserSchema[]>(
         [QueryContextKey.QUERY_USER, props.field.name],
         (api) =>
-            api.queryUser(query, { school_id: school?._id }).then(({ json }) => json),
+            api
+                .queryUser(query, { school_id: school?._id, role: USER_ROLE.teacher })
+                .then(({ json }) => json),
         {
             enabled: false,
             initialData: [],

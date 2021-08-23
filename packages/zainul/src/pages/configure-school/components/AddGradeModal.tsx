@@ -11,7 +11,7 @@ import {
     Stack,
     FormErrorMessage,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { FC } from "react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 import useTitumirMutation from "hooks/useTitumirMutation";
@@ -22,7 +22,6 @@ import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { useQueryClient } from "react-query";
 import TextField from "components/TextField/TextField";
 import QueryUser from "components/QueryUser/QueryUser";
-import { FC } from "react";
 
 /* TODO: instead of creating multiple grades at once, make the titumir
          able to create one grade with grade-moderator & grade-examiner & 
@@ -75,6 +74,7 @@ const AddGradeModal: FC<AddGradeModalProps> = ({ grades }) => {
     ) {
         createGrade(values, {
             onSuccess() {
+                setSubmitting(false);
                 resetForm();
             },
             onError() {

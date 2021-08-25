@@ -24,7 +24,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { FindConditions } from "typeorm";
 import Section from "../database/entity/sections.entity";
 import User from "../database/entity/users.entity";
-import {USER_ROLE} from "@veschool/types"
+import { USER_ROLE } from "@veschool/types";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
@@ -118,20 +118,25 @@ export class SectionController {
     @Post()
     @VerifyGrade()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin, USER_ROLE.gradeModerator)
-    @ApiBody({ type: [CreateSectionDTO] })
     async createSection(
-        @Body(new ParseArrayPipe({ items: CreateSectionDTO }))
-        body: CreateSectionDTO[],
+        @Body()
+        body: CreateSectionDTO,
         @CurrentUser() user: VerifiedGradeUser,
         @Param("school") _?: number,
         @Param("grade") __?: number,
     ) {
         try {
-            return (
-                await this.sectionService.createSection(
-                    body.map(({ name }) => ({ name, grade: user.grade })),
-                )
-            ).map((section) => ({ ...section, grade: undefined }));
+            const section = await this.sectionService.createSection({
+                grade: user.grade,
+                name: body.name,
+            });
+            const sectionWithClassTeacher = await this.sectionService.assignClassTeacher({
+                section: section.name,
+                grade: user.grade,
+                school: user.school,
+                email: body.class_teacher,
+            });
+            return sectionWithClassTeacher;
         } catch (error: any) {
             this.logger.error(error?.message ?? "");
             throw error;
@@ -149,14 +154,14 @@ export class SectionController {
     async assignClassTeacher(
         @Param("section") section: string,
         @CurrentUser() user: VerifiedGradeUser,
-        @Body() { user_id }: AssignClassTeacherDTO,
+        @Body() { email }: AssignClassTeacherDTO,
         @Param("school") _?: number,
         @Param("grade") __?: number,
     ) {
         try {
             return await this.sectionService.assignClassTeacher({
                 grade: user.grade,
-                user_id,
+                email,
                 school: user.school,
                 section,
             });

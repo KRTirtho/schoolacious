@@ -15,9 +15,15 @@ import {
 } from "@chakra-ui/react";
 import QueryUser from "components/QueryUser/QueryUser";
 import TextField from "components/TextField/TextField";
+import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { Formik, Form, Field } from "formik";
+import useTitumirMutation from "hooks/useTitumirMutation";
 import React, { FC } from "react";
+import { useQueryClient } from "react-query";
+import { CreateSectionBody } from "services/api/titumir";
+import { useAuthStore } from "state/authorization-store";
 import * as yup from "yup";
+import { SectionSchema } from "@veschool/types";
 import { AddGradeModalProps } from "./AddGradeModal";
 
 export type AddSectionModal = AddGradeModalProps;
@@ -28,8 +34,26 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
     const SectionBodySchema = yup.object().shape({
         section: yup.string().max(50).min(1).required(),
         class_teacher: yup.string().email().required(),
-        grade: yup.number().max(50).min(1).required(),
+        grade: yup.number().required(),
     });
+
+    const school = useAuthStore((s) => s.user?.school);
+
+    const queryClient = useQueryClient();
+
+    const { mutate: createSection, error } = useTitumirMutation<
+        SectionSchema,
+        CreateSectionBody
+    >(
+        MutationContextKey.CREATE_SECTION,
+        (api, data) =>
+            api.createSection(school!.short_name, data).then(({ json }) => json),
+        {
+            onSuccess() {
+                queryClient.refetchQueries(QueryContextKey.GRADES);
+            },
+        },
+    );
 
     return (
         <>
@@ -54,8 +78,16 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
                                 class_teacher: "",
                                 grade: "",
                             }}
-                            onSubmit={() => {
-                                return;
+                            onSubmit={(values, { resetForm, setSubmitting }) => {
+                                createSection(values, {
+                                    onSuccess() {
+                                        setSubmitting(false);
+                                        resetForm();
+                                    },
+                                    onError() {
+                                        setSubmitting(false);
+                                    },
+                                });
                             }}
                             validationSchema={SectionBodySchema}
                         >
@@ -64,6 +96,7 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
                                     <Stack
                                         spacing="4"
                                         direction={["column", null, "row"]}
+                                        align="center"
                                     >
                                         <Field
                                             component={TextField}
@@ -78,13 +111,12 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
                                             placeholder="Class Teacher's Email"
                                             required
                                         />
-                                        {/* <Field
-                                        component="select"
-                                        name="grade"
-                                        placeholder="Belonging Grade"
-                                        required
-                                    /> */}
-                                        <Select placeholder="Belonging Grade">
+
+                                        <Field
+                                            as={Select}
+                                            name="grade"
+                                            placeholder="Belonging Grade"
+                                        >
                                             {grades?.map((grade, i) => (
                                                 <option
                                                     key={i + Date.now()}
@@ -93,7 +125,7 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
                                                     {grade}
                                                 </option>
                                             ))}
-                                        </Select>
+                                        </Field>
                                     </Stack>
                                 </ModalBody>
                                 <ModalFooter>
@@ -109,7 +141,7 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
                                     </Button>
                                 </ModalFooter>
                                 <FormErrorMessage>
-                                    error && error.message
+                                    {error && error.message}
                                 </FormErrorMessage>
                             </Form>
                         </Formik>

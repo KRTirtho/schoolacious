@@ -15,8 +15,9 @@ import {
 import { IoIosNotifications, IoIosSunny, IoIosMoon, IoIosLogOut } from "react-icons/io";
 import { RiUser3Line } from "react-icons/ri";
 import { Link, useHistory } from "react-router-dom";
-import { FaSchool } from "react-icons/fa";
+import { FaSchool, FaUserAlt } from "react-icons/fa";
 import useLogout from "../../hooks/useLogout";
+import { useAuthStore } from "state/authorization-store";
 
 function Appbar() {
     const history = useHistory();
@@ -29,6 +30,8 @@ function Appbar() {
     const SchemeToggleIcon = useColorModeValue(IoIosMoon, IoIosSunny);
     const bg = useColorModeValue(theme.colors.gray[50], theme.colors.gray[700]);
     const colorMode = useColorModeValue("Dark", "Light");
+
+    const school = useAuthStore((s) => s.user?.school);
 
     return (
         <Flex
@@ -61,8 +64,13 @@ function Appbar() {
                         >
                             {colorMode}
                         </MenuItem>
-                        <MenuItem as={Link} to="/school" icon={<FaSchool />}>
-                            Your School
+                        {school && (
+                            <MenuItem as={Link} to="/school" icon={<FaSchool />}>
+                                Your School
+                            </MenuItem>
+                        )}
+                        <MenuItem as={Link} to={`/user/profile`} icon={<FaUserAlt />}>
+                            Profile
                         </MenuItem>
                         <MenuItem onClick={logout} icon={<IoIosLogOut />}>
                             Logout

@@ -5,6 +5,8 @@ export enum MutationContextKey {
     INVITATION = "mutate-invitation",
     CREATE_GRADES = "mutate-create-grades",
     COMPLETE_INVITATION_JOIN = "mutate-complete-invitation-join",
+    CANCEL_INVITATION_JOIN = "mutate-cancel-invitation-join",
+    CREATE_SECTION = "mutate-create-section",
 }
 
 export enum QueryContextKey {

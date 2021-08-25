@@ -1,6 +1,6 @@
 import { Button, Text, Image, Stack, HStack } from "@chakra-ui/react";
 import React from "react";
-import { lonelyKid } from "../../../assets";
+import { lonelyKid } from "assets";
 import { FaSchool, FaUserGraduate } from "react-icons/fa";
 import { Link } from "react-router-dom";
 

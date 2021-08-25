@@ -17,7 +17,7 @@ type CreateSection = PartialKey<Section, "_id">;
 
 interface AssignClassTeacher {
     grade: Grade;
-    user_id: string;
+    email: string;
     school: School;
     section: string;
 }
@@ -34,20 +34,17 @@ export class SectionService extends BasicEntityService<Section, CreateSection> {
         super(sectionRepo);
     }
 
-    async createSection(payload: CreateSection[]): Promise<Section[]> {
+    async createSection(payload: CreateSection): Promise<Section> {
         return await this.create(payload);
     }
 
     async assignClassTeacher({
         grade,
-        user_id,
+        email,
         school,
         section: name,
     }: AssignClassTeacher) {
-        const user = await this.userService.findOne(
-            { _id: user_id },
-            { relations: ["school"] },
-        );
+        const user = await this.userService.findOne({ email }, { relations: ["school"] });
         if (user?.school?._id !== school._id)
             throw new BadRequestException("user doesn't belong to the school");
 

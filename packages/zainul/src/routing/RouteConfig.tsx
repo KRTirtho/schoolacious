@@ -8,9 +8,11 @@ import Appbar from "../components/Appbar/Appbar";
 import SchoolCreate from "../pages/school-create/school-create";
 import School from "../pages/school/school";
 import ConfigureSchool from "../pages/configure-school/configure-school";
-import Invitations from "../pages/invitations/invitations";
+import SchoolInvitations from "../pages/school-invitations/school-invitations";
 import useLoggedIn from "../hooks/useLoggedIn";
 import AddRemoveMembers from "../pages/add-remove-members/add-remove-members";
+import UserProfile from "pages/user-profile/user-profile";
+import UserInvitations from "pages/user-invitations/user-invitations";
 
 export default function Routes() {
     const logged = useLoggedIn();
@@ -41,7 +43,13 @@ export default function Routes() {
                             <AddRemoveMembers />
                         </Route>
                         <Route path="/school/invitations">
-                            <Invitations platform="school" />
+                            <SchoolInvitations />
+                        </Route>
+                        <Route path="/user/profile">
+                            <UserProfile />
+                        </Route>
+                        <Route path="/user/invitations">
+                            <UserInvitations />
                         </Route>
                     </Route>
                 </>

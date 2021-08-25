@@ -3,6 +3,7 @@ import {
     UserSchema,
     GradeSchema,
     Invitations_JoinsSchema,
+    SectionSchema,
 } from "@veschool/types";
 import qs from "query-string";
 
@@ -26,6 +27,12 @@ export enum INVITATION_OR_JOIN_ACTION {
 export interface CompleteInvitationJoinBody {
     _id: string;
     action: INVITATION_OR_JOIN_ACTION;
+}
+
+export interface CreateSectionBody {
+    section: string;
+    class_teacher: string;
+    grade: string | number;
 }
 
 export class TitumirError extends TypeError {
@@ -226,6 +233,10 @@ export default class Titumir {
         return await this.buildAuthReq<UserSchema[]>(url);
     }
 
+    async getUserInvitations() {
+        return await this.buildAuthReq<Invitations_JoinsSchema[]>("/user/invitations");
+    }
+
     // =======/school/*=======
 
     async getSchool(short_name: string) {
@@ -290,5 +301,19 @@ export default class Titumir {
             "DELETE",
             { _id },
         );
+    }
+
+    // =======/section/=======
+    async createSection(
+        school: string,
+        { class_teacher, grade, section }: CreateSectionBody,
+    ) {
+        return await this.buildAuthReq<
+            SectionSchema,
+            Record<"class_teacher" | "name", string>
+        >(`/school/${school}/grade/${grade}/section`, "POST", {
+            class_teacher,
+            name: section,
+        });
     }
 }

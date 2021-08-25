@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, IsNotEmpty, MaxLength } from "class-validator";
+import { IsDefined, IsEmail, IsNotEmpty, MaxLength } from "class-validator";
 
 export default class CreateSectionDTO {
     @IsDefined()
@@ -7,4 +7,13 @@ export default class CreateSectionDTO {
     @MaxLength(100)
     @ApiProperty({ type: String, maxLength: 100, minLength: 1, example: "A" })
     name!: string;
+
+    @IsDefined()
+    @IsNotEmpty()
+    @IsEmail()
+    @ApiProperty({
+        type: String,
+        description: "email of whom, who will be added as a teacher",
+    })
+    class_teacher!: string;
 }

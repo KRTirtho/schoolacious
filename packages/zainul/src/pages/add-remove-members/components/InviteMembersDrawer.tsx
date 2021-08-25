@@ -14,19 +14,19 @@ import {
     useDisclosure,
 } from "@chakra-ui/react";
 import { FiUserPlus } from "react-icons/fi";
-import CUISelect from "../../../components/CUISelect/CUISelect";
+import CUISelect from "components/CUISelect/CUISelect";
 import { OptionsType, OptionTypeBase } from "react-select";
-import ListAvatarTile from "../../../components/ListAvatarTile/ListAvatarTile";
+import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
 import { TiCancel } from "react-icons/ti";
-import useTitumirQuery from "../../../hooks/useTitumirQuery";
-import { MutationContextKey, QueryContextKey } from "../../../configs/enums";
+import useTitumirQuery from "hooks/useTitumirQuery";
+import { MutationContextKey, QueryContextKey } from "configs/enums";
 import {
     InvitationBody,
     Invitations_Joins,
     INVITATION_OR_JOIN_ROLE,
-} from "../../../services/api/titumir";
+} from "services/api/titumir";
 import { UserSchema } from "@veschool/types";
-import useTitumirMutation from "../../../hooks/useTitumirMutation";
+import useTitumirMutation from "hooks/useTitumirMutation";
 import { useQueryClient } from "react-query";
 
 export interface OptionType extends OptionTypeBase {

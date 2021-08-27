@@ -16,7 +16,7 @@ export function refreshTokenOnError(
     titumirApi
         .refresh()
         .then(() => {
-            if (titumirApi.accessToken && titumirApi.refreshToken)
+            if (titumirApi?.accessToken && titumirApi?.refreshToken)
                 setTokens({
                     accessToken: titumirApi.accessToken,
                     refreshToken: titumirApi.refreshToken,
@@ -40,13 +40,13 @@ function useTitumirQuery<T>(
     }
 
     const logged = useLoggedIn();
-    const {
-        tokens: { accessToken, refreshToken },
-        setTokens,
-    } = useTokenStore(({ tokens, setTokens }) => ({
+    const { tokens, setTokens } = useTokenStore(({ tokens, setTokens }) => ({
         tokens,
         setTokens,
     }));
+
+    const accessToken = tokens?.accessToken;
+    const refreshToken = tokens?.refreshToken;
 
     const query = useQuery<T, TitumirError>(key, queryFn, {
         ...options,

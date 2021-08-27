@@ -11,13 +11,13 @@ function useTitumirMutation<T, V>(
     options?: UseMutationOptions<T, TitumirError, V>,
 ) {
     const logged = useLoggedIn();
-    const {
-        tokens: { accessToken, refreshToken },
-        setTokens,
-    } = useTokenStore(({ tokens, setTokens }) => ({
+    const { tokens, setTokens } = useTokenStore(({ tokens, setTokens }) => ({
         tokens,
         setTokens,
     }));
+
+    const accessToken = tokens?.accessToken;
+    const refreshToken = tokens?.refreshToken;
 
     function mutateFn(payload: V): Promise<T> {
         if (accessToken && refreshToken && logged)

@@ -239,6 +239,16 @@ export default class Titumir {
 
     // =======/school/*=======
 
+    async getOrSearchSchool(search?: string) {
+        const url = qs.stringifyUrl({
+            url: "/school",
+            query: {
+                q: search,
+            },
+        });
+        return await this.buildAuthReq<SchoolSchema[]>(url);
+    }
+
     async getSchool(short_name: string) {
         return await this.buildAuthReq<SchoolSchema>(`/school/${short_name}`);
     }

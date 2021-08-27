@@ -23,7 +23,7 @@
     {
       "previewLimit": 50,
       "server": "localhost",
-      "port": 5433,
+      "port": 5432,
       "driver": "PostgreSQL",
       "name": "PostgreSQL docker",
       "database": "veschool",

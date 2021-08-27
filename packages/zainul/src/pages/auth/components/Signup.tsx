@@ -4,19 +4,19 @@ import React from "react";
 import { useMutation } from "react-query";
 import { useHistory } from "react-router-dom";
 import * as yup from "yup";
-import { titumirApi } from "../../../App";
-import { MutationContextKey } from "../../../configs/enums";
+import { titumirApi } from "App";
+import { MutationContextKey } from "configs/enums";
 import {
     CONST_ACCESS_TOKEN_KEY,
     CONST_REFRESH_TOKEN_KEY,
     SignupBody,
     TitumirResponse,
-} from "../../../services/api/titumir";
+} from "services/api/titumir";
 import { UserSchema } from "@veschool/types";
-import TextField from "../../../components/TextField/TextField";
-import MaskedPasswordField from "../../../components/MaskedPasswordField/MaskedPasswordField";
-import { useAuthStore } from "../../../state/authorization-store";
-import { useTokenStore } from "../../../state/token-store";
+import TextField from "components/TextField/TextField";
+import MaskedPasswordField from "components/MaskedPasswordField/MaskedPasswordField";
+import { useAuthStore } from "state/authorization-store";
+import { useTokenStore } from "state/token-store";
 
 export const REQUIRED_MSG = "Required";
 export const MINIMUM_CHAR_MSG = "Minimum 8 chars";
@@ -56,7 +56,7 @@ function Signup() {
             const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
             const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);
             if (accessToken && refreshToken) {
-                setTokens({ accessToken, refreshToken });
+                setTokens?.({ accessToken, refreshToken });
             }
             setTimeout(() => history.push("/"), 500);
         },

@@ -15,7 +15,7 @@ function NotFound404() {
             <Image maxW="10" h="auto" src={confusedKid404} alt="Confused?" />
             <Text colorScheme="textSecondary">Oops, sorry. The page isn't available</Text>
             <br />
-            <Button component={Link} to="/">
+            <Button as={Link} to="/">
                 Back to Home
             </Button>
         </Flex>

@@ -12,7 +12,6 @@ export interface BaseSchema {
 
 export interface UserSchema extends BaseSchema {
     email: string;
-    password: string;
     first_name: string;
     last_name: string;
     role?: USER_ROLE | null;
@@ -24,5 +23,4 @@ export interface UserSchema extends BaseSchema {
     invitations_joins?: Invitations_JoinsSchema[] | null;
     notifications?: NotificationsSchema[] | null;
     school?: SchoolSchema | null;
-    query_common?: any | null;
 }

@@ -1,5 +1,15 @@
-import { Body, Controller, Logger, Post, Get, Param, Put, Inject } from "@nestjs/common";
-import { ApiBearerAuth, ApiNotFoundResponse } from "@nestjs/swagger";
+import {
+    Body,
+    Controller,
+    Logger,
+    Post,
+    Get,
+    Param,
+    Put,
+    Inject,
+    Query,
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiNotFoundResponse, ApiQuery } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { USER_ROLE, INVITATION_OR_JOIN_TYPE } from "@veschool/types";
 import User from "../database/entity/users.entity";
@@ -24,18 +34,36 @@ export class SchoolController {
         this.logger.setContext(SchoolController.name);
     }
 
+    @Get()
+    @ApiQuery({ name: "q", required: false })
+    async getOrQuerySchools(@Query("q") query?: string) {
+        try {
+            const selected = this.schoolService
+                .queryBuilder("school")
+                .select()
+                .limit(20)
+                .offset(0);
+            if (query)
+                selected.andWhere("school.query_common @@ to_tsquery(:query)", {
+                    query: `${query}:*`,
+                });
+            return await selected.getMany();
+        } catch (error: any) {
+            this.logger.error(error?.message ?? "");
+            throw error;
+        }
+    }
+
     @Get(":school")
     @ApiNotFoundResponse({ description: "passed {school} doesn't exist" })
     async getSchool(@Param("school") short_name: string) {
         try {
-            const school = await this.schoolService
-                .queryBuilder("school")
-                .where("school.short_name=:short_name", { short_name })
-                .leftJoinAndSelect("school.admin", "admin")
-                .leftJoinAndSelect("school.coAdmin1", "coAdmin1")
-                .leftJoinAndSelect("school.coAdmin2", "coAdmin2")
-                .getOneOrFail();
-            return school;
+            return await this.schoolService.findOne(
+                { short_name },
+                {
+                    relations: ["admin", "coAdmin1", "coAdmin2"],
+                },
+            );
         } catch (error: any) {
             this.logger.error(error?.message ?? "");
             throw error;

@@ -6,6 +6,7 @@ import Routes from "./routing/RouteConfig";
 import Titumir from "./services/api/titumir";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AuthorizationConfig from "./state/AuthorizationConfig";
+import Appbar from "components/Appbar/Appbar";
 
 export const titumirApi = new Titumir("http://localhost:4000");
 
@@ -18,6 +19,7 @@ function App() {
                 <QueryClientProvider client={queryClient}>
                     {/* <ReactQueryDevtools /> */}
                     <ChakraProvider theme={chakraTheme}>
+                        <Appbar />
                         <Routes></Routes>
                     </ChakraProvider>
                 </QueryClientProvider>

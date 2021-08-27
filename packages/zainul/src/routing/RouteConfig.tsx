@@ -1,70 +1,69 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import Introduction from "../pages/introduction/introduction";
-import Auth from "../pages/auth/auth";
-import NotFound404 from "./404";
-import Start from "../pages/start/start";
-import Appbar from "../components/Appbar/Appbar";
-import SchoolCreate from "../pages/school-create/school-create";
-import School from "../pages/school/school";
-import ConfigureSchool from "../pages/configure-school/configure-school";
-import SchoolInvitations from "../pages/school-invitations/school-invitations";
-import useLoggedIn from "../hooks/useLoggedIn";
-import AddRemoveMembers from "../pages/add-remove-members/add-remove-members";
+import Introduction from "pages/introduction/introduction";
+import Auth from "pages/auth/auth";
+import Start from "pages/start/start";
+import SchoolCreate from "pages/school-create/school-create";
+import School from "pages/school/school";
+import ConfigureSchool from "pages/configure-school/configure-school";
+import SchoolInvitations from "pages/school-invitations/school-invitations";
+import AddRemoveMembers from "pages/add-remove-members/add-remove-members";
 import UserProfile from "pages/user-profile/user-profile";
 import UserInvitations from "pages/user-invitations/user-invitations";
+import ProtectedRoute from "./ProtectedRoute";
+import NotProtectedRoute from "./NotProtectedRoute";
+import { USER_ROLE } from "@veschool/types";
+import NotFound404 from "./404";
+import SchoolJoin from "pages/school-join/school-join";
 
 export default function Routes() {
-    const logged = useLoggedIn();
-
     return (
         <Switch>
-            {logged ? (
-                <>
-                    <Route path="/">
-                        {/**
-                         * Put all the routes here that are gonna use
-                         * the <AppBar/>
-                         */}
-                        <Appbar />
-                        <Route exact path="/">
-                            <Start />
-                        </Route>
-                        <Route exact path="/school">
-                            <School />
-                        </Route>
-                        <Route exact path="/school/create">
-                            <SchoolCreate />
-                        </Route>
-                        <Route exact path="/school/configure-school">
-                            <ConfigureSchool />
-                        </Route>
-                        <Route exact path="/school/add-remove-members">
-                            <AddRemoveMembers />
-                        </Route>
-                        <Route path="/school/invitations">
-                            <SchoolInvitations />
-                        </Route>
-                        <Route path="/user/profile">
-                            <UserProfile />
-                        </Route>
-                        <Route path="/user/invitations">
-                            <UserInvitations />
-                        </Route>
-                    </Route>
-                </>
-            ) : (
-                <>
-                    <Route exact path="/">
-                        <Introduction />
-                    </Route>
-                    <Route path="/auth">
-                        <Auth />
-                    </Route>
-                </>
-            )}
+            <ProtectedRoute exact path="/" fallback={<Introduction />}>
+                <Start />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/school">
+                <School />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/school/create">
+                <SchoolCreate />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/school/join">
+                <SchoolJoin />
+            </ProtectedRoute>
+            <ProtectedRoute
+                exact
+                roles={[USER_ROLE.admin, USER_ROLE.coAdmin]}
+                path="/school/configure-school"
+            >
+                <ConfigureSchool />
+            </ProtectedRoute>
+            <ProtectedRoute
+                exact
+                roles={[USER_ROLE.admin, USER_ROLE.coAdmin]}
+                path="/school/add-remove-members"
+            >
+                <AddRemoveMembers />
+            </ProtectedRoute>
+            <ProtectedRoute
+                exact
+                roles={[USER_ROLE.admin, USER_ROLE.coAdmin]}
+                path="/school/invitations"
+            >
+                <SchoolInvitations />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/user/profile">
+                <UserProfile />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/user/invitations">
+                <UserInvitations />
+            </ProtectedRoute>
 
-            <Route>
+            <NotProtectedRoute path="/auth">
+                <Auth />
+            </NotProtectedRoute>
+
+            <Route path="*">
                 <NotFound404 />
             </Route>
         </Switch>

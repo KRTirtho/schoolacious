@@ -32,7 +32,12 @@ function NoSchool() {
                 >
                     Create a School
                 </Button>
-                <Button variant="outline" rightIcon={<FaUserGraduate />}>
+                <Button
+                    as={Link}
+                    to="/school/join"
+                    variant="outline"
+                    rightIcon={<FaUserGraduate />}
+                >
                     Join a School
                 </Button>
             </HStack>

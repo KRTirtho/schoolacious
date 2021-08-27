@@ -19,8 +19,7 @@ const tokenStore: StateCreator<TokenStore> = (set, get) => {
     return {
         ...tokens.state,
         get tokens() {
-            const { accessToken, refreshToken } = get();
-            return { accessToken, refreshToken };
+            return get();
         },
         setTokens(tokens) {
             set({ ...tokens });

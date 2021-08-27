@@ -1,5 +1,5 @@
 import { Controller, Get, Inject, Logger, Query } from "@nestjs/common";
-import { ApiBearerAuth, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiQuery, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { INVITATION_OR_JOIN_TYPE } from "@veschool/types";
 import User from "../database/entity/users.entity";
@@ -33,6 +33,8 @@ export class UserController {
     @Get("query")
     @Throttle(60, 60)
     @ApiUnauthorizedResponse()
+    @ApiQuery({ name: "school_id", required: false })
+    @ApiQuery({ name: "role", required: false })
     async queryUser(
         @Query("q") query: string,
         @Query("school_id") school_id?: string,

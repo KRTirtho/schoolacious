@@ -18,6 +18,7 @@ import { Link, useHistory } from "react-router-dom";
 import { FaSchool, FaUserAlt } from "react-icons/fa";
 import useLogout from "../../hooks/useLogout";
 import { useAuthStore } from "state/authorization-store";
+import useLoggedIn from "hooks/useLoggedIn";
 
 function Appbar() {
     const history = useHistory();
@@ -32,6 +33,10 @@ function Appbar() {
     const colorMode = useColorModeValue("Dark", "Light");
 
     const school = useAuthStore((s) => s.user?.school);
+
+    const loggedIn = useLoggedIn();
+
+    if (!loggedIn) return <></>;
 
     return (
         <Flex

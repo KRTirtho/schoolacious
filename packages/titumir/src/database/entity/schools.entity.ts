@@ -62,4 +62,9 @@ export default class School implements SchoolSchema {
 
     @OneToMany(() => Subject, (subject) => subject.school, { nullable: true })
     subjects?: Subject[] | null;
+
+    // query / text search related
+
+    @Column("tsvector", { select: false, nullable: true })
+    query_common?: any | null;
 }

@@ -13,6 +13,7 @@ import {
     ApiBody,
     ApiForbiddenResponse,
     ApiNotAcceptableResponse,
+    ApiOperation,
 } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { INVITATION_OR_JOIN_TYPE, USER_ROLE } from "@veschool/types";
@@ -45,6 +46,9 @@ export class InvitationJoinController {
      * @deprecated in favor of `invite` & `join`
      */
     @Post()
+    @ApiOperation({
+        deprecated: true,
+    })
     async inviteJoinUser(
         @Body() { type, ...body }: InvitationJoinDTO,
         @CurrentUser() user: User,

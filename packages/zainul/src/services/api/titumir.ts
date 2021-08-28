@@ -239,11 +239,17 @@ export default class Titumir {
 
     // =======/school/*=======
 
-    async getOrSearchSchool(search?: string) {
+    async getOrSearchSchool(
+        search?: string,
+        { noInviteJoin }: { noInviteJoin?: boolean } = {
+            noInviteJoin: false,
+        },
+    ) {
         const url = qs.stringifyUrl({
             url: "/school",
             query: {
                 q: search,
+                "no-invite-join": noInviteJoin,
             },
         });
         return await this.buildAuthReq<SchoolSchema[]>(url);
@@ -277,6 +283,14 @@ export default class Titumir {
     async invite(data: InvitationBody[]) {
         return await this.buildAuthReq<Invitations_Joins[], InvitationBody[]>(
             "/invitation-join/invite",
+            "POST",
+            data,
+        );
+    }
+
+    async joinSchool(data: JoinBody) {
+        return await this.buildAuthReq<Invitations_JoinsSchema, JoinBody>(
+            "/invitation-join/join",
             "POST",
             data,
         );

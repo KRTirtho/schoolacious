@@ -8,6 +8,8 @@ import {
     Put,
     Inject,
     Query,
+    ParseBoolPipe,
+    DefaultValuePipe,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiNotFoundResponse, ApiQuery } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
@@ -36,7 +38,13 @@ export class SchoolController {
 
     @Get()
     @ApiQuery({ name: "q", required: false })
-    async getOrQuerySchools(@Query("q") query?: string) {
+    @ApiQuery({ name: "no-invite-join", required: false })
+    async getOrQuerySchools(
+        @CurrentUser() user: User,
+        @Query("no-invite-join", new DefaultValuePipe(false), ParseBoolPipe)
+        noInvitationJoin: boolean,
+        @Query("q") query?: string,
+    ) {
         try {
             const selected = this.schoolService
                 .queryBuilder("school")
@@ -47,7 +55,22 @@ export class SchoolController {
                 selected.andWhere("school.query_common @@ to_tsquery(:query)", {
                     query: `${query}:*`,
                 });
-            return await selected.getMany();
+            if (noInvitationJoin)
+                selected
+                    .leftJoinAndMapOne(
+                        "school.invitation_join",
+                        "school.invitations_joins",
+                        "invitation_join",
+                        "invitation_join.user = :user",
+                        { user: user._id },
+                    )
+                    .andWhere(
+                        "invitation_join.user IS NULL OR invitation_join.user <> :user",
+                        { user: user._id },
+                    );
+            const schools = await selected.getMany();
+            if ("invitation_join" in schools) delete (schools as any)?.invitation_join;
+            return schools;
         } catch (error: any) {
             this.logger.error(error?.message ?? "");
             throw error;

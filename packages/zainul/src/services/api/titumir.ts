@@ -237,6 +237,10 @@ export default class Titumir {
         return await this.buildAuthReq<Invitations_JoinsSchema[]>("/user/invitations");
     }
 
+    async getUserJoinRequests() {
+        return await this.buildAuthReq<Invitations_JoinsSchema[]>("/user/join-requests");
+    }
+
     // =======/school/*=======
 
     async getOrSearchSchool(
@@ -262,6 +266,12 @@ export default class Titumir {
     async getSchoolInvitations(school: string) {
         return await this.buildAuthReq<Invitations_Joins[]>(
             `/school/${school}/invitations`,
+        );
+    }
+
+    async getSchoolJoinRequests(school: string) {
+        return await this.buildAuthReq<Invitations_Joins[]>(
+            `/school/${school}/join-requests`,
         );
     }
 

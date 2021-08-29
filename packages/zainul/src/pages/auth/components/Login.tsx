@@ -37,7 +37,7 @@ function Login() {
             const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
             const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);
             if (accessToken && refreshToken) {
-                setTokens({ accessToken, refreshToken });
+                setTokens?.({ accessToken, refreshToken });
             }
             setTimeout(() => history.push("/"), 500);
         },

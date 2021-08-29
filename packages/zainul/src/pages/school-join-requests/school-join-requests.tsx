@@ -1,19 +1,23 @@
-import { Table, Thead, Tr, Th, Tbody, chakra } from "@chakra-ui/react";
+import { chakra, Table, Thead, Tr, Th, Tbody } from "@chakra-ui/react";
+import TableRowTile from "components/TableRowTile/TableRowTile";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
+import useTitumirMutation from "hooks/useTitumirMutation";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React from "react";
-import { Invitations_JoinsSchema } from "@veschool/types";
-import useTitumirMutation from "hooks/useTitumirMutation";
 import {
     CompleteInvitationJoinBody,
     INVITATION_OR_JOIN_ACTION,
 } from "services/api/titumir";
-import TableRowTile from "components/TableRowTile/TableRowTile";
+import { Invitations_JoinsSchema } from "@veschool/types";
+import { useAuthStore } from "state/authorization-store";
+import { userToName } from "utils/userToName";
 
-function UserInvitations() {
+function SchoolJoinRequests() {
+    const school = useAuthStore((s) => s.user?.school);
+
     const { data: invitations, refetch } = useTitumirQuery<Invitations_JoinsSchema[]>(
-        QueryContextKey.INVITATION_RECEIVED,
-        (api) => api.getUserInvitations().then(({ json }) => json),
+        QueryContextKey.JOIN_REQUEST_RECEIVED,
+        (api) => api.getSchoolJoinRequests(school!.short_name).then(({ json }) => json),
     );
 
     const { mutate: completeInvitationJoin } = useTitumirMutation<
@@ -23,9 +27,7 @@ function UserInvitations() {
         MutationContextKey.COMPLETE_INVITATION_JOIN,
         (api, data) => api.completeInvitationJoin(data).then(({ json }) => json),
         {
-            onSuccess() {
-                refetch();
-            },
+            onSuccess: () => refetch(),
         },
     );
 
@@ -42,16 +44,18 @@ function UserInvitations() {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {invitations?.map(({ school, created_at, role, _id }) => {
+                    {invitations?.map(({ created_at, role, _id, user }) => {
+                        const username = userToName(user);
+
                         return (
                             <TableRowTile
                                 action-variant="accept-decline"
                                 button-labels={[
-                                    "Decline invitation",
-                                    "Accept Invitation",
+                                    "Decline join request",
+                                    "Accept join request",
                                 ]}
                                 key={_id + created_at}
-                                heading={school.name}
+                                heading={username}
                                 middle={role}
                                 date={created_at}
                                 onFirstButtonClick={() =>
@@ -75,4 +79,4 @@ function UserInvitations() {
     );
 }
 
-export default UserInvitations;
+export default SchoolJoinRequests;

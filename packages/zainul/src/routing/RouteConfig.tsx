@@ -15,6 +15,8 @@ import NotProtectedRoute from "./NotProtectedRoute";
 import { USER_ROLE } from "@veschool/types";
 import NotFound404 from "./404";
 import SchoolJoin from "pages/school-join/school-join";
+import SchoolJoinRequests from "pages/school-join-requests/school-join-requests";
+import UserJoinRequests from "pages/user-join-requests/user-join-requests";
 
 export default function Routes() {
     return (
@@ -52,11 +54,21 @@ export default function Routes() {
             >
                 <SchoolInvitations />
             </ProtectedRoute>
+            <ProtectedRoute
+                exact
+                roles={[USER_ROLE.admin, USER_ROLE.coAdmin]}
+                path="/school/join-requests"
+            >
+                <SchoolJoinRequests />
+            </ProtectedRoute>
             <ProtectedRoute exact path="/user/profile">
                 <UserProfile />
             </ProtectedRoute>
             <ProtectedRoute exact path="/user/invitations">
                 <UserInvitations />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/user/join-requests">
+                <UserJoinRequests />
             </ProtectedRoute>
 
             <NotProtectedRoute path="/auth">

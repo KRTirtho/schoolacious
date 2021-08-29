@@ -14,6 +14,8 @@ export enum QueryContextKey {
     QUERY_USER = "query-user",
     INVITATION_SENT = "query-invitation-sent",
     INVITATION_RECEIVED = "query-invitation-received",
+    JOIN_REQUEST_SENT = "query-join-request-sent",
+    JOIN_REQUEST_RECEIVED = "query-join-request-received",
     GRADES = "query-grades",
     SCHOOL = "query-school",
     SCHOOL_MEMBERS = "query-school-members",

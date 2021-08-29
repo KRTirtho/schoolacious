@@ -1,25 +1,13 @@
-import {
-    Avatar,
-    chakra,
-    HStack,
-    IconButton,
-    Table,
-    Tbody,
-    Td,
-    Text,
-    Th,
-    Thead,
-    Tr,
-} from "@chakra-ui/react";
+import { chakra, Table, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import React from "react";
-import { FaTimesCircle } from "react-icons/fa";
 import { useQueryClient } from "react-query";
 import { CancelInvitationJoinBody } from "services/api/titumir";
 import { Invitations_JoinsSchema } from "@veschool/types";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { useAuthStore } from "state/authorization-store";
+import TableRowTile from "components/TableRowTile/TableRowTile";
 
 function SchoolInvitations() {
     const user = useAuthStore((s) => s.user);
@@ -62,34 +50,18 @@ function SchoolInvitations() {
                     {invitations?.map(({ user, created_at, role, _id }) => {
                         const username = `${user.first_name} ${user.last_name}`;
                         return (
-                            <Tr key={user._id + created_at}>
-                                <Td>
-                                    <HStack>
-                                        <Avatar name={username} size="sm" />
-                                        <Text>{username}</Text>
-                                    </HStack>
-                                </Td>
-                                <Td fontWeight="bold">{role}</Td>
-                                <Td>
-                                    {new Date(created_at)
-                                        .toUTCString()
-                                        .replace(" GMT", "")}
-                                </Td>
-                                <Td>
-                                    <IconButton
-                                        aria-label="cancel invitation"
-                                        variant="ghost"
-                                        colorScheme="red"
-                                        onClick={() =>
-                                            cancelInvitationJoin({
-                                                _id,
-                                            })
-                                        }
-                                    >
-                                        <FaTimesCircle />
-                                    </IconButton>
-                                </Td>
-                            </Tr>
+                            <TableRowTile
+                                button-labels="Cancel invitation"
+                                heading={username}
+                                date={created_at}
+                                middle={role}
+                                onFirstButtonClick={() =>
+                                    cancelInvitationJoin({
+                                        _id,
+                                    })
+                                }
+                                key={user._id + created_at}
+                            />
                         );
                     })}
                 </Tbody>

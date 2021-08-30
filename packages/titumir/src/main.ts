@@ -6,7 +6,12 @@ import csurf from "csurf";
 import RoleAuthGuard from "./auth/guards/role-auth.guard";
 import { QueryFailedFilter } from "./database/filters/query-failed.filter";
 import { EntityNotFoundFilter } from "./database/filters/entity-not-found.filter";
-import { CONST_ACCESS_TOKEN_HEADER, CONST_REFRESH_TOKEN_HEADER, PORT } from "../config";
+import {
+    CONST_JWT_ACCESS_TOKEN_COOKIE,
+    CONST_REFRESH_TOKEN_HEADER,
+    COOKIE_SIGNATURE,
+    PORT,
+} from "../config";
 import { AuthenticatedSocketIoAdapter } from "./auth/adapters/auth.adapter";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
@@ -20,7 +25,7 @@ async function bootstrap() {
         .setTitle("Titumir - veschool backend")
         .setDescription("mainstream backend of VESchool")
         .setVersion("0.1.0")
-        .addBearerAuth({ type: "http", bearerFormat: "Bearer" })
+        .addCookieAuth(CONST_JWT_ACCESS_TOKEN_COOKIE, { type: "http" })
         .build();
     const document = SwaggerModule.createDocument(app, options);
 
@@ -31,12 +36,13 @@ async function bootstrap() {
     const roleAuthGuard = new RoleAuthGuard(reflector);
     const throttlerGuard = app.select(AppModule).get(THROTTLER_GUARD);
     app.use(helmet());
-    app.use(cookieParser());
+    app.use(cookieParser(COOKIE_SIGNATURE));
     // app.use(csurf({ cookie: true }));
     app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
     app.enableCors({
         origin: /http:\/\/localhost:?[\d]+/,
-        exposedHeaders: [CONST_ACCESS_TOKEN_HEADER, CONST_REFRESH_TOKEN_HEADER],
+        exposedHeaders: [CONST_REFRESH_TOKEN_HEADER],
+        credentials: true,
     });
     app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
     app.useGlobalPipes(new ValidationPipe());

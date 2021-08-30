@@ -16,20 +16,18 @@ function useTitumirMutation<T, V>(
         setTokens,
     }));
 
-    const accessToken = tokens?.accessToken;
     const refreshToken = tokens?.refreshToken;
 
     function mutateFn(payload: V): Promise<T> {
-        if (accessToken && refreshToken && logged)
-            titumirApi.setTokens({ accessToken, refreshToken });
+        if (refreshToken && logged) titumirApi.setTokens({ refreshToken });
         return hFn(titumirApi, payload);
     }
 
     const mutation = useMutation<T, TitumirError, V>(key, mutateFn, {
         ...options,
         onError(e, v, ctx) {
-            if (e.status === 401 && accessToken && refreshToken)
-                refreshTokenOnError(titumirApi, { accessToken, refreshToken }, setTokens);
+            if (e.status === 401 && refreshToken)
+                refreshTokenOnError(titumirApi, { refreshToken }, setTokens);
             options?.onError?.(e, v, ctx);
         },
     });

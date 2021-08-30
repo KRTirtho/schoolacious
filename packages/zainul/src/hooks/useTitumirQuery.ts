@@ -16,9 +16,8 @@ export function refreshTokenOnError(
     titumirApi
         .refresh()
         .then(() => {
-            if (titumirApi?.accessToken && titumirApi?.refreshToken)
+            if (titumirApi?.refreshToken)
                 setTokens({
-                    accessToken: titumirApi.accessToken,
                     refreshToken: titumirApi.refreshToken,
                 });
         })
@@ -34,8 +33,7 @@ function useTitumirQuery<T>(
 ) {
     // custom function for passing the titumir api with safe tokens
     function queryFn() {
-        if (accessToken && refreshToken && logged)
-            titumirApi.setTokens({ accessToken, refreshToken });
+        if (refreshToken && logged) titumirApi.setTokens({ refreshToken });
         return hFn(titumirApi);
     }
 
@@ -45,14 +43,13 @@ function useTitumirQuery<T>(
         setTokens,
     }));
 
-    const accessToken = tokens?.accessToken;
     const refreshToken = tokens?.refreshToken;
 
     const query = useQuery<T, TitumirError>(key, queryFn, {
         ...options,
         onError(e) {
-            if (e.status === 401 && accessToken && refreshToken) {
-                refreshTokenOnError(titumirApi, { accessToken, refreshToken }, setTokens);
+            if (e.status === 401 && refreshToken) {
+                refreshTokenOnError(titumirApi, { refreshToken }, setTokens);
             }
             options?.onError?.(e);
         },

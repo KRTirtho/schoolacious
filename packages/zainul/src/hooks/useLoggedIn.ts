@@ -2,10 +2,9 @@ import { useAuthStore } from "../state/authorization-store";
 import { useTokenStore } from "../state/token-store";
 
 function useLoggedIn(): boolean {
-    const accessToken = useTokenStore((s) => s.accessToken);
     const refreshToken = useTokenStore((s) => s.refreshToken);
     const user = useAuthStore((s) => s.user);
-    return user !== undefined && accessToken !== undefined && refreshToken !== undefined;
+    return user !== undefined && refreshToken !== undefined;
 }
 
 export default useLoggedIn;

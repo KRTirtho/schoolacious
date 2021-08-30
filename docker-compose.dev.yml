@@ -27,6 +27,7 @@ services:
       - DATABASE_HOST=postgres
       - DATABASE_PORT=5432
       - NOT_A_SECRET=secretxxxxxsecret
+      - COOKIE_SIGNATURE=super-diasdi903u4j9124u90
       - PORT=4000
     # for using the container as a separate OS like
     command: sleep 50505050505

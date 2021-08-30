@@ -11,7 +11,6 @@ import { MutationContextKey } from "configs/enums";
 import {
     TitumirResponse,
     LoginBody,
-    CONST_ACCESS_TOKEN_KEY,
     CONST_REFRESH_TOKEN_KEY,
 } from "services/api/titumir";
 import { UserSchema } from "@veschool/types";
@@ -34,10 +33,9 @@ function Login() {
     >(MutationContextKey.LOGIN, (body) => titumirApi.login(body), {
         onSuccess({ json, headers }) {
             setUser(json);
-            const accessToken = headers.get(CONST_ACCESS_TOKEN_KEY);
             const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);
-            if (accessToken && refreshToken) {
-                setTokens?.({ accessToken, refreshToken });
+            if (refreshToken) {
+                setTokens?.({ refreshToken });
             }
             setTimeout(() => history.push("/"), 500);
         },

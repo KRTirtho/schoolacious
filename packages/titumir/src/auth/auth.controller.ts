@@ -4,14 +4,18 @@ import {
     Headers,
     Logger,
     Post,
-    Req,
     UseGuards,
     NotAcceptableException,
     UnauthorizedException,
     Inject,
+    Res,
 } from "@nestjs/common";
-import { Request } from "express";
-import { CONST_ACCESS_TOKEN_HEADER, CONST_REFRESH_TOKEN_HEADER } from "../../config";
+import { Request, Response } from "express";
+import {
+    AUTHORIZATION_COOKIE_OPTS,
+    CONST_JWT_ACCESS_TOKEN_COOKIE,
+    CONST_REFRESH_TOKEN_HEADER,
+} from "../../config";
 import { Public } from "../decorator/public.decorator";
 import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
@@ -40,13 +44,18 @@ export class AuthController {
     @ApiUnauthorizedResponse({ description: "Invalid credentials" })
     async login(
         @CurrentUser() user: User,
-        @Req() { res }: Request,
+        @Res({ passthrough: true }) res: Response,
         @Body() _?: LoginDTO,
     ): Promise<User> {
         try {
             const { access_token, refresh_token } = this.authService.createTokens(user);
-            res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
             res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+            res?.cookie(
+                CONST_JWT_ACCESS_TOKEN_COOKIE,
+                access_token,
+                AUTHORIZATION_COOKIE_OPTS,
+            );
+
             return user;
         } catch (error: any) {
             this.logger.error(error?.message);
@@ -61,14 +70,18 @@ export class AuthController {
     })
     async refresh(
         @Headers() headers: Request["headers"],
-        @Req() { res }: Request,
+        @Res({ passthrough: true }) res: Response,
     ): Promise<{ message: string }> {
         try {
-            const refreshToken = headers[CONST_REFRESH_TOKEN_HEADER] as string;
+            const refreshToken = headers?.[CONST_REFRESH_TOKEN_HEADER] as string;
             if (!refreshToken) throw new NotAcceptableException("refresh token not set");
             const user = await this.authService.verify(refreshToken, ["school"]);
             const { access_token, refresh_token } = this.authService.createTokens(user);
-            res?.set(CONST_ACCESS_TOKEN_HEADER, access_token);
+            res?.cookie(
+                CONST_JWT_ACCESS_TOKEN_COOKIE,
+                access_token,
+                AUTHORIZATION_COOKIE_OPTS,
+            );
             res?.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
             return { message: "Refreshed access_token" };
         } catch (error: any) {
@@ -84,7 +97,7 @@ export class AuthController {
     @Post("signup")
     async signup(
         @Body() body: SignupDTO,
-        @Req() { res }: Request,
+        @Res({ passthrough: true }) res: Response,
     ): Promise<Omit<User, "password">> {
         try {
             const { email, role, ...user } = await this.userService.createUser(body);
@@ -92,8 +105,12 @@ export class AuthController {
                 email,
                 role: role ?? null,
             });
-            res?.setHeader(CONST_ACCESS_TOKEN_HEADER, access_token);
             res?.setHeader(CONST_REFRESH_TOKEN_HEADER, refresh_token);
+            res?.cookie(
+                CONST_JWT_ACCESS_TOKEN_COOKIE,
+                access_token,
+                AUTHORIZATION_COOKIE_OPTS,
+            );
             return { ...user, email, role };
         } catch (error: any) {
             this.logger.error(error?.message);

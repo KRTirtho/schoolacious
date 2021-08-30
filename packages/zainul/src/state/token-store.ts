@@ -4,7 +4,6 @@ import { AUTH_CONTEXT_LOCALSTORAGE_KEY } from "../configs/constants";
 import { ContextToken } from "./AuthorizationConfig";
 
 export interface TokenStore {
-    accessToken?: string;
     refreshToken?: string;
     get tokens(): Partial<ContextToken>;
     setTokens(tokens: Partial<ContextToken>): void;
@@ -33,6 +32,6 @@ const tokenStore: StateCreator<TokenStore> = (set, get) => {
 export const useTokenStore = create(
     persist(tokenStore, {
         name: AUTH_CONTEXT_LOCALSTORAGE_KEY,
-        whitelist: ["accessToken", "refreshToken"],
+        whitelist: ["refreshToken"],
     }),
 );

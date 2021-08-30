@@ -16,7 +16,6 @@ export interface LoginBody {
 
 export type SignupBody = LoginBody & Pick<UserSchema, "first_name" | "last_name">;
 
-export const CONST_ACCESS_TOKEN_KEY = "x-access-token";
 export const CONST_REFRESH_TOKEN_KEY = "x-refresh-token";
 
 export enum INVITATION_OR_JOIN_ACTION {
@@ -67,7 +66,6 @@ export type CreateSchool = Pick<
 >;
 
 export interface TitumirOptions {
-    accessToken?: string;
     refreshToken?: string;
 }
 
@@ -109,10 +107,8 @@ export type GradeBody = {
 export type CancelInvitationJoinBody = Pick<Invitations_JoinsSchema, "_id">;
 
 export default class Titumir {
-    accessToken?: string;
     refreshToken?: string;
     constructor(public baseURL: string, options?: TitumirOptions) {
-        this.accessToken = options?.accessToken;
         this.refreshToken = options?.refreshToken;
     }
 
@@ -134,6 +130,7 @@ export default class Titumir {
         const res = await fetch(this.baseURL + path, {
             method,
             body: body ? JSON.stringify(body) : null,
+            credentials: "include",
             ...options,
             headers,
         });
@@ -147,32 +144,23 @@ export default class Titumir {
             });
         return Object.assign(res, { json: await res.json() });
     }
-    setTokens({
-        accessToken,
-        refreshToken,
-    }: {
-        accessToken?: string | null;
-        refreshToken?: string | null;
-    }) {
-        if (accessToken) this.accessToken = accessToken;
+    setTokens({ refreshToken }: { refreshToken?: string | null }) {
         if (refreshToken) this.refreshToken = refreshToken;
         return this;
     }
 
     async login(body: LoginBody) {
         const res = await this.buildRequest<UserSchema>("/auth/login", "POST", body);
-        const accessToken = res.headers.get(CONST_ACCESS_TOKEN_KEY);
         const refreshToken = res.headers.get(CONST_REFRESH_TOKEN_KEY);
-        this.setTokens({ accessToken, refreshToken });
+        this.setTokens({ refreshToken });
         return res;
     }
 
     async signup(body: SignupBody) {
         const res = await this.buildRequest<UserSchema>("/auth/signup", "POST", body);
 
-        const accessToken = res.headers.get(CONST_ACCESS_TOKEN_KEY);
         const refreshToken = res.headers.get(CONST_REFRESH_TOKEN_KEY);
-        this.setTokens({ accessToken, refreshToken });
+        this.setTokens({ refreshToken });
         return res;
     }
 
@@ -189,40 +177,18 @@ export default class Titumir {
                 headers,
             },
         );
-        const accessToken = res.headers.get(CONST_ACCESS_TOKEN_KEY);
         const refreshToken = res.headers.get(CONST_REFRESH_TOKEN_KEY);
-        this.setTokens({ accessToken, refreshToken });
+        this.setTokens({ refreshToken });
         return {
             ...res,
-            tokens: { accessToken, refreshToken },
+            tokens: { refreshToken },
         };
-    }
-
-    async buildAuthReq<T, D = Record<string | number, unknown>>(
-        path: string,
-        method: HTTPMethods = "GET",
-        body?: D,
-        options?: TitumirRequestOptions,
-    ): Promise<TitumirResponse<T>> {
-        if (!this.accessToken) throw new Error("access token doesn't exist");
-        const headers = new Headers();
-        headers.set("Authorization", `Bearer ${this.accessToken}`);
-        Array.from(
-            (options?.headers?.entries as () => IterableIterator<[string, string]>)?.() ??
-                [],
-        ).forEach(([key, val]) => headers.append(key, val));
-
-        const res = await this.buildRequest<T>(path, method, body, {
-            ...options,
-            headers,
-        });
-        return res;
     }
 
     // =======/user/*=======
 
     async getMe() {
-        return await this.buildAuthReq<UserSchema>("/user/me");
+        return await this.buildRequest<UserSchema>("/user/me");
     }
 
     async queryUser(q: string, filters?: { school_id?: string; role?: string }) {
@@ -230,15 +196,15 @@ export default class Titumir {
             url: "/user/query",
             query: { q, ...filters },
         });
-        return await this.buildAuthReq<UserSchema[]>(url);
+        return await this.buildRequest<UserSchema[]>(url);
     }
 
     async getUserInvitations() {
-        return await this.buildAuthReq<Invitations_JoinsSchema[]>("/user/invitations");
+        return await this.buildRequest<Invitations_JoinsSchema[]>("/user/invitations");
     }
 
     async getUserJoinRequests() {
-        return await this.buildAuthReq<Invitations_JoinsSchema[]>("/user/join-requests");
+        return await this.buildRequest<Invitations_JoinsSchema[]>("/user/join-requests");
     }
 
     // =======/school/*=======
@@ -256,31 +222,31 @@ export default class Titumir {
                 "no-invite-join": noInviteJoin,
             },
         });
-        return await this.buildAuthReq<SchoolSchema[]>(url);
+        return await this.buildRequest<SchoolSchema[]>(url);
     }
 
     async getSchool(short_name: string) {
-        return await this.buildAuthReq<SchoolSchema>(`/school/${short_name}`);
+        return await this.buildRequest<SchoolSchema>(`/school/${short_name}`);
     }
 
     async getSchoolInvitations(school: string) {
-        return await this.buildAuthReq<Invitations_Joins[]>(
+        return await this.buildRequest<Invitations_Joins[]>(
             `/school/${school}/invitations`,
         );
     }
 
     async getSchoolJoinRequests(school: string) {
-        return await this.buildAuthReq<Invitations_Joins[]>(
+        return await this.buildRequest<Invitations_Joins[]>(
             `/school/${school}/join-requests`,
         );
     }
 
     async getAllSchoolMembers(school: string) {
-        return await this.buildAuthReq<UserSchema[]>(`/school/${school}/members`);
+        return await this.buildRequest<UserSchema[]>(`/school/${school}/members`);
     }
 
     async createSchool(payload: CreateSchool) {
-        const res = await this.buildAuthReq<SchoolSchema, CreateSchool>(
+        const res = await this.buildRequest<SchoolSchema, CreateSchool>(
             "/school",
             "POST",
             payload,
@@ -291,7 +257,7 @@ export default class Titumir {
     // =======/invitation-join/*=======
 
     async invite(data: InvitationBody[]) {
-        return await this.buildAuthReq<Invitations_Joins[], InvitationBody[]>(
+        return await this.buildRequest<Invitations_Joins[], InvitationBody[]>(
             "/invitation-join/invite",
             "POST",
             data,
@@ -299,7 +265,7 @@ export default class Titumir {
     }
 
     async joinSchool(data: JoinBody) {
-        return await this.buildAuthReq<Invitations_JoinsSchema, JoinBody>(
+        return await this.buildRequest<Invitations_JoinsSchema, JoinBody>(
             "/invitation-join/join",
             "POST",
             data,
@@ -309,7 +275,7 @@ export default class Titumir {
     // =======/grade/=======
 
     async createGrade(school: string, data: GradeBody) {
-        return await this.buildAuthReq<GradeSchema, GradeBody>(
+        return await this.buildRequest<GradeSchema, GradeBody>(
             `/school/${school}/grade`,
             "POST",
             data,
@@ -318,11 +284,11 @@ export default class Titumir {
 
     async getGrades(school: string, query?: Partial<{ extended: string }>) {
         const url = qs.stringifyUrl({ url: `/school/${school}/grade`, query });
-        return await this.buildAuthReq<GradeSchema[]>(url);
+        return await this.buildRequest<GradeSchema[]>(url);
     }
 
     async completeInvitationJoin(data: CompleteInvitationJoinBody) {
-        return await this.buildAuthReq<{ message: string }, CompleteInvitationJoinBody>(
+        return await this.buildRequest<{ message: string }, CompleteInvitationJoinBody>(
             "/invitation-join/complete",
             "POST",
             data,
@@ -330,7 +296,7 @@ export default class Titumir {
     }
 
     async cancelInvitationJoin({ _id }: CancelInvitationJoinBody) {
-        return await this.buildAuthReq<{ message: string }, CancelInvitationJoinBody>(
+        return await this.buildRequest<{ message: string }, CancelInvitationJoinBody>(
             "/invitation-join",
             "DELETE",
             { _id },
@@ -342,7 +308,7 @@ export default class Titumir {
         school: string,
         { class_teacher, grade, section }: CreateSectionBody,
     ) {
-        return await this.buildAuthReq<
+        return await this.buildRequest<
             SectionSchema,
             Record<"class_teacher" | "name", string>
         >(`/school/${school}/grade/${grade}/section`, "POST", {

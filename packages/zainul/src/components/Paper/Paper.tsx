@@ -29,7 +29,7 @@ function Paper({
             light: { bg: theme.colors.white },
         },
         tinted: {
-            dark: { bg: theme.colors.gray[600] },
+            dark: { bg: theme.colors.gray[700] },
             light: { bg: theme.colors.gray[50] },
         },
     };

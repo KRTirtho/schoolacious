@@ -8,7 +8,7 @@ import AddGradeModal from "./components/AddGradeModal";
 import { QueryContextKey } from "configs/enums";
 import AddSectionModal from "./components/AddSectionModal";
 
-function ConfigureSchool() {
+function ConfigureGradeSection() {
     const school = useAuthStore((s) => s.user?.school);
     const { data: grades } = useTitumirQuery<GradeSchema[]>(
         QueryContextKey.GRADES,
@@ -82,4 +82,4 @@ function ConfigureSchool() {
     );
 }
 
-export default ConfigureSchool;
+export default ConfigureGradeSection;

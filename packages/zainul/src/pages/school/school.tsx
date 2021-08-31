@@ -7,17 +7,11 @@ import {
     Link as Clink,
     Text,
     IconButton,
-    Tooltip,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
 } from "@chakra-ui/react";
 import React from "react";
-import { FaSchool, FaUserPlus } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
 import { Redirect, Link } from "react-router-dom";
-import { useAuthStore } from "../../state/authorization-store";
+import { useAuthStore } from "state/authorization-store";
 
 function School() {
     const user = useAuthStore((s) => s.user);
@@ -50,33 +44,14 @@ function School() {
                     </Clink>
                     <Text>{school?.description}</Text>
                 </Stack>
-                <Menu isLazy>
-                    <Tooltip label="School Configuration Options">
-                        <MenuButton
-                            colorScheme="white"
-                            aria-label="school options"
-                            as={IconButton}
-                            icon={<IoIosSettings />}
-                            variant="ghost"
-                        />
-                    </Tooltip>
-                    <MenuList>
-                        <MenuItem
-                            as={Link}
-                            to="/school/add-remove-members"
-                            icon={<FaUserPlus />}
-                        >
-                            Add/Remove members
-                        </MenuItem>
-                        <MenuItem
-                            as={Link}
-                            to="/school/configure-school"
-                            icon={<FaSchool />}
-                        >
-                            Configure school
-                        </MenuItem>
-                    </MenuList>
-                </Menu>
+                <IconButton
+                    as={Link}
+                    colorScheme="white"
+                    aria-label="school options"
+                    icon={<IoIosSettings />}
+                    variant="ghost"
+                    to="/school/configure/grade-sections"
+                />
             </Stack>
         </Flex>
     );

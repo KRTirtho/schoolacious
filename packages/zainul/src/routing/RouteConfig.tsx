@@ -5,9 +5,6 @@ import Auth from "pages/auth/auth";
 import Start from "pages/start/start";
 import SchoolCreate from "pages/school-create/school-create";
 import School from "pages/school/school";
-import ConfigureSchool from "pages/configure-school/configure-school";
-import SchoolInvitations from "pages/school-invitations/school-invitations";
-import AddRemoveMembers from "pages/add-remove-members/add-remove-members";
 import UserProfile from "pages/user-profile/user-profile";
 import UserInvitations from "pages/user-invitations/user-invitations";
 import ProtectedRoute from "./ProtectedRoute";
@@ -15,8 +12,8 @@ import NotProtectedRoute from "./NotProtectedRoute";
 import { USER_ROLE } from "@veschool/types";
 import NotFound404 from "./404";
 import SchoolJoin from "pages/school-join/school-join";
-import SchoolJoinRequests from "pages/school-join-requests/school-join-requests";
 import UserJoinRequests from "pages/user-join-requests/user-join-requests";
+import SchoolConfigure from "pages/school-configure/school-configure";
 
 export default function Routes() {
     return (
@@ -34,32 +31,10 @@ export default function Routes() {
                 <SchoolJoin />
             </ProtectedRoute>
             <ProtectedRoute
-                exact
                 roles={[USER_ROLE.admin, USER_ROLE.coAdmin]}
-                path="/school/configure-school"
+                path="/school/configure"
             >
-                <ConfigureSchool />
-            </ProtectedRoute>
-            <ProtectedRoute
-                exact
-                roles={[USER_ROLE.admin, USER_ROLE.coAdmin]}
-                path="/school/add-remove-members"
-            >
-                <AddRemoveMembers />
-            </ProtectedRoute>
-            <ProtectedRoute
-                exact
-                roles={[USER_ROLE.admin, USER_ROLE.coAdmin]}
-                path="/school/invitations"
-            >
-                <SchoolInvitations />
-            </ProtectedRoute>
-            <ProtectedRoute
-                exact
-                roles={[USER_ROLE.admin, USER_ROLE.coAdmin]}
-                path="/school/join-requests"
-            >
-                <SchoolJoinRequests />
+                <SchoolConfigure />
             </ProtectedRoute>
             <ProtectedRoute exact path="/user/profile">
                 <UserProfile />

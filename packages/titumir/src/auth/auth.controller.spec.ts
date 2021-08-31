@@ -34,6 +34,8 @@ describe("AuthController", () => {
         user: mockUser,
         res: httpMocks.createResponse(),
     });
+
+    const mockRes = httpMocks.createResponse();
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [AuthController],
@@ -51,25 +53,25 @@ describe("AuthController", () => {
     });
 
     it("login should return <user> with credential headers", async () => {
-        expect(await controller.login(mockUser, mockReq)).toEqual(mockUser);
+        expect(await controller.login(mockUser, mockRes)).toEqual(mockUser);
         expect(mockReq.res?.getHeaders()).toHaveProperty(CONST_REFRESH_TOKEN_HEADER);
     });
 
     it("should refresh access token", async () => {
         const token = uuid();
         expect(
-            await controller.refresh({ [CONST_REFRESH_TOKEN_HEADER]: token }, mockReq),
+            await controller.refresh({ [CONST_REFRESH_TOKEN_HEADER]: token }, mockRes),
         ).toEqual({ message: "Refreshed access_token" });
         expect(mockReq.res?.getHeaders()).toHaveProperty(CONST_REFRESH_TOKEN_HEADER);
         expect(mockReq.res?.getHeader(CONST_REFRESH_TOKEN_HEADER)).not.toEqual(token);
     });
 
     it("should throw error when refresh token not passed", () => {
-        expect(controller.refresh({}, mockReq)).rejects.toEqual("refresh token not set");
+        expect(controller.refresh({}, mockRes)).rejects.toEqual("refresh token not set");
     });
 
     it("should create an user & return with access_token & refresh_token", async () => {
-        expect(await controller.signup(mockUser, mockReq)).toEqual(mockUser);
+        expect(await controller.signup(mockUser, mockRes)).toEqual(mockUser);
         expect(mockReq.res?.getHeaders()).toHaveProperty(CONST_REFRESH_TOKEN_HEADER);
     });
 });

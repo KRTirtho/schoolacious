@@ -36,13 +36,14 @@ function SchoolCoAdmins() {
                     </Text>
                     <AddUserPopover
                         name="coAdmin1"
-                        onSubmit={(value, { resetForm, setSubmitting }) => {
+                        onSubmit={(value, { resetForm, setSubmitting }, onClose) => {
                             assignCoAdmins(
                                 { email: value.coAdmin1 as string, index: 1 },
                                 {
                                     onSuccess() {
                                         setSubmitting(false);
                                         resetForm();
+                                        onClose();
                                     },
                                     onError() {
                                         setSubmitting(false);

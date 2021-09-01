@@ -8,15 +8,19 @@ import {
     Text,
     IconButton,
 } from "@chakra-ui/react";
+import { usePermissions } from "hooks/usePermissions";
 import React from "react";
 import { IoIosSettings } from "react-icons/io";
 import { Redirect, Link } from "react-router-dom";
 import { useAuthStore } from "state/authorization-store";
+import { USER_ROLE } from "@veschool/types";
 
 function School() {
     const user = useAuthStore((s) => s.user);
 
     const school = user?.school;
+
+    const isAllowed = usePermissions([USER_ROLE.admin, USER_ROLE.coAdmin]);
 
     return (
         <Flex direction="column">
@@ -44,14 +48,16 @@ function School() {
                     </Clink>
                     <Text>{school?.description}</Text>
                 </Stack>
-                <IconButton
-                    as={Link}
-                    colorScheme="white"
-                    aria-label="school options"
-                    icon={<IoIosSettings />}
-                    variant="ghost"
-                    to="/school/configure/grade-sections"
-                />
+                {isAllowed && (
+                    <IconButton
+                        as={Link}
+                        colorScheme="white"
+                        aria-label="school options"
+                        icon={<IoIosSettings />}
+                        variant="ghost"
+                        to="/school/configure/grade-sections"
+                    />
+                )}
             </Stack>
         </Flex>
     );

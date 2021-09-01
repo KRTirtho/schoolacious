@@ -26,6 +26,7 @@ interface AddUserPopoverProps extends Pick<TextFieldProps, "placeholder" | "labe
     onSubmit<Values extends Record<string, unknown>>(
         values: Values,
         formikHelpers: FormikHelpers<Values>,
+        onClose: () => void,
     ): void | Promise<unknown>;
     name: string;
     heading?: string;
@@ -65,7 +66,7 @@ export const AddUserPopover: FC<AddUserPopoverProps> = ({
                 <PopoverContent ref={popoverContentRef}>
                     <Formik
                         initialValues={{ [name]: "" }}
-                        onSubmit={onSubmit}
+                        onSubmit={(value, handler) => onSubmit(value, handler, onClose)}
                         validationSchema={yup.object().shape({
                             [name]: yup.string().email().required(),
                         })}

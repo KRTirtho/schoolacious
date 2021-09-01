@@ -33,7 +33,7 @@ function SchoolJoin() {
         data: schools,
         refetch,
         isLoading,
-    } = useTitumirQuery<SchoolSchema[]>(QueryContextKey.SCHOOL, (api) =>
+    } = useTitumirQuery<SchoolSchema[]>(QueryContextKey.SCHOOLS, (api) =>
         api.getOrSearchSchool(query, { noInviteJoin: true }).then(({ json }) => json),
     );
 
@@ -44,7 +44,7 @@ function SchoolJoin() {
         (api, data) => api.joinSchool(data).then(({ json }) => json),
         {
             onSuccess() {
-                queryClient.refetchQueries(QueryContextKey.SCHOOL);
+                queryClient.refetchQueries(QueryContextKey.SCHOOLS);
             },
         },
     );

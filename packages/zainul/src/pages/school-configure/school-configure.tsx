@@ -27,6 +27,7 @@ import {
 import ConfigureGradeSection from "pages/configure-grade-section/configure-grade-section";
 import NotFound404 from "routing/404";
 import { FaCaretDown } from "react-icons/fa";
+import SchoolCoAdmins from "school-co_admins/school-co_admins";
 
 const SidebarItem: FC<ListItemProps & LinkProps> = (props) => {
     const location = useLocation();
@@ -41,6 +42,7 @@ const SidebarItem: FC<ListItemProps & LinkProps> = (props) => {
             p="3"
             borderRight={isActive ? "solid 5px" : ""}
             borderColor={isActive ? "green.500" : ""}
+            filter={isActive ? "brightness(90%)" : ""}
             _hover={{
                 filter: "brightness(90%)",
             }}
@@ -118,6 +120,9 @@ function SchoolConfigure() {
                 <Switch>
                     <Route exact path={path}>
                         <Redirect from={path} to={`${path}/grade-sections`} />
+                    </Route>
+                    <Route path={`${path}/co-admins`}>
+                        <SchoolCoAdmins />
                     </Route>
                     <Route path={`${path}/grade-sections`}>
                         <ConfigureGradeSection />

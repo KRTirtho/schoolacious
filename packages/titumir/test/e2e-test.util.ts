@@ -260,7 +260,7 @@ export async function assignMockCoAdmin(
         return await client
             .put(`/school/${school.short_name}/co-admin`)
             .set("Authorization", auth)
-            .send({ index, user_id: user.body._id } as AddCoAdminDTO);
+            .send({ index, email: user.body._id } as AddCoAdminDTO);
     } catch (error) {
         errorOut(assignMockCoAdmin, error);
     }

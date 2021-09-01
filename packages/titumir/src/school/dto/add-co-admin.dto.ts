@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, IsNotEmpty, IsNumber, IsPositive, IsUUID } from "class-validator";
+import { IsDefined, IsEmail, IsNotEmpty, IsNumber, IsPositive } from "class-validator";
 
 export default class AddCoAdminDTO {
     @IsDefined()
@@ -10,7 +10,10 @@ export default class AddCoAdminDTO {
 
     @IsDefined()
     @IsNotEmpty()
-    @IsUUID()
-    @ApiProperty({ type: String, description: "the who'll be co-admin" })
-    user_id!: string;
+    @IsEmail()
+    @ApiProperty({
+        type: String,
+        description: "the email of the user, who'll be a co-admin",
+    })
+    email!: string;
 }

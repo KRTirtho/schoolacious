@@ -237,7 +237,7 @@ describe("(e2e) PATH: school/", () => {
     // crud in ("/school/:school/co-admin")
     test("/:school/co-admin (POST) perfect", async () => {
         const payload: AddCoAdminDTO = {
-            user_id: regularMember.body._id,
+            email: regularMember.body._id,
             index: 1,
         };
         const { body } = await client
@@ -271,7 +271,7 @@ describe("(e2e) PATH: school/", () => {
     });
     test("/:school/co-admin (POST) with invalid user_id", async () => {
         const payload: AddCoAdminDTO = {
-            user_id: "560ed590-ba0d-45a4-9a07-cfe18c1fe20f",
+            email: "560ed590-ba0d-45a4-9a07-cfe18c1fe20f",
             index: 1,
         };
         const { body } = await client
@@ -281,13 +281,13 @@ describe("(e2e) PATH: school/", () => {
             .expect(HttpStatus.NOT_FOUND);
 
         expect(body.message).toEqual(
-            `no user found with params: school=\`${averageSchool.short_name}\` body: user_id=\`${payload.user_id}\`, index=\`${payload.index}\``,
+            `no user found with params: school=\`${averageSchool.short_name}\` body: user_id=\`${payload.email}\`, index=\`${payload.index}\``,
         );
     });
 
     test("/:school/co-admin (POST) with user (role) not permitted", async () => {
         const payload: AddCoAdminDTO = {
-            user_id: regularMember.body._id,
+            email: regularMember.body._id,
             index: 1,
         };
         const { body } = await client
@@ -301,7 +301,7 @@ describe("(e2e) PATH: school/", () => {
     test("/:school/co-admin (POST) with user_id out of school", async () => {
         const user = await createMockUser(client);
         const payload: AddCoAdminDTO = {
-            user_id: user.body._id,
+            email: user.body._id,
             index: 1,
         };
         const { body } = await client
@@ -314,7 +314,7 @@ describe("(e2e) PATH: school/", () => {
     });
     test("/:school/co-admin (POST) with user who is already an co-admin", async () => {
         const payload: AddCoAdminDTO = {
-            user_id: regularMember.body._id,
+            email: regularMember.body._id,
             index: 1,
         };
         const { body } = await client

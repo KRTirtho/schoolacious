@@ -59,14 +59,14 @@ export class SchoolService extends BasicEntityService<School, CreateSchool> {
     async assignCoAdmin({
         index,
         user,
-        user_id,
+        email,
     }: {
-        user_id: string;
+        email: string;
         user: User;
         index: number;
     }) {
         const assignee = await this.userService.findOne(
-            { _id: user_id },
+            { email },
             { select: ["role", "_id", "school"], relations: ["school"] },
         );
 

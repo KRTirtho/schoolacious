@@ -106,6 +106,11 @@ export type GradeBody = {
 
 export type CancelInvitationJoinBody = Pick<Invitations_JoinsSchema, "_id">;
 
+export interface CoAdminBody {
+    index: 1 | 2;
+    email: string;
+}
+
 export default class Titumir {
     refreshToken?: string;
     constructor(public baseURL: string, options?: TitumirOptions) {
@@ -252,6 +257,14 @@ export default class Titumir {
             payload,
         );
         return res;
+    }
+
+    async assignCoAdmins(school: string, data: CoAdminBody) {
+        return await this.buildRequest<SchoolSchema, CoAdminBody>(
+            `/school/${school}/co-admin`,
+            "PUT",
+            data,
+        );
     }
 
     // =======/invitation-join/*=======

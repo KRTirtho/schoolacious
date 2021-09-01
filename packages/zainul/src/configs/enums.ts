@@ -8,6 +8,7 @@ export enum MutationContextKey {
     CANCEL_INVITATION_JOIN = "mutate-cancel-invitation-join",
     CREATE_SECTION = "mutate-create-section",
     JOIN_SCHOOL = "mutate-join-school",
+    ASSIGN_CO_ADMINS = "mutate-assign-co-admins",
 }
 
 export enum QueryContextKey {
@@ -18,6 +19,7 @@ export enum QueryContextKey {
     JOIN_REQUEST_RECEIVED = "query-join-request-received",
     GRADES = "query-grades",
     SCHOOL = "query-school",
+    SCHOOLS = "query-schools",
     SCHOOL_MEMBERS = "query-school-members",
 }
 

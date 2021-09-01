@@ -11,6 +11,7 @@ import {
     HStack,
     IconButton,
     List,
+    Text,
     useDisclosure,
 } from "@chakra-ui/react";
 import { FiUserPlus } from "react-icons/fi";
@@ -28,9 +29,11 @@ import {
 import { UserSchema } from "@veschool/types";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { useQueryClient } from "react-query";
+import { userToName } from "utils/userToName";
 
 export interface OptionType extends OptionTypeBase {
-    label: string;
+    label: React.ReactElement;
+    labelStr: string;
     value: string;
 }
 
@@ -65,9 +68,15 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
     const selectedValue = selectedItems.map(({ value }) => value);
 
     const options: OptionsType<OptionType> = (
-        optionsRaw?.map(({ first_name, last_name, _id }) => ({
-            value: _id,
-            label: first_name + " " + last_name,
+        optionsRaw?.map((user) => ({
+            value: user._id,
+            label: (
+                <div>
+                    <Text>{userToName(user)}</Text>
+                    <Text color="gray.500">{user.email}</Text>
+                </div>
+            ),
+            labelStr: userToName(user),
         })) ?? []
     ).filter(({ value }) => !selectedValue.includes(value));
 
@@ -155,11 +164,11 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
                             Clear All
                         </Button>
                         <List>
-                            {selectedItems.map(({ label, value }, index) => {
+                            {selectedItems.map(({ value, labelStr }, index) => {
                                 return (
                                     <ListAvatarTile
-                                        key={label + value + index}
-                                        name={label}
+                                        key={labelStr + value + index}
+                                        name={labelStr}
                                         ending={
                                             <IconButton
                                                 aria-label="remove selected user"

@@ -1,7 +1,9 @@
 import {
+    chakra,
     FormControl,
     FormErrorMessage,
     FormLabel,
+    Text,
     theme,
     Theme,
     useColorModeValue,
@@ -20,10 +22,6 @@ export interface CUISelectProps extends SelectComponentsProps<OptionTypeBase, bo
     name?: string;
     isSearchBar?: boolean;
 }
-
-/**
- * @deprecated
- */
 
 const CUISelect = ({ isSearchBar = false, ...props }: CUISelectProps): ReactElement => {
     const appTheme = useTheme<typeof theme>();

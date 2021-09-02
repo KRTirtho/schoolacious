@@ -4,6 +4,7 @@ import {
     GradeSchema,
     Invitations_JoinsSchema,
     SectionSchema,
+    SubjectSchema,
 } from "@veschool/types";
 import qs from "query-string";
 
@@ -109,6 +110,11 @@ export type CancelInvitationJoinBody = Pick<Invitations_JoinsSchema, "_id">;
 export interface CoAdminBody {
     index: 1 | 2;
     email: string;
+}
+
+export interface CreateSubjectBody {
+    name: string;
+    description: string;
 }
 
 export default class Titumir {
@@ -263,6 +269,18 @@ export default class Titumir {
         return await this.buildRequest<SchoolSchema, CoAdminBody>(
             `/school/${school}/co-admin`,
             "PUT",
+            data,
+        );
+    }
+
+    async getSchoolSubjects(school: string) {
+        return await this.buildRequest<SubjectSchema[]>(`/school/${school}/subject`);
+    }
+
+    async createSubjects(school: string, data: CreateSubjectBody) {
+        return await this.buildRequest<SubjectSchema, CreateSubjectBody>(
+            `/school/${school}/subject`,
+            "POST",
             data,
         );
     }

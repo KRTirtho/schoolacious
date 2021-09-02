@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React, { FC, ReactElement, useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SidebarItem } from "./SidebarItem";
 
 export interface SidebarProps {
@@ -23,10 +23,8 @@ export const Sidebar: FC<SidebarProps> = ({ links }) => {
 
     const screen = useBreakpoint();
 
-    const { path } = useRouteMatch();
-
     useEffect(() => {
-        const currentRoute = links.find((link) => path + link.to === location.pathname);
+        const currentRoute = links.find((link) => link.to === location.pathname);
         if (currentRoute) setSelectedRoute(currentRoute.title);
     }, [location.pathname]);
 
@@ -35,7 +33,7 @@ export const Sidebar: FC<SidebarProps> = ({ links }) => {
     return isLargeScreen ? (
         <List display="flex" flexDir="column" m="5" borderRadius="md" flex={1}>
             {links.map(({ to, title }, i) => (
-                <SidebarItem key={to + i} to={path + to}>
+                <SidebarItem key={to + i} to={to}>
                     {title}
                 </SidebarItem>
             ))}
@@ -53,7 +51,7 @@ export const Sidebar: FC<SidebarProps> = ({ links }) => {
             </MenuButton>
             <MenuList>
                 {links.map(({ title, to }, i) => (
-                    <MenuItem key={to + i} as={Link} to={path + to}>
+                    <MenuItem key={to + i} as={Link} to={to}>
                         {title}
                     </MenuItem>
                 ))}

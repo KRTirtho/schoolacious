@@ -9,6 +9,7 @@ export enum MutationContextKey {
     CREATE_SECTION = "mutate-create-section",
     JOIN_SCHOOL = "mutate-join-school",
     ASSIGN_CO_ADMINS = "mutate-assign-co-admins",
+    CREATE_SCHOOL_SUBJECTS = "mutate-create-school-subjects",
 }
 
 export enum QueryContextKey {
@@ -21,6 +22,7 @@ export enum QueryContextKey {
     SCHOOL = "query-school",
     SCHOOLS = "query-schools",
     SCHOOL_MEMBERS = "query-school-members",
+    SCHOOL_SUBJECTS = "query-school-subjects",
 }
 
 export enum LocalStorageKeys {

@@ -12,12 +12,11 @@ import {
     HStack,
     Button,
     useDisclosure,
-    useOutsideClick,
 } from "@chakra-ui/react";
 import QueryUser from "components/QueryUser/QueryUser";
 import { TextFieldProps } from "components/TextField/TextField";
 import { Formik, Form, Field, FormikHelpers } from "formik";
-import React, { FC, ReactElement, useRef } from "react";
+import React, { FC, ReactElement } from "react";
 import { FiEdit } from "react-icons/fi";
 import * as yup from "yup";
 
@@ -40,13 +39,10 @@ export const AddUserPopover: FC<AddUserPopoverProps> = ({
     placeholder,
     label,
 }) => {
-    const { isOpen, onClose, onToggle } = useDisclosure();
-    const popoverContentRef = useRef(null);
-
-    useOutsideClick({ ref: popoverContentRef, handler: onClose });
+    const { isOpen, onClose, onToggle, onOpen } = useDisclosure();
 
     return (
-        <Popover isLazy isOpen={isOpen}>
+        <Popover isLazy isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
             <PopoverTrigger>
                 {trigger ? (
                     React.cloneElement(trigger, { onClick: onToggle })
@@ -63,7 +59,7 @@ export const AddUserPopover: FC<AddUserPopoverProps> = ({
                 )}
             </PopoverTrigger>
             <Portal>
-                <PopoverContent ref={popoverContentRef}>
+                <PopoverContent>
                     <Formik
                         initialValues={{ [name]: "" }}
                         onSubmit={(value, handler) => onSubmit(value, handler, onClose)}

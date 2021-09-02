@@ -14,6 +14,7 @@ import NotFound404 from "./404";
 import SchoolJoin from "pages/school-join/school-join";
 import UserJoinRequests from "pages/user-join-requests/user-join-requests";
 import SchoolConfigure from "pages/school-configure/school-configure";
+import UserConfigure from "pages/user-configure/user-configure";
 
 export default function Routes() {
     return (
@@ -35,6 +36,9 @@ export default function Routes() {
                 path="/school/configure"
             >
                 <SchoolConfigure />
+            </ProtectedRoute>
+            <ProtectedRoute path="/user/configure">
+                <UserConfigure />
             </ProtectedRoute>
             <ProtectedRoute exact path="/user/profile">
                 <UserProfile />

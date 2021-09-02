@@ -16,9 +16,10 @@ import { IoIosNotifications, IoIosSunny, IoIosMoon, IoIosLogOut } from "react-ic
 import { RiUser3Line } from "react-icons/ri";
 import { Link, useHistory } from "react-router-dom";
 import { FaSchool, FaUserAlt } from "react-icons/fa";
-import useLogout from "../../hooks/useLogout";
+import useLogout from "hooks/useLogout";
 import { useAuthStore } from "state/authorization-store";
 import useLoggedIn from "hooks/useLoggedIn";
+import { BsGear } from "react-icons/bs";
 
 function Appbar() {
     const history = useHistory();
@@ -76,6 +77,13 @@ function Appbar() {
                         )}
                         <MenuItem as={Link} to={`/user/profile`} icon={<FaUserAlt />}>
                             Profile
+                        </MenuItem>
+                        <MenuItem
+                            as={Link}
+                            to={`/user/configure/invitations`}
+                            icon={<BsGear />}
+                        >
+                            Settings
                         </MenuItem>
                         <MenuItem onClick={logout} icon={<IoIosLogOut />}>
                             Logout

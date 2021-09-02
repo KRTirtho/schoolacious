@@ -6,18 +6,20 @@ import React from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import ConfigureGradeSection from "pages/configure-grade-section/configure-grade-section";
 import NotFound404 from "routing/404";
-import SchoolCoAdmins from "school-co_admins/school-co_admins";
+import SchoolCoAdmins from "pages/school-co_admins/school-co_admins";
 import { Sidebar } from "components/Sidebar/Sidebar";
+import SchoolSubjects from "pages/school-subjects/school-subjects";
 
 function SchoolConfigure() {
     const { path } = useRouteMatch();
 
     const links = [
-        { to: "/co-admins", title: "Co-admins" },
-        { to: "/add-remove-members", title: "Members" },
-        { to: "/grade-sections", title: "Grades & Sections" },
-        { to: "/invitations", title: "Invitations" },
-        { to: "/join-requests", title: "Join Requests" },
+        { to: path + "/co-admins", title: "Co-admins" },
+        { to: path + "/add-remove-members", title: "Members" },
+        { to: path + "/grade-sections", title: "Grades & Sections" },
+        { to: path + "/subjects", title: "Subjects" },
+        { to: path + "/invitations", title: "Invitations" },
+        { to: path + "/join-requests", title: "Join Requests" },
     ];
 
     return (
@@ -36,6 +38,9 @@ function SchoolConfigure() {
                     </Route>
                     <Route path={`${path}/add-remove-members`}>
                         <AddRemoveMembers />
+                    </Route>
+                    <Route path={`${path}/subjects`}>
+                        <SchoolSubjects />
                     </Route>
                     <Route path={`${path}/invitations`}>
                         <SchoolInvitations />

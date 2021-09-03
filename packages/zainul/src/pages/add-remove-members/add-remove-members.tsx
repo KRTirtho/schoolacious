@@ -26,11 +26,15 @@ import { UserSchema } from "@veschool/types";
 import { FaEllipsisH, FaSearch } from "react-icons/fa";
 
 function AddRemoveMembers() {
-    const school = useAuthStore((s) => s.user?.school);
+    const short_name = useAuthStore((s) => s.user?.school?.short_name);
 
-    const { data: members } = useTitumirQuery<UserSchema[]>(
+    const { data: members } = useTitumirQuery<UserSchema[] | null>(
         QueryContextKey.SCHOOL_MEMBERS,
-        (api) => api.getAllSchoolMembers(school!.short_name).then(({ json }) => json),
+        async (api) => {
+            if (!short_name) return null;
+            const { json } = await api.getAllSchoolMembers(short_name);
+            return json;
+        },
     );
 
     const memberOptions = (

@@ -1,24 +1,25 @@
 import { chakra, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import useTitumirQuery from "../../hooks/useTitumirQuery";
+import useTitumirQuery from "hooks/useTitumirQuery";
 import React, { useMemo } from "react";
-import { useAuthStore } from "../../state/authorization-store";
+import { useAuthStore } from "state/authorization-store";
 import { GradeSchema } from "@veschool/types";
-import { userToName } from "../../utils/userToName";
+import { userToName } from "utils/userToName";
 import AddGradeModal from "./components/AddGradeModal";
 import { QueryContextKey } from "configs/enums";
 import AddSectionModal from "./components/AddSectionModal";
 
 function ConfigureGradeSection() {
     const school = useAuthStore((s) => s.user?.school);
-    const { data: grades } = useTitumirQuery<GradeSchema[]>(
+    const { data: grades } = useTitumirQuery<GradeSchema[] | null>(
         QueryContextKey.GRADES,
-        (api) =>
-            api
-                .getGrades(school!.short_name, {
-                    extended:
-                        "sections,moderator,sections.class_teacher,examiner,grades_subjects",
-                })
-                .then(({ json }) => json),
+        async (api) => {
+            if (!school) return null;
+            const { json } = await api.getGrades(school.short_name, {
+                extended:
+                    "sections,moderator,sections.class_teacher,examiner,grades_subjects",
+            });
+            return json;
+        },
     );
 
     const standards = useMemo(() => grades?.map(({ standard }) => standard), [grades]);

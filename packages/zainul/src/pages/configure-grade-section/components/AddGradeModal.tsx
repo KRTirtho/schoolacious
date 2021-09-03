@@ -41,7 +41,7 @@ export interface AddGradeModalProps {
 }
 
 const AddGradeModal: FC<AddGradeModalProps> = ({ grades }) => {
-    const user = useAuthStore((s) => s.user);
+    const short_name = useAuthStore((s) => s.user?.school?.short_name);
     const { isOpen, onClose, onToggle } = useDisclosure();
 
     const queryClient = useQueryClient();
@@ -50,16 +50,16 @@ const AddGradeModal: FC<AddGradeModalProps> = ({ grades }) => {
         mutate: createGrade,
         isLoading,
         error,
-    } = useTitumirMutation<GradeSchema, GradeBody>(
+    } = useTitumirMutation<GradeSchema | null, GradeBody>(
         MutationContextKey.CREATE_GRADES,
-        (api, body) =>
-            api.createGrade(user!.school!.short_name, body).then(({ json }) => json),
+        async (api, body) => {
+            if (!short_name) return null;
+            const { json } = await api.createGrade(short_name, body);
+            return json;
+        },
         {
-            onSuccess(data) {
-                queryClient.setQueryData<GradeSchema[]>(
-                    QueryContextKey.GRADES,
-                    (previous) => [...(previous ?? []), data],
-                );
+            onSuccess() {
+                queryClient.refetchQueries(QueryContextKey.GRADES);
             },
         },
     );

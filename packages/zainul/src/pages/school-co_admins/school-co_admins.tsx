@@ -13,14 +13,25 @@ import { CoAdminBody } from "services/api/titumir";
 function SchoolCoAdmins() {
     const short_name = useAuthStore((s) => s.user?.school?.short_name);
 
-    const { data: school, refetch } = useTitumirQuery<SchoolSchema>(
+    const { data: school, refetch } = useTitumirQuery<SchoolSchema | null>(
         QueryContextKey.SCHOOL,
-        (api) => api.getSchool(short_name!).then(({ json }) => json),
+        async (api) => {
+            if (!short_name) return null;
+            const { json } = await api.getSchool(short_name);
+            return json;
+        },
     );
 
-    const { mutate: assignCoAdmins } = useTitumirMutation<SchoolSchema, CoAdminBody>(
+    const { mutate: assignCoAdmins } = useTitumirMutation<
+        SchoolSchema | null,
+        CoAdminBody
+    >(
         MutationContextKey.ASSIGN_CO_ADMINS,
-        (api, data) => api.assignCoAdmins(short_name!, data).then(({ json }) => json),
+        async (api, data) => {
+            if (!short_name) return null;
+            const { json } = await api.assignCoAdmins(short_name, data);
+            return json;
+        },
         {
             onSuccess: () => refetch(),
         },

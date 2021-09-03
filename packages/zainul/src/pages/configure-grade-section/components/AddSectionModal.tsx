@@ -37,17 +37,20 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
         grade: yup.number().required(),
     });
 
-    const school = useAuthStore((s) => s.user?.school);
+    const short_name = useAuthStore((s) => s.user?.school?.short_name);
 
     const queryClient = useQueryClient();
 
     const { mutate: createSection, error } = useTitumirMutation<
-        SectionSchema,
+        SectionSchema | null,
         CreateSectionBody
     >(
         MutationContextKey.CREATE_SECTION,
-        (api, data) =>
-            api.createSection(school!.short_name, data).then(({ json }) => json),
+        async (api, data) => {
+            if (!short_name) return null;
+            const { json } = await api.createSection(short_name, data);
+            return json;
+        },
         {
             onSuccess() {
                 queryClient.refetchQueries(QueryContextKey.GRADES);

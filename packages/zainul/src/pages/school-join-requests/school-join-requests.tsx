@@ -13,12 +13,15 @@ import { useAuthStore } from "state/authorization-store";
 import { userToName } from "utils/userToName";
 
 function SchoolJoinRequests() {
-    const school = useAuthStore((s) => s.user?.school);
+    const short_name = useAuthStore((s) => s.user?.school?.short_name);
 
-    const { data: invitations, refetch } = useTitumirQuery<Invitations_JoinsSchema[]>(
-        QueryContextKey.JOIN_REQUEST_RECEIVED,
-        (api) => api.getSchoolJoinRequests(school!.short_name).then(({ json }) => json),
-    );
+    const { data: invitations, refetch } = useTitumirQuery<
+        Invitations_JoinsSchema[] | null
+    >(QueryContextKey.JOIN_REQUEST_RECEIVED, async (api) => {
+        if (!short_name) return null;
+        const { json } = await api.getSchoolJoinRequests(short_name);
+        return json;
+    });
 
     const { mutate: completeInvitationJoin } = useTitumirMutation<
         { message: string },

@@ -51,9 +51,13 @@ export class TitumirError extends TypeError {
         body: Record<string | number, unknown>;
     }) {
         super();
-        this.stack = `[TitumirError "${statusText}"]: the following ${url} returned status ${status}`;
-        this.status = status;
         this.body = body;
+        this.stack = `[TitumirError "${statusText}"]: the following ${url} returned status ${status} \n [Response]: ${JSON.stringify(
+            this.body,
+            null,
+            2,
+        )}`;
+        this.status = status;
     }
 }
 

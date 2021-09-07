@@ -15,18 +15,15 @@ const AuthorizationConfig: FC = ({ children }) => {
     const user = useAuthStore((s) => s.user);
 
     useEffect(() => {
-        const tokens = { refreshToken };
         if (refreshToken && !user) {
             titumirApi
-                .setTokens(tokens)
                 .getMe()
                 .then((user) => setUser(user.json))
-                .catch((e) => {
-                    console.error("e:", e);
+                .catch(() => {
                     refreshTokenOnError(titumirApi, { refreshToken }, setTokens);
                 });
         }
-    }, [, refreshToken]);
+    }, [refreshToken]);
 
     return <>{children}</>;
 };

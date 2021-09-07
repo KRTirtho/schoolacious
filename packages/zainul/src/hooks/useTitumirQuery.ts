@@ -3,7 +3,6 @@ import { titumirApi } from "../App";
 import Titumir, { TitumirError } from "../services/api/titumir";
 import { TokenStore, useTokenStore } from "../state/token-store";
 import { ContextToken } from "../state/AuthorizationConfig";
-import useLoggedIn from "./useLoggedIn";
 
 export function refreshTokenOnError(
     titumirApi: Titumir,
@@ -12,13 +11,12 @@ export function refreshTokenOnError(
 ) {
     // unauthorized means the token has expired
     // refreshing the token before the retry
-    titumirApi.setTokens(tokens);
     titumirApi
-        .refresh()
-        .then(() => {
-            if (titumirApi?.refreshToken)
+        .refresh(tokens.refreshToken)
+        .then(({ tokens: { refreshToken } }) => {
+            if (refreshToken)
                 setTokens({
-                    refreshToken: titumirApi.refreshToken,
+                    refreshToken,
                 });
         })
         .catch((e) => {
@@ -33,17 +31,11 @@ function useTitumirQuery<T>(
 ) {
     // custom function for passing the titumir api with safe tokens
     function queryFn() {
-        if (refreshToken && logged) titumirApi.setTokens({ refreshToken });
         return hFn(titumirApi);
     }
 
-    const logged = useLoggedIn();
-    const { tokens, setTokens } = useTokenStore(({ tokens, setTokens }) => ({
-        tokens,
-        setTokens,
-    }));
-
-    const refreshToken = tokens?.refreshToken;
+    const refreshToken = useTokenStore((s) => s.refreshToken);
+    const setTokens = useTokenStore((s) => s.setTokens);
 
     const query = useQuery<T, TitumirError>(key, queryFn, {
         ...options,

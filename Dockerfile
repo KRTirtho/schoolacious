@@ -8,8 +8,7 @@ COPY ./lerna.json ./
 RUN npm install
 
 ARG NODE_ENV
-COPY ./ ./
-RUN npm run bootstrap
+COPY ./packages/titumir ./packages/titumir
 RUN if [ "$NODE_ENV" = "production" ]; \
         then npm run build && rm -rf src && npm prune --production; \
         fi

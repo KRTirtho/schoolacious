@@ -70,10 +70,6 @@ export type CreateSchool = Pick<
     "name" | "email" | "phone" | "description" | "short_name"
 >;
 
-export interface TitumirOptions {
-    refreshToken?: string;
-}
-
 export enum INVITATION_OR_JOIN_TYPE {
     invitation = "invitation",
     join = "join",
@@ -122,10 +118,7 @@ export interface CreateSubjectBody {
 }
 
 export default class Titumir {
-    refreshToken?: string;
-    constructor(public baseURL: string, options?: TitumirOptions) {
-        this.refreshToken = options?.refreshToken;
-    }
+    constructor(public baseURL: string) {}
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async buildRequest<T, D = Record<string | number, any>>(
@@ -159,31 +152,18 @@ export default class Titumir {
             });
         return Object.assign(res, { json: await res.json() });
     }
-    setTokens({ refreshToken }: { refreshToken?: string | null }) {
-        if (refreshToken) this.refreshToken = refreshToken;
-        return this;
-    }
-
     async login(body: LoginBody) {
-        const res = await this.buildRequest<UserSchema>("/auth/login", "POST", body);
-        const refreshToken = res.headers.get(CONST_REFRESH_TOKEN_KEY);
-        this.setTokens({ refreshToken });
-        return res;
+        return await this.buildRequest<UserSchema>("/auth/login", "POST", body);
     }
 
     async signup(body: SignupBody) {
-        const res = await this.buildRequest<UserSchema>("/auth/signup", "POST", body);
-
-        const refreshToken = res.headers.get(CONST_REFRESH_TOKEN_KEY);
-        this.setTokens({ refreshToken });
-        return res;
+        return await this.buildRequest<UserSchema>("/auth/signup", "POST", body);
     }
 
-    async refresh(token?: string) {
+    async refresh(token: string) {
         const headers = new Headers();
-        if (!token) token = this.refreshToken;
-        if (!this.refreshToken && !token) throw new Error("refresh token doesn't exist");
-        headers.append(CONST_REFRESH_TOKEN_KEY, token!);
+
+        headers.append(CONST_REFRESH_TOKEN_KEY, token);
         const res = await this.buildRequest<{ message: string }>(
             "/auth/refresh",
             "POST",
@@ -193,7 +173,6 @@ export default class Titumir {
             },
         );
         const refreshToken = res.headers.get(CONST_REFRESH_TOKEN_KEY);
-        this.setTokens({ refreshToken });
         return {
             ...res,
             tokens: { refreshToken },

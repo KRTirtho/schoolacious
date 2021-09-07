@@ -1,33 +1,34 @@
 version: "3"
 services:
-  postgres:
-    ports: 
-      # only for development with vscode.sqltools
-      - 5432:5432
-    environment:
-      - POSTGRES_PASSWORD=simple
-      - POSTGRES_DB=veschool
-  titumir:
-    ports: 
-      - 9229:9229
-    build:
-      context: ./
-      args: 
-        NODE_ENV: development
-    volumes: 
-      - ./:/app
-      - /app/node_modules
-      - /app/packages/titumir/node_modules
-      - /app/packages/zainul/node_modules
-    environment: 
-      - POSTGRES_PASSWORD=simple
-      - POSTGRES_DB=veschool
-      - NODE_ENV=development
-      - DATABASE_USERNAME=postgres
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
-      - NOT_A_SECRET=secretxxxxxsecret
-      - COOKIE_SIGNATURE=super-diasdi903u4j9124u90
-      - PORT=4000
-    # for using the container as a separate OS like
-    command: sleep 50505050505
+    postgres:
+        ports:
+            # only for development with vscode.sqltools
+            - 5432:5432
+        environment:
+            - POSTGRES_PASSWORD=simple
+            - POSTGRES_DB=veschool
+    titumir:
+        ports:
+            - 9229:9229
+        build:
+            context: ./
+            args:
+                NODE_ENV: development
+        volumes:
+            - ./packages/titumir:/app/packages/titumir
+            - ./packages/types:/app/packages/types
+            - /app/node_modules
+            - /app/packages/titumir/node_modules
+            - /app/packages/types/node_modules
+        environment:
+            - POSTGRES_PASSWORD=simple
+            - POSTGRES_DB=veschool
+            - NODE_ENV=development
+            - DATABASE_USERNAME=postgres
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+            - NOT_A_SECRET=secretxxxxxsecret
+            - COOKIE_SIGNATURE=super-diasdi903u4j9124u90
+            - PORT=4000
+        # for using the container as a separate OS like
+        command: sleep 50505050505

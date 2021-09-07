@@ -2,7 +2,6 @@ import { MutationKey, useMutation, UseMutationOptions } from "react-query";
 import { titumirApi } from "../App";
 import Titumir, { TitumirError } from "../services/api/titumir";
 import { useTokenStore } from "../state/token-store";
-import useLoggedIn from "./useLoggedIn";
 import { refreshTokenOnError } from "./useTitumirQuery";
 
 function useTitumirMutation<T, V>(
@@ -10,16 +9,10 @@ function useTitumirMutation<T, V>(
     hFn: (titumirApi: Titumir, payload: V) => Promise<T>,
     options?: UseMutationOptions<T, TitumirError, V>,
 ) {
-    const logged = useLoggedIn();
-    const { tokens, setTokens } = useTokenStore(({ tokens, setTokens }) => ({
-        tokens,
-        setTokens,
-    }));
-
-    const refreshToken = tokens?.refreshToken;
+    const refreshToken = useTokenStore((s) => s.refreshToken);
+    const setTokens = useTokenStore((s) => s.setTokens);
 
     function mutateFn(payload: V): Promise<T> {
-        if (refreshToken && logged) titumirApi.setTokens({ refreshToken });
         return hFn(titumirApi, payload);
     }
 

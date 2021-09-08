@@ -5,6 +5,7 @@ import {
     Invitations_JoinsSchema,
     SectionSchema,
     SubjectSchema,
+    GradeToSubjectSchema,
 } from "@veschool/types";
 import qs from "query-string";
 
@@ -117,6 +118,11 @@ export interface CreateSubjectBody {
     description: string;
 }
 
+export interface AddGradeSubjectsBody {
+    subject_id: string;
+    mark: number;
+}
+
 export default class Titumir {
     constructor(public baseURL: string) {}
 
@@ -177,6 +183,10 @@ export default class Titumir {
             ...res,
             tokens: { refreshToken },
         };
+    }
+
+    async logout() {
+        return await this.buildRequest("/auth/logout");
     }
 
     // =======/user/*=======
@@ -314,6 +324,18 @@ export default class Titumir {
             "/invitation-join",
             "DELETE",
             { _id },
+        );
+    }
+
+    async addGradeSubjects(
+        school: string,
+        grade: number,
+        subjects: AddGradeSubjectsBody[],
+    ) {
+        return await this.buildRequest<GradeToSubjectSchema[], AddGradeSubjectsBody[]>(
+            `/school/${school}/grade/${grade}/subject`,
+            "POST",
+            subjects,
         );
     }
 

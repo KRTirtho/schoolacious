@@ -1,8 +1,8 @@
 import { MutationKey, useQuery, UseQueryOptions } from "react-query";
-import { titumirApi } from "../App";
-import Titumir, { TitumirError } from "../services/api/titumir";
-import { TokenStore, useTokenStore } from "../state/token-store";
-import { ContextToken } from "../state/AuthorizationConfig";
+import { titumirApi } from "App";
+import Titumir, { TitumirError } from "services/api/titumir";
+import { TokenStore, useTokenStore } from "state/token-store";
+import { ContextToken } from "state/AuthorizationConfig";
 
 export function refreshTokenOnError(
     titumirApi: Titumir,

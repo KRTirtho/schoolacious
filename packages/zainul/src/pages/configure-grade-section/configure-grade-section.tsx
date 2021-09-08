@@ -1,4 +1,4 @@
-import { chakra, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { chakra, Table, Tbody, Td, Th, Thead, Tr, Text, HStack } from "@chakra-ui/react";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React, { useMemo } from "react";
 import { useAuthStore } from "state/authorization-store";
@@ -7,6 +7,7 @@ import { userToName } from "utils/userToName";
 import AddGradeModal from "./components/AddGradeModal";
 import { QueryContextKey } from "configs/enums";
 import AddSectionModal from "./components/AddSectionModal";
+import GradeSubjectSelector from "./components/GradeSubjectSelector";
 
 function ConfigureGradeSection() {
     const school = useAuthStore((s) => s.user?.school);
@@ -16,7 +17,7 @@ function ConfigureGradeSection() {
             if (!school) return null;
             const { json } = await api.getGrades(school.short_name, {
                 extended:
-                    "sections,moderator,sections.class_teacher,examiner,grades_subjects",
+                    "sections,moderator,sections.class_teacher,examiner,grades_subjects,grades_subjects.subject",
             });
             return json;
         },
@@ -44,9 +45,17 @@ function ConfigureGradeSection() {
                                 <Td>{userToName(grade.moderator)}</Td>
                                 <Td>{userToName(grade.examiner)}</Td>
                                 <Td>
-                                    {grade.grades_subjects
-                                        ?.map((subject) => subject.subject.name)
-                                        .join(",")}
+                                    <HStack>
+                                        <Text>
+                                            {grade.grades_subjects
+                                                ?.map(({ subject }) => subject?.name)
+                                                .join(",")}
+                                        </Text>
+                                        <GradeSubjectSelector
+                                            grade_subjects={grade.grades_subjects}
+                                            grade={grade.standard}
+                                        />
+                                    </HStack>
                                 </Td>
                             </Tr>
                         ))}

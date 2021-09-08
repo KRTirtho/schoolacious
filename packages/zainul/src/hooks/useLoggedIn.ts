@@ -1,5 +1,5 @@
-import { useAuthStore } from "../state/authorization-store";
-import { useTokenStore } from "../state/token-store";
+import { useAuthStore } from "state/authorization-store";
+import { useTokenStore } from "state/token-store";
 
 function useLoggedIn(): boolean {
     const refreshToken = useTokenStore((s) => s.refreshToken);

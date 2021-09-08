@@ -10,6 +10,7 @@ export enum MutationContextKey {
     JOIN_SCHOOL = "mutate-join-school",
     ASSIGN_CO_ADMINS = "mutate-assign-co-admins",
     CREATE_SCHOOL_SUBJECTS = "mutate-create-school-subjects",
+    ADD_GRADE_SUBJECTS = "mutate-add-grade-subjects",
 }
 
 export enum QueryContextKey {

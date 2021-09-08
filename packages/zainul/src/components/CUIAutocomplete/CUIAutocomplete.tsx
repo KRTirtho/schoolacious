@@ -67,6 +67,8 @@ export const CUIAutocomplete: FC<CUIAutocompleteProps> = ({
                                     <ListItem
                                         _hover={{
                                             bg: "green.100",
+                                            color: "gray.700",
+                                            fontWeight: "semibold",
                                         }}
                                         onClick={() => {
                                             field.onChange({

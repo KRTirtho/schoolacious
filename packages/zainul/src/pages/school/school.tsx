@@ -2,11 +2,12 @@ import {
     Flex,
     Heading,
     Box,
-    Stack,
     Image,
     Link as Clink,
     Text,
     IconButton,
+    chakra,
+    HStack,
 } from "@chakra-ui/react";
 import { usePermissions } from "hooks/usePermissions";
 import React from "react";
@@ -16,9 +17,7 @@ import { useAuthStore } from "state/authorization-store";
 import { USER_ROLE } from "@veschool/types";
 
 function School() {
-    const user = useAuthStore((s) => s.user);
-
-    const school = user?.school;
+    const school = useAuthStore((s) => s.user?.school);
 
     const isAllowed = usePermissions([USER_ROLE.admin, USER_ROLE.coAdmin]);
 
@@ -31,23 +30,27 @@ function School() {
                 bgRepeat="no-repeat"
                 bg="url(https://images.unsplash.com/photo-1560447992-466be70a0c49?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80)"
             ></Box>
-            <Stack direction={["column", "row"]} justify="space-between" p="2">
-                <Stack
-                    align={{ base: "center", md: "flex-start" }}
-                    transform="translateY(-50%)"
-                >
+            <HStack
+                justify="space-between"
+                p="2"
+                align="flex-end"
+                transform="translateY(-50%)"
+            >
+                <chakra.div>
                     <Image
                         boxSize="8rem"
                         rounded="sm"
                         src="https://images.unsplash.com/photo-1560447992-466be70a0c49?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
                     />
-                    <Heading size="lg">{school?.name}</Heading>
-                    {school === undefined && <Redirect to="/school/create" />}
-                    <Clink color="green.200" as={Link} to="/">
-                        @{school?.short_name}
-                    </Clink>
+                    <HStack>
+                        <Heading size="lg">{school?.name}</Heading>
+                        {school === undefined && <Redirect to="/school/create" />}
+                        <Clink color="green.200" as={Link} to="/">
+                            @{school?.short_name}
+                        </Clink>
+                    </HStack>
                     <Text>{school?.description}</Text>
-                </Stack>
+                </chakra.div>
                 {isAllowed && (
                     <IconButton
                         as={Link}
@@ -58,7 +61,7 @@ function School() {
                         to="/school/configure/grade-sections"
                     />
                 )}
-            </Stack>
+            </HStack>
         </Flex>
     );
 }

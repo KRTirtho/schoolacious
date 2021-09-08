@@ -64,6 +64,7 @@ export class GradeController {
                 "examiner",
                 "sections",
                 "grades_subjects",
+                "grades_subjects.subject",
                 "teachersToSectionsToGrades",
                 "studentsToSectionsToGrade",
                 "sections.class_teacher",

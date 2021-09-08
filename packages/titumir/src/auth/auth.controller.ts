@@ -9,6 +9,7 @@ import {
     UnauthorizedException,
     Inject,
     Res,
+    Get,
 } from "@nestjs/common";
 import { Request, Response } from "express";
 import {
@@ -115,6 +116,17 @@ export class AuthController {
         } catch (error: any) {
             this.logger.error(error?.message);
             throw error;
+        }
+    }
+
+    @Get("logout")
+    async logout(@Res({ passthrough: true }) res: Response) {
+        try {
+            res.clearCookie(CONST_JWT_ACCESS_TOKEN_COOKIE);
+            return { message: "Successfully Logged Out" };
+        } catch (e: any) {
+            this.logger.error(e?.message ?? "");
+            throw e;
         }
     }
 }

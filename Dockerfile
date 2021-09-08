@@ -5,10 +5,10 @@ WORKDIR /app
 COPY ./package.json ./
 COPY ./package-lock.json ./
 COPY ./lerna.json ./
+COPY ./packages/titumir ./packages/titumir
 RUN npm install
 
 ARG NODE_ENV
-COPY ./packages/titumir ./packages/titumir
 RUN if [ "$NODE_ENV" = "production" ]; \
         then npm run build && rm -rf src && npm prune --production; \
         fi

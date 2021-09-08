@@ -64,7 +64,7 @@ const TableRowTile: FC<TableRowTileProps> = ({
                     <IconButton
                         aria-label={buttonLabels[1]}
                         variant="ghost"
-                        colorScheme="green"
+                        colorScheme="primary"
                         onClick={onSecondButtonClick}
                     >
                         <FaCheckCircle />

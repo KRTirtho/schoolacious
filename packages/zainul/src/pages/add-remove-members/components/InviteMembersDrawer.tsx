@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
     Button,
     Drawer,
@@ -30,6 +30,7 @@ import { UserSchema } from "@veschool/types";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { useQueryClient } from "react-query";
 import { userToName } from "utils/userToName";
+import { capitalize } from "lodash-es";
 
 export interface OptionType extends OptionTypeBase {
     label: React.ReactElement;
@@ -120,7 +121,7 @@ function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
         );
     }
 
-    const character = role.valueOf()[0].toUpperCase() + role.valueOf().slice(1);
+    const character = useMemo(() => capitalize(role.valueOf()), [role]);
     return (
         <>
             <Button

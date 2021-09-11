@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotAcceptableException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeepPartial, In, Repository } from "typeorm";
 import Subject from "../database/entity/subjects.entity";
@@ -28,78 +32,33 @@ export class TeacherSectionGradeService extends BasicEntityService<TeachersToSec
     }
 
     async addTeachers(
-        payloads: TeacherDTO[],
+        { email, subject_id }: TeacherDTO,
         school: School,
         grade: Grade,
         section: Section,
     ) {
-        const users = await this.userService.find(
-            {},
+        const user = await this.userService.findOne(
+            { email },
             {
                 relations: ["school"],
-                where: { _id: In(payloads.map(({ _id: user_id }) => user_id)) },
             },
         );
-        const errors = [];
-        const validUsers: User[] = [];
 
-        for (const user of users) {
-            // not allowing school outsiders to join the section
-            if (user.school?._id !== school._id)
-                errors.push({
-                    user: user._id,
-                    message: `user doesn't belong to the school`,
-                });
-            // students can't be added as a teacher to any section
-            else if (user.role === USER_ROLE.student)
-                errors.push({
-                    user: user._id,
-                    message: `can't add a student as a teacher`,
-                });
-            else {
-                validUsers.push(user);
-            }
-        }
-        const sortedValidUsers = validUsers.sort((a, b) => (a._id > b._id ? 1 : -1));
-        const validUserIds = sortedValidUsers.map(({ _id }) => _id);
-        // keeping only the payloads of the users that are in validUser
-        // this filters the subject_id too
-        const validPayloads = payloads
-            .filter((payload) => validUserIds.includes(payload._id))
-            .sort((a, b) => (a._id > b._id ? 1 : -1));
-        const subjectIds = validPayloads.map(({ subject_id }) => subject_id);
-        // this are the valid subjects
-        const subjects = await this.subjectService.find(
-            {},
-            { where: { _id: In(Array.from(new Set(subjectIds))) } },
-        );
-        const entityPayload: DeepPartial<TeachersToSectionsToGrades>[] = [];
+        // not allowing school outsiders to join the section
+        if (user.school?._id !== school._id)
+            throw new NotAcceptableException("user doesn't belong to the school");
+        // students can't be added as a teacher to any section
+        else if (user.role === USER_ROLE.student)
+            throw new NotAcceptableException("can't add a student as a teacher");
 
-        for (const user of sortedValidUsers) {
-            const subjectId = validPayloads.find(
-                ({ _id: user_id }) => user_id === user._id,
-            )?.subject_id;
-            const subject = subjects.find(({ _id }) => _id === subjectId);
-            if (!subject) {
-                errors.push({ user: user._id, message: `invalid subject_id` });
-                continue;
-            }
-            entityPayload.push({ grade, section, user, subject });
-        }
+        const subject = await this.subjectService.findOne({ _id: subject_id });
 
         // tsg = Teacher Section Grade (subject)
-        const tsg = (await this.create(entityPayload)).map(({ user, ...rest }) => ({
-            ...rest,
-            user: { ...user, school: undefined },
-        }));
+        const tsg = await this.create({ user, subject, grade, section });
 
-        return {
-            user: tsg,
-            error: Object.entries(groupBy(errors, "user")).map(([key, val]) => ({
-                user: key,
-                message: val.map(({ message }) => message),
-            })),
-        };
+        Object.assign(tsg.user, { ...tsg.user, school: undefined });
+
+        return tsg;
     }
 
     //!! this method is incomplete & only for working states it was created
@@ -110,7 +69,7 @@ export class TeacherSectionGradeService extends BasicEntityService<TeachersToSec
         section: string | Section,
     ) {
         if (typeof user === "string")
-            user = await this.userService.findOne({ _id: user });
+            user = await this.userService.findOne({ email: user });
         if (typeof section === "string")
             section = await this.sectionService.findOne({ _id: section });
         if (typeof subject === "string")

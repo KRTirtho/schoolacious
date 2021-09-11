@@ -13,14 +13,14 @@ import {
     Button,
     useDisclosure,
 } from "@chakra-ui/react";
-import QueryUser from "components/QueryUser/QueryUser";
-import { TextFieldProps } from "components/TextField/TextField";
+import QueryUser, { QueryUserProps } from "components/QueryUser/QueryUser";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import React, { FC, ReactElement } from "react";
 import { FiEdit } from "react-icons/fi";
 import * as yup from "yup";
 
-interface AddUserPopoverProps extends Pick<TextFieldProps, "placeholder" | "label"> {
+interface AddUserPopoverProps
+    extends Pick<QueryUserProps, "placeholder" | "label" | "filterUsers"> {
     trigger?: ReactElement;
     onSubmit<Values extends Record<string, unknown>>(
         values: Values,
@@ -38,6 +38,7 @@ export const AddUserPopover: FC<AddUserPopoverProps> = ({
     heading,
     placeholder,
     label,
+    filterUsers,
 }) => {
     const { isOpen, onClose, onToggle, onOpen } = useDisclosure();
 
@@ -76,6 +77,7 @@ export const AddUserPopover: FC<AddUserPopoverProps> = ({
                                     label={label}
                                     name={name}
                                     component={QueryUser}
+                                    filterUsers={filterUsers}
                                     placeholder={placeholder}
                                 />
                             </PopoverBody>

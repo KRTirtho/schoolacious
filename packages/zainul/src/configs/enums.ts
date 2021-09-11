@@ -11,6 +11,8 @@ export enum MutationContextKey {
     ASSIGN_CO_ADMINS = "mutate-assign-co-admins",
     CREATE_SCHOOL_SUBJECTS = "mutate-create-school-subjects",
     ADD_GRADE_SUBJECTS = "mutate-add-grade-subjects",
+    ADD_SECTION_TEACHER = "mutate-assign-section-teacher",
+    ADD_SECTION_STUDENTS = "mutate-assign-section-students",
 }
 
 export enum QueryContextKey {

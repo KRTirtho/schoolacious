@@ -1,15 +1,13 @@
-import { QueryContextKey } from "configs/enums";
+import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React, { useMemo } from "react";
 import { useRouteMatch } from "react-router-dom";
 import { useAuthStore } from "state/authorization-store";
 import {
-    Button,
     chakra,
     Divider,
     Heading,
     HStack,
-    IconButton,
     List,
     Table,
     Tbody,
@@ -21,9 +19,17 @@ import {
     VStack,
 } from "@chakra-ui/react";
 import { userToName } from "utils/userToName";
-import { SectionWithSubject } from "services/api/titumir";
-import { FiEdit3 } from "react-icons/fi";
+import {
+    AddSectionStudentsBody,
+    AddSectionStudentsReturns,
+    AssignSectionTeacherBody,
+    SectionWithSubject,
+} from "services/api/titumir";
 import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
+import { AddUserPopover } from "components/AddUserPopover/AddUserPopover";
+import useTitumirMutation from "hooks/useTitumirMutation";
+import { TeachersToSectionsToGradesSchema, USER_ROLE } from "@veschool/types";
+import AddMultipleUserSlide from "components/AddMultipleUserSlide/AddMultipleUserSlide";
 
 interface SchoolSectionMembersParams {
     grade: string;
@@ -33,9 +39,11 @@ interface SchoolSectionMembersParams {
 function SchoolSectionMembers() {
     const { params } = useRouteMatch<SchoolSectionMembersParams>();
 
-    const short_name = useAuthStore((s) => s.user?.school?.short_name);
+    const school = useAuthStore((s) => s.user?.school);
 
-    const { data: section } = useTitumirQuery<SectionWithSubject | null>(
+    const short_name = school?.short_name;
+
+    const { data: section, refetch } = useTitumirQuery<SectionWithSubject | null>(
         [QueryContextKey.SECTION, params?.grade, params?.section],
         async (api) => {
             if (!(short_name && params?.grade && params?.section)) return null;
@@ -52,6 +60,50 @@ function SchoolSectionMembers() {
     const class_teacher = useMemo(
         () => userToName(section?.class_teacher),
         [section?.class_teacher],
+    );
+
+    const mutationsOpt = {
+        onSuccess() {
+            refetch();
+        },
+    };
+
+    const { mutate: assignSectionTeacher } = useTitumirMutation<
+        TeachersToSectionsToGradesSchema | null,
+        AssignSectionTeacherBody
+    >(
+        [MutationContextKey.ADD_SECTION_TEACHER, params?.grade, params?.section],
+        async (api, data) => {
+            if (!(short_name && params?.grade && params?.section)) return null;
+            const { json } = await api.assignSectionTeacher(
+                short_name,
+                parseInt(params.grade),
+                params.section,
+                data,
+            );
+
+            return json;
+        },
+        mutationsOpt,
+    );
+
+    const { mutate: addSectionStudents } = useTitumirMutation<
+        AddSectionStudentsReturns | null,
+        AddSectionStudentsBody[]
+    >(
+        [MutationContextKey.ADD_SECTION_STUDENTS, params?.grade, params?.section],
+        async (api, data) => {
+            if (!(short_name && params?.grade && params?.section)) return null;
+            const { json } = await api.addSectionStudents(
+                short_name,
+                parseInt(params.grade),
+                params.section,
+                data,
+            );
+
+            return json;
+        },
+        mutationsOpt,
     );
 
     return (
@@ -86,11 +138,32 @@ function SchoolSectionMembers() {
                                         <Text color={!teacher ? "red.400" : undefined}>
                                             {userToName(teacher)}
                                         </Text>
-                                        <IconButton
-                                            aria-label="Modify Subject Teacher"
-                                            size="sm"
-                                            colorScheme="gray"
-                                            icon={<FiEdit3 />}
+                                        <AddUserPopover
+                                            name="teacher"
+                                            onSubmit={(
+                                                values,
+                                                { setSubmitting, resetForm },
+                                                onClose,
+                                            ) => {
+                                                assignSectionTeacher(
+                                                    {
+                                                        email: values.teacher as string,
+                                                        subject_id: subject._id,
+                                                    },
+                                                    {
+                                                        onSuccess() {
+                                                            setSubmitting(false);
+                                                            resetForm();
+                                                            onClose();
+                                                        },
+                                                        onError() {
+                                                            setSubmitting(false);
+                                                        },
+                                                    },
+                                                );
+                                            }}
+                                            placeholder="Search teacher..."
+                                            heading={`Teacher for ${subject.name}`}
                                         />
                                     </HStack>
                                 </Td>
@@ -108,9 +181,18 @@ function SchoolSectionMembers() {
                         <ListAvatarTile key={_id + i} name={userToName(user)} />
                     ))}
                 </List>
-                <Button isFullWidth variant="ghost">
-                    Add Students
-                </Button>
+                <AddMultipleUserSlide
+                    onSubmit={(selections, onClose) => {
+                        addSectionStudents(
+                            selections.map(({ value }) => ({ _id: value })),
+                            { onSuccess: onClose },
+                        );
+                    }}
+                    triggerTitle="Add Students"
+                    heading="Add Students"
+                    placeholder="Search Students..."
+                    query-filters={{ role: USER_ROLE.student, school_id: school?._id }}
+                />
             </chakra.div>
         </VStack>
     );

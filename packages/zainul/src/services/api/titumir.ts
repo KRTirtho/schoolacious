@@ -6,6 +6,8 @@ import {
     SectionSchema,
     SubjectSchema,
     GradeToSubjectSchema,
+    TeachersToSectionsToGradesSchema,
+    StudentsToSectionsToGradesSchema,
 } from "@veschool/types";
 import qs from "query-string";
 
@@ -126,6 +128,18 @@ export interface AddGradeSubjectsBody {
 export type SectionWithSubject = Omit<SectionSchema, "grade"> & {
     subjects: { subject: SubjectSchema; teacher: UserSchema | null }[] | null;
 };
+
+export interface AssignSectionTeacherBody {
+    email: string;
+    subject_id: string;
+}
+
+export type AddSectionStudentsBody = Pick<UserSchema, "_id">;
+
+export interface AddSectionStudentsReturns {
+    users: StudentsToSectionsToGradesSchema[];
+    error: string[];
+}
 
 export default class Titumir {
     constructor(public baseURL: string) {}
@@ -361,5 +375,29 @@ export default class Titumir {
         return await this.buildRequest<SectionWithSubject>(
             `/school/${school}/grade/${grade}/section/${section}`,
         );
+    }
+
+    async assignSectionTeacher(
+        school: string,
+        grade: number,
+        section: string,
+        data: AssignSectionTeacherBody,
+    ) {
+        return await this.buildRequest<
+            TeachersToSectionsToGradesSchema,
+            AssignSectionTeacherBody
+        >(`/school/${school}/grade/${grade}/section/${section}/teacher`, "PUT", data);
+    }
+
+    async addSectionStudents(
+        school: string,
+        grade: number,
+        section: string,
+        data: AddSectionStudentsBody[],
+    ) {
+        return await this.buildRequest<
+            AddSectionStudentsReturns,
+            AddSectionStudentsBody[]
+        >(`/school/${school}/grade/${grade}/section/${section}/students`, "PUT", data);
     }
 }

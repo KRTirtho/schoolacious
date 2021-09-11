@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDefined, IsNotEmpty, IsUUID } from "class-validator";
+import { IsDefined, IsEmail, IsNotEmpty, IsUUID } from "class-validator";
 
 export default class StudentDTO {
     @IsDefined()
@@ -12,7 +12,15 @@ export default class StudentDTO {
     _id!: string;
 }
 
-export class TeacherDTO extends StudentDTO {
+export class TeacherDTO {
+    @IsDefined()
+    @IsEmail()
+    @ApiProperty({
+        type: String,
+        description: "user id of whom will be added",
+    })
+    email!: string;
+
     @IsDefined()
     @IsNotEmpty()
     @IsUUID()

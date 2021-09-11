@@ -11,7 +11,7 @@ import School from "../database/entity/schools.entity";
 import Section from "../database/entity/sections.entity";
 import StudentsToSectionsToGrades from "../database/entity/students_sections_grades.entity";
 import User from "../database/entity/users.entity";
-import {USER_ROLE} from "@veschool/types"
+import { USER_ROLE } from "@veschool/types";
 import { UserService } from "../user/user.service";
 
 @Injectable()
@@ -46,7 +46,9 @@ export class StudentSectionGradeService extends BasicEntityService<StudentsToSec
                 invalidUsers.push(
                     `${user._id} is a ${user.role?.valueOf()}, can't add as a student`,
                 );
-            validUserPayload.push({ user, grade, section });
+            else {
+                validUserPayload.push({ user, grade, section });
+            }
         }
         const createdUsers = await this.create(validUserPayload);
         return { users: createdUsers, error: invalidUsers };

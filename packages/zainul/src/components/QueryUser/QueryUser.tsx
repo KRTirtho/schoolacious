@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { UserSchema, USER_ROLE } from "@veschool/types";
 import { QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
@@ -7,7 +7,14 @@ import { useQueryClient } from "react-query";
 import { useAuthStore } from "state/authorization-store";
 import { CUIAutocomplete } from "components/CUIAutocomplete/CUIAutocomplete";
 
-function QueryUser(props: TextFieldProps) {
+export interface QueryUserProps extends TextFieldProps {
+    /**
+     * `_id` of the users that will be ignored
+     */
+    filterUsers?: string[] | null;
+}
+
+function QueryUser({ filterUsers, ...props }: QueryUserProps) {
     const query = props.field?.value;
     const school = useAuthStore((s) => s.user?.school);
 
@@ -25,11 +32,16 @@ function QueryUser(props: TextFieldProps) {
 
     const queryClient = useQueryClient();
 
-    const options =
-        optionsRaw?.map(({ first_name, last_name, email }) => ({
-            value: email,
-            label: first_name + " " + last_name,
-        })) ?? [];
+    const options = useMemo(
+        () =>
+            optionsRaw
+                ?.filter(({ _id }) => !filterUsers?.includes(_id))
+                .map(({ first_name, last_name, email }) => ({
+                    value: email,
+                    label: first_name + " " + last_name,
+                })) ?? [],
+        [optionsRaw, filterUsers],
+    );
 
     useEffect(() => {
         if (query?.trim().length > 0) refetch();

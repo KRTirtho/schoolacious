@@ -48,7 +48,7 @@ function Appbar() {
             pos="sticky"
             as="nav"
             p="1"
-            zIndex="40000"
+            zIndex="1"
         >
             <Heading onClick={() => history.push("/")} cursor="pointer" as="h5" size="lg">
                 VESchool

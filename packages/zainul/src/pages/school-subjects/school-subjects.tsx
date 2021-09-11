@@ -17,10 +17,12 @@ function SchoolSubjects() {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {subjects?.map(({ _id, name, description }, i) => (
+                    {subjects?.map(({ _id, name, description, grades_subjects }, i) => (
                         <Tr key={_id + i}>
                             <Td>{name}</Td>
-                            <Td>1-A, 2-A</Td>
+                            <Td>
+                                {grades_subjects?.map((s) => s.grade.standard).join(", ")}
+                            </Td>
                             <Td>{description}</Td>
                         </Tr>
                     ))}

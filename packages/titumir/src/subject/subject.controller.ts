@@ -36,7 +36,10 @@ export class SubjectController {
         @Param("school") _?: number,
     ) {
         try {
-            return await this.subjectService.find({ school: user.school });
+            return await this.subjectService.find(
+                { school: user.school },
+                { relations: ["grades_subjects", "grades_subjects.grade"] },
+            );
         } catch (error: any) {
             this.logger.error(error?.message ?? "");
             throw error;

@@ -1,6 +1,8 @@
 FROM node:16
 
 WORKDIR /app
+RUN apt update && apt upgrade && apt install curl bash -y
+RUN curl -sS https://webinstall.dev/watchexec | bash
 
 COPY ./package.json ./
 COPY ./package-lock.json ./

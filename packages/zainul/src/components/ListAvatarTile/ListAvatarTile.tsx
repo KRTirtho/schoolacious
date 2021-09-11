@@ -17,13 +17,7 @@ export interface ListAvatarTileProps
         Pick<AvatarProps, "size"> {
     src?: string;
     to?: string;
-    name:
-        | {
-              firstName: string;
-              lastName: string;
-          }
-        | [string, string]
-        | string;
+    name: string;
     leading?: ReactElement;
     ending?: ReactElement;
 }
@@ -37,16 +31,13 @@ const ListAvatarTile = forwardRef<ListAvatarTileProps, "div">(function ListAvata
         leading,
         ending,
         children,
-        onTouchMove,
+
         to,
         ...props
     },
     ref,
 ) {
-    const username =
-        typeof name !== "string" && name ? Object.values(name).join(" ") : name;
-
-    const avatar = <Avatar name={username} size="sm" src={src} />;
+    const avatar = <Avatar name={name} size="sm" src={src} />;
     return (
         <ListItem p="2" {...props} ref={ref}>
             <HStack
@@ -63,7 +54,7 @@ const ListAvatarTile = forwardRef<ListAvatarTileProps, "div">(function ListAvata
                         to={to ?? "/null"}
                         _hover={{ textDecoration: to ? "underline" : "none" }}
                     >
-                        {username}
+                        {name}
                     </Text>
                     {children}
                 </HStack>

@@ -17,22 +17,23 @@
       "restart": true,
       "type": "pwa-node",
     },
-    
     {
       "name": "Attach Zainul(frontend)",
       "port": 9222,
       "request": "attach",
       "type": "pwa-chrome",
       "urlFilter": "http://localhost:3000/*",
-      "webRoot": "${workspaceFolder}/zainul/src"
+      "webRoot": "${workspaceFolder}/packages/zainul/src",
     },
     {
       "name": "Launch Zainul(frontend)",
       "request": "launch",
       "type": "pwa-chrome",
       "url": "http://localhost:3000",
-      // use your own browser here if needed
-      "runtimeExecutable": "/usr/lib/brave/brave",
+      "runtimeExecutable": "",
+      "linux": {
+        "runtimeExecutable": "/usr/lib/brave/brave"
+      },
       "webRoot": "${workspaceFolder}/zainul/src",
     },
   ]

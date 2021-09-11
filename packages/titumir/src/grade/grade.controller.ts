@@ -32,8 +32,10 @@ import {
     ApiBody,
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
+    ApiParam,
 } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { VerifiedSchoolUser } from "../subject/subject.controller";
 
 export interface VerifiedGradeUser extends User {
     school: School;
@@ -54,7 +56,7 @@ export class GradeController {
     @Get()
     @VerifySchool()
     async getAllGradeOfSchool(
-        @CurrentUser() user: User,
+        @CurrentUser() user: VerifiedSchoolUser,
         @Param("school") _: string,
         @Query("extended") extendRelation?: string,
     ) {
@@ -75,7 +77,7 @@ export class GradeController {
             );
 
             const grades = await this.gradeService.find(
-                { school: user.school! },
+                { school: user.school },
                 {
                     relations:
                         extendedRelationArr && isValidExtendedRelation
@@ -93,10 +95,10 @@ export class GradeController {
     @Get(":grade")
     @VerifySchool()
     @ApiNotFoundResponse({ description: "invalid grade" })
+    @ApiParam({ name: "school", type: String })
     async getMonoGrade(
         @CurrentUser("school") school: School,
         @Param("grade") standard: number,
-        @Param("school") _: string,
     ) {
         try {
             const grade = await this.gradeService.findOne(
@@ -125,15 +127,15 @@ export class GradeController {
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
     @ApiBody({ type: CreateGradeDTO })
+    @ApiParam({ name: "school", type: String })
     async createGrade(
         @Body() { moderator, examiner, standard }: CreateGradeDTO,
-        @CurrentUser() user: User,
-        @Param("school") _: string,
+        @CurrentUser() user: VerifiedSchoolUser,
     ) {
         try {
             const grade = await this.gradeService.create({
                 standard,
-                school: user.school!,
+                school: user.school,
             });
             // assigning moderator/examiner to grade's
             const [gradeModerator, gradeExaminer] = await Promise.all([
@@ -141,7 +143,7 @@ export class GradeController {
                     ? this.gradeService.assignRole({
                           email: moderator,
                           role: USER_ROLE.gradeModerator,
-                          school: user.school!,
+                          school: user.school,
                           standard,
                       })
                     : undefined,
@@ -149,7 +151,7 @@ export class GradeController {
                     ? this.gradeService.assignRole({
                           email: examiner,
                           role: USER_ROLE.gradeExaminer,
-                          school: user.school!,
+                          school: user.school,
                           standard,
                       })
                     : undefined,
@@ -167,12 +169,12 @@ export class GradeController {
     @VerifyGrade()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin, USER_ROLE.gradeModerator)
     @ApiBody({ type: [AssignSubjectsDTO] })
+    @ApiParam({ name: "school", type: String })
+    @ApiParam({ name: "grade", type: Number })
     async assignSubjects(
         @Body(new ParseArrayPipe({ items: AssignSubjectsDTO }))
         body: AssignSubjectsDTO[],
         @CurrentUser() user: VerifiedGradeUser,
-        @Param("grade") _?: number,
-        @Param("school") __?: string,
     ) {
         try {
             const gradesToSubjects = await this.gradeToSubjectService.create(
@@ -193,11 +195,11 @@ export class GradeController {
     @VerifySchool()
     @ExtendUserRelation("school.coAdmin1", "school.coAdmin2")
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+    @ApiParam({ name: "school", type: String })
     async assignModerator(
         @Param("grade") standard: number,
         @CurrentUser("school") school: School,
         @Body() { email }: AssignGradeLeadsDTO,
-        @Param("school") _: string,
     ) {
         try {
             return await this.gradeService.assignRole({
@@ -211,6 +213,7 @@ export class GradeController {
             throw error;
         }
     }
+
     @Put(":grade/assign-examiner")
     @VerifySchool()
     @ExtendUserRelation("school.coAdmin1", "school.coAdmin2")
@@ -220,11 +223,11 @@ export class GradeController {
     })
     @ApiNotFoundResponse({ description: "user not found" })
     @ApiNotAcceptableResponse({ description: "school has no co-admin" })
+    @ApiParam({ name: "school", type: String })
     async assignExaminer(
         @Param("grade", new ParseIntPipe()) standard: number,
         @CurrentUser("school") school: School,
         @Body() { email }: AssignGradeLeadsDTO,
-        @Param("school") _: string,
     ) {
         try {
             return await this.gradeService.assignRole({

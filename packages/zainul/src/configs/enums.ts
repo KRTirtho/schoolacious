@@ -24,9 +24,9 @@ export enum QueryContextKey {
     SCHOOLS = "query-schools",
     SCHOOL_MEMBERS = "query-school-members",
     SCHOOL_SUBJECTS = "query-school-subjects",
+    SECTION = "query-section", // single query
 }
 
 export enum LocalStorageKeys {
-    accessToken = "access-token",
     refreshToken = "refresh-token",
 }

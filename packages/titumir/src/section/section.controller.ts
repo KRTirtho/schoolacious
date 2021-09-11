@@ -19,6 +19,7 @@ import {
     ApiForbiddenResponse,
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
+    ApiParam,
 } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { FindConditions } from "typeorm";
@@ -36,6 +37,7 @@ import StudentDTO, { TeacherDTO } from "./dto/teacher-student.dto";
 import { SectionService } from "./section.service";
 import { StudentSectionGradeService } from "./student-section-grade.service";
 import { TeacherSectionGradeService } from "./teacher-section-grade.service";
+import Subject from "../database/entity/subjects.entity";
 
 async function verifyClassTeacher(
     user: User,
@@ -90,25 +92,49 @@ export class SectionController {
     @Get(":section")
     @VerifySchool()
     @ApiNotFoundResponse({ description: "invalid section" })
+    @ApiParam({ name: "school", type: String })
     async getMonoSection(
         @Param("grade", new ParseIntPipe()) standard: number,
         @Param("section") name: string,
         @Param("school") _?: number,
-    ) {
+    ): Promise<
+        Omit<Section, "grade"> & {
+            grade: undefined;
+            subjects: { subject: Subject; teacher: User | null }[] | null;
+        }
+    > {
         try {
-            const section = await this.sectionService
-                .queryBuilder("section")
-                .where("section.name = :name", { name })
-                .leftJoinAndSelect(
-                    "section.grade",
-                    "grade",
-                    "grade.standard = :standard",
-                    { standard },
-                )
-                .leftJoinAndSelect("section.classes", "classes")
-                .leftJoinAndSelect("section.class_teacher", "class_teacher")
-                .getOneOrFail();
-            return { ...section, grade: undefined };
+            const section = await this.sectionService.findOne(
+                { name, grade: { standard } },
+                {
+                    relations: [
+                        "grade",
+                        "grade.grades_subjects",
+                        "grade.grades_subjects.subject",
+                        "classes",
+                        "class_teacher",
+                        "teachersToSectionsToGrades",
+                        "teachersToSectionsToGrades.subject",
+                        "studentsToSectionsToGrade",
+                        "teachersToSectionsToGrades.user",
+                        "studentsToSectionsToGrade.user",
+                    ],
+                },
+            );
+
+            const subjects =
+                section.grade.grades_subjects?.map(({ subject }) => {
+                    const tsg = section.teachersToSectionsToGrades?.find(
+                        (tsg) => subject._id === tsg.subject._id,
+                    );
+                    return { subject, teacher: tsg?.user ?? null };
+                }) ?? null;
+
+            return {
+                ...section,
+                subjects,
+                grade: undefined,
+            };
         } catch (error: any) {
             this.logger.error(error?.message ?? "");
             throw error;

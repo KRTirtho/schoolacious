@@ -1,4 +1,15 @@
-import { chakra, Table, Tbody, Td, Th, Thead, Tr, Text, HStack } from "@chakra-ui/react";
+import {
+    chakra,
+    Table,
+    Tbody,
+    Td,
+    Th,
+    Thead,
+    Tr,
+    Text,
+    HStack,
+    IconButton,
+} from "@chakra-ui/react";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React, { useMemo } from "react";
 import { useAuthStore } from "state/authorization-store";
@@ -8,6 +19,10 @@ import AddGradeModal from "./components/AddGradeModal";
 import { QueryContextKey } from "configs/enums";
 import AddSectionModal from "./components/AddSectionModal";
 import GradeSubjectSelector from "./components/GradeSubjectSelector";
+import { FaUsersCog } from "react-icons/fa";
+import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
+import SchoolSectionMembers from "pages/school-section-members/school-section-members";
+import NotFound404 from "routing/404";
 
 function ConfigureGradeSection() {
     const school = useAuthStore((s) => s.user?.school);
@@ -25,70 +40,91 @@ function ConfigureGradeSection() {
 
     const standards = useMemo(() => grades?.map(({ standard }) => standard), [grades]);
 
-    return (
-        <>
-            {/* Grades Table */}
-            <chakra.div overflowX="auto">
-                <Table>
-                    <Thead>
-                        <Tr>
-                            <Th>Grade</Th>
-                            <Th>Moderator</Th>
-                            <Th>Examiner</Th>
-                            <Th>Subjects</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {grades?.map((grade, i) => (
-                            <Tr key={i}>
-                                <Td>{grade.standard}</Td>
-                                <Td>{userToName(grade.moderator)}</Td>
-                                <Td>{userToName(grade.examiner)}</Td>
-                                <Td>
-                                    <HStack>
-                                        <Text>
-                                            {grade.grades_subjects
-                                                ?.map(({ subject }) => subject?.name)
-                                                .join(",")}
-                                        </Text>
-                                        <GradeSubjectSelector
-                                            grade_subjects={grade.grades_subjects}
-                                            grade={grade.standard}
-                                        />
-                                    </HStack>
-                                </Td>
-                            </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
-            </chakra.div>
-            <AddGradeModal grades={standards} />
+    const { path } = useRouteMatch();
 
-            {/* Section Table */}
-            <chakra.div overflowX="auto">
-                <Table>
-                    <Thead>
-                        <Tr>
-                            <Th>Section</Th>
-                            <Th>Class Teacher</Th>
-                            <Th>Grade</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {grades?.map((grade) => {
-                            return grade.sections?.map((section, i) => (
+    return (
+        <Switch>
+            <Route exact path={path}>
+                {/* Grades Table */}
+                <chakra.div overflowX="auto">
+                    <Table>
+                        <Thead>
+                            <Tr>
+                                <Th>Grade</Th>
+                                <Th>Moderator</Th>
+                                <Th>Examiner</Th>
+                                <Th>Subjects</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {grades?.map((grade, i) => (
                                 <Tr key={i}>
-                                    <Td>{section.name}</Td>
-                                    <Td>{userToName(section.class_teacher)}</Td>
                                     <Td>{grade.standard}</Td>
+                                    <Td>{userToName(grade.moderator)}</Td>
+                                    <Td>{userToName(grade.examiner)}</Td>
+                                    <Td>
+                                        <HStack>
+                                            <Text>
+                                                {grade.grades_subjects
+                                                    ?.map(({ subject }) => subject?.name)
+                                                    .join(",")}
+                                            </Text>
+                                            <GradeSubjectSelector
+                                                grade_subjects={grade.grades_subjects}
+                                                grade={grade.standard}
+                                            />
+                                        </HStack>
+                                    </Td>
                                 </Tr>
-                            ));
-                        })}
-                    </Tbody>
-                </Table>
-            </chakra.div>
-            <AddSectionModal grades={standards} />
-        </>
+                            ))}
+                        </Tbody>
+                    </Table>
+                </chakra.div>
+                <AddGradeModal grades={standards} />
+
+                {/* Section Table */}
+                <chakra.div overflowX="auto">
+                    <Table>
+                        <Thead>
+                            <Tr>
+                                <Th>Section</Th>
+                                <Th>Class Teacher</Th>
+                                <Th>Grade</Th>
+                                <Th>Edit Members</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {grades?.map((grade) => {
+                                return grade.sections?.map((section, i) => (
+                                    <Tr key={i}>
+                                        <Td>{section.name}</Td>
+                                        <Td>{userToName(section.class_teacher)}</Td>
+                                        <Td>{grade.standard}</Td>
+                                        <Td>
+                                            <IconButton
+                                                as={Link}
+                                                colorScheme="gray"
+                                                aria-label="Configure section members"
+                                                icon={<FaUsersCog />}
+                                                variant="ghost"
+                                                to={`${path}/${grade.standard}/${section.name}`}
+                                            />
+                                        </Td>
+                                    </Tr>
+                                ));
+                            })}
+                        </Tbody>
+                    </Table>
+                </chakra.div>
+                <AddSectionModal grades={standards} />
+            </Route>
+            <Route path={`${path}/:grade/:section`}>
+                <SchoolSectionMembers />
+            </Route>
+            <Route path="*">
+                <NotFound404 />
+            </Route>
+        </Switch>
     );
 }
 

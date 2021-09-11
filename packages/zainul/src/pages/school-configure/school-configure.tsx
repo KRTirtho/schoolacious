@@ -36,6 +36,7 @@ function SchoolConfigure() {
                     <Route path={`${path}/grade-sections`}>
                         <ConfigureGradeSection />
                     </Route>
+
                     <Route path={`${path}/add-remove-members`}>
                         <AddRemoveMembers />
                     </Route>

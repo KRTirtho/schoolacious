@@ -15,10 +15,11 @@ services:
             args:
                 NODE_ENV: development
         volumes:
-            - ./packages/titumir:/app/packages/titumir
-            - ./packages/types:/app/packages/types
+            - ./:/app
             - /app/node_modules
+            - /app/packages/zainul
             - /app/packages/titumir/node_modules
+            - /app/packages/titumir/dist
             - /app/packages/types/node_modules
         environment:
             - POSTGRES_PASSWORD=simple

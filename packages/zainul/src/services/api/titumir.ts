@@ -123,6 +123,10 @@ export interface AddGradeSubjectsBody {
     mark: number;
 }
 
+export type SectionWithSubject = Omit<SectionSchema, "grade"> & {
+    subjects: { subject: SubjectSchema; teacher: UserSchema | null }[] | null;
+};
+
 export default class Titumir {
     constructor(public baseURL: string) {}
 
@@ -351,5 +355,11 @@ export default class Titumir {
             class_teacher,
             name: section,
         });
+    }
+
+    async getSection(school: string, grade: number, section: string) {
+        return await this.buildRequest<SectionWithSubject>(
+            `/school/${school}/grade/${grade}/section/${section}`,
+        );
     }
 }

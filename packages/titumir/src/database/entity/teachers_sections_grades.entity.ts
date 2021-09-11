@@ -15,7 +15,9 @@ import User from "./users.entity";
 @Entity()
 @Unique(["user", "section", "subject"])
 @Unique(["section", "subject"])
-export default class TeachersToSectionsToGrades implements TeachersToSectionsToGradesSchema {
+export default class TeachersToSectionsToGrades
+    implements TeachersToSectionsToGradesSchema
+{
     @PrimaryGeneratedColumn("uuid")
     _id!: string;
 

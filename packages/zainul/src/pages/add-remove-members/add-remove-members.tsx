@@ -24,6 +24,7 @@ import { QueryContextKey } from "configs/enums";
 import { useAuthStore } from "state/authorization-store";
 import { UserSchema } from "@veschool/types";
 import { FaEllipsisH, FaSearch } from "react-icons/fa";
+import { userToName } from "utils/userToName";
 
 function AddRemoveMembers() {
     const short_name = useAuthStore((s) => s.user?.school?.short_name);
@@ -87,7 +88,7 @@ function AddRemoveMembers() {
                     <ListAvatarTile
                         key={_id + i}
                         to={`/user/profile/${_id}`}
-                        name={[first_name, last_name]}
+                        name={userToName({ first_name, last_name })}
                         ending={memberOptions}
                     >
                         <Text color="gray">[{role?.valueOf()}]</Text>

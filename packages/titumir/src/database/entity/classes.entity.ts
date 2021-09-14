@@ -7,8 +7,7 @@ import {
     PrimaryGeneratedColumn,
 } from "typeorm";
 import { ClassSchema, CLASS_STATUS } from "@veschool/types";
-import Section from "./sections.entity";
-import User from "./users.entity";
+import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
 
 @Entity("classes")
 export default class Class implements ClassSchema {
@@ -25,11 +24,8 @@ export default class Class implements ClassSchema {
     @Column("time")
     time!: string;
 
-    @ManyToOne(() => Section, (section) => section.classes)
-    section!: Section;
-
-    @ManyToOne(() => User, (user) => user.classes)
-    host!: User;
+    @ManyToOne(() => TeachersToSectionsToGrades, (tsg) => tsg.classes)
+    host!: TeachersToSectionsToGrades;
 
     @IsEnum(CLASS_STATUS)
     @Column("varchar", { length: 20 })

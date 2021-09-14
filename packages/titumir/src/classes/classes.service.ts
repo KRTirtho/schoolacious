@@ -31,12 +31,21 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
     }
 
     async validateHostClass({ host, day }: ScheduleClassDto): Promise<boolean> {
-        const hostClasses = await this.find({}, { where: { host: { _id: host }, day } });
+        const hostClasses = await this.find(
+            {},
+            {
+                where: { host: { user: { _id: host } }, day },
+                relations: ["host", "host.user"],
+            },
+        );
         return await this.validateClasses(hostClasses);
     }
 
     async validateStudentClass(section: Section, day: number) {
-        const studentClasses = await this.find({}, { where: { section, day } });
+        const studentClasses = await this.find(
+            {},
+            { where: { host: { section }, day }, relations: ["host", "host.section"] },
+        );
         return this.validateClasses(studentClasses);
     }
 
@@ -80,16 +89,16 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
             {
                 where: {
                     day: today,
-                    section: { grade: { _id: grade_id } },
+                    host: { grade: { _id: grade_id } },
                 },
-                relations: ["section", "section.grade"],
+                relations: ["host", "host.section", "host.grade"],
             },
         );
         const studentsOfGrades = await this.ssgService.find(
             {},
             {
                 where: {
-                    section: In(classes.map(({ section }) => ({ section }))),
+                    section: In(classes.map(({ host: { section } }) => ({ section }))),
                 },
                 relations: ["user"],
             },
@@ -101,7 +110,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
             const job = new CronJob(expression, async () => {
                 // TODO: Store the notification for valid students of grade's
                 const notificationsPayload = studentsOfGrades
-                    .filter(({ grade }) => grade._id === valid.section.grade._id)
+                    .filter(({ grade }) => grade._id === valid.host.section.grade._id)
                     .map((user) => ({
                         user,
                         message: `Its a class in ${valid.time}`,

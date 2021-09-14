@@ -17,6 +17,7 @@ function Paper({
     variant = "elevated",
     colorScheme = "container",
     rounded = "md",
+    as,
     ...props
 }: PropsWithChildren<PaperProps>): ReactElement {
     const theme = useTheme<typeof base>();
@@ -44,13 +45,15 @@ function Paper({
         outlined: { border: `1px solid ${borderColor}` },
     };
 
+    const Component = as ?? Container;
+
     return (
-        <Container
+        <Component
             {...variants[variant]}
             {...colorSchemes}
             rounded={rounded}
             {...props}
-        ></Container>
+        ></Component>
     );
 }
 

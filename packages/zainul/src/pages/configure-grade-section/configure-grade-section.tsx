@@ -20,9 +20,11 @@ import { QueryContextKey } from "configs/enums";
 import AddSectionModal from "./components/AddSectionModal";
 import GradeSubjectSelector from "./components/GradeSubjectSelector";
 import { FaUsersCog } from "react-icons/fa";
+import { SiGoogleclassroom } from "react-icons/si";
 import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 import SchoolSectionMembers from "pages/school-section-members/school-section-members";
 import NotFound404 from "routing/404";
+import SchoolSectionClasses from "pages/school-section-classes/school-section-classes";
 
 function ConfigureGradeSection() {
     const school = useAuthStore((s) => s.user?.school);
@@ -90,7 +92,7 @@ function ConfigureGradeSection() {
                                 <Th>Section</Th>
                                 <Th>Class Teacher</Th>
                                 <Th>Grade</Th>
-                                <Th>Edit Members</Th>
+                                <Th>Members | Classes</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -101,14 +103,24 @@ function ConfigureGradeSection() {
                                         <Td>{userToName(section.class_teacher)}</Td>
                                         <Td>{grade.standard}</Td>
                                         <Td>
-                                            <IconButton
-                                                as={Link}
-                                                colorScheme="gray"
-                                                aria-label="Configure section members"
-                                                icon={<FaUsersCog />}
-                                                variant="ghost"
-                                                to={`${path}/${grade.standard}/${section.name}`}
-                                            />
+                                            <HStack spacing="2">
+                                                <IconButton
+                                                    as={Link}
+                                                    colorScheme="gray"
+                                                    aria-label="Configure section members"
+                                                    icon={<FaUsersCog />}
+                                                    variant="ghost"
+                                                    to={`${path}/${grade.standard}/${section.name}/members`}
+                                                />
+                                                <IconButton
+                                                    as={Link}
+                                                    colorScheme="gray"
+                                                    aria-label="Configure section classes"
+                                                    icon={<SiGoogleclassroom />}
+                                                    variant="ghost"
+                                                    to={`${path}/${grade.standard}/${section.name}/classes`}
+                                                />
+                                            </HStack>
                                         </Td>
                                     </Tr>
                                 ));
@@ -118,8 +130,11 @@ function ConfigureGradeSection() {
                 </chakra.div>
                 <AddSectionModal grades={standards} />
             </Route>
-            <Route path={`${path}/:grade/:section`}>
+            <Route path={`${path}/:grade/:section/members`}>
                 <SchoolSectionMembers />
+            </Route>
+            <Route path={`${path}/:grade/:section/classes`}>
+                <SchoolSectionClasses />
             </Route>
             <Route path="*">
                 <NotFound404 />
@@ -129,3 +144,8 @@ function ConfigureGradeSection() {
 }
 
 export default ConfigureGradeSection;
+
+export interface SchoolSectionMembersParams {
+    grade: string;
+    section: string;
+}

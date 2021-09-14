@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import {
     Button,
     Drawer,
@@ -37,6 +37,7 @@ export interface AddMultipleUserSlideProps {
     placeholder?: string;
     submitTitle?: string;
     "query-filters"?: { school_id?: string; role?: string };
+    "filter-users"?: (user: UserSchema) => boolean;
 }
 
 const AddMultipleUserSlide: FC<AddMultipleUserSlideProps> = ({
@@ -46,6 +47,7 @@ const AddMultipleUserSlide: FC<AddMultipleUserSlideProps> = ({
     onSubmit,
     placeholder,
     "query-filters": queryFilters,
+    "filter-users": filterUsers,
 }) => {
     const { isOpen, onClose: handleClose, onOpen: handleOpen } = useDisclosure();
 
@@ -65,18 +67,32 @@ const AddMultipleUserSlide: FC<AddMultipleUserSlideProps> = ({
 
     const selectedValue = selectedItems.map(({ value }) => value);
 
-    const options: OptionsType<OptionType> = (
-        optionsRaw?.map((user) => ({
-            value: user._id,
-            label: (
-                <div>
-                    <Text>{userToName(user)}</Text>
-                    <Text color="gray.500">{user.email}</Text>
-                </div>
-            ),
-            labelStr: userToName(user),
-        })) ?? []
-    ).filter(({ value }) => !selectedValue.includes(value));
+    const options: OptionsType<OptionType> = useMemo(() => {
+        const options = [];
+
+        for (const user of optionsRaw ?? []) {
+            const isNotSelectedVal = !selectedValue.includes(user._id);
+            const isAllowed = filterUsers?.(user);
+
+            if (
+                (isAllowed !== undefined && isAllowed && isNotSelectedVal) ||
+                isNotSelectedVal
+            ) {
+                options.push({
+                    value: user._id,
+                    label: (
+                        <div>
+                            <Text>{userToName(user)}</Text>
+                            <Text color="gray.500">{user.email}</Text>
+                        </div>
+                    ),
+                    labelStr: userToName(user),
+                });
+            }
+        }
+
+        return options;
+    }, [optionsRaw, selectedValue]);
 
     const [query, setQuery] = useState("");
 

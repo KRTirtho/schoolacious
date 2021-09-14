@@ -1,3 +1,4 @@
+import { ClassSchema } from "./class";
 import { GradeSchema } from "./grade";
 import { SectionSchema } from "./section";
 import { SubjectSchema } from "./subject";
@@ -9,4 +10,5 @@ export interface TeachersToSectionsToGradesSchema extends BaseSchema {
     section: SectionSchema;
     subject: SubjectSchema;
     assigned_at: Date;
+    classes?: ClassSchema[] | null;
 }

@@ -9,7 +9,6 @@ import {
     Unique,
 } from "typeorm";
 import { SectionSchema } from "@veschool/types";
-import Class from "./classes.entity";
 import Grade from "./grades.entity";
 import StudentsToSectionsToGrades from "./students_sections_grades.entity";
 import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
@@ -38,9 +37,6 @@ export default class Section implements SectionSchema {
         { nullable: true },
     )
     studentsToSectionsToGrade?: StudentsToSectionsToGrades[] | null;
-
-    @OneToMany(() => Class, (_class) => _class.section, { nullable: true })
-    classes?: Class[] | null;
 
     @OneToOne(() => User, { nullable: true })
     @JoinColumn()

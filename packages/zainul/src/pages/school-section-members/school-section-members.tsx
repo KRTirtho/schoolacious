@@ -30,23 +30,27 @@ import { AddUserPopover } from "components/AddUserPopover/AddUserPopover";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { TeachersToSectionsToGradesSchema, USER_ROLE } from "@veschool/types";
 import AddMultipleUserSlide from "components/AddMultipleUserSlide/AddMultipleUserSlide";
+import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
 
-interface SchoolSectionMembersParams {
-    grade: string;
-    section: string;
-}
+
 
 function SchoolSectionMembers() {
+    // gives out the grade/section
     const { params } = useRouteMatch<SchoolSectionMembersParams>();
 
     const school = useAuthStore((s) => s.user?.school);
 
     const short_name = school?.short_name;
 
+    const isQueryable = params?.grade && params?.section;
+
+    // fetching sections from server
     const { data: section, refetch } = useTitumirQuery<SectionWithSubject | null>(
+        // using array of keys for uniqueness of each section as
+        // section.name are non-unique
         [QueryContextKey.SECTION, params?.grade, params?.section],
         async (api) => {
-            if (!(short_name && params?.grade && params?.section)) return null;
+            if (!(isQueryable && short_name)) return null;
             const { json } = await api.getSection(
                 short_name,
                 parseInt(params.grade),
@@ -57,24 +61,27 @@ function SchoolSectionMembers() {
         },
     );
 
+    //  class_teacher's name (joined)
     const class_teacher = useMemo(
         () => userToName(section?.class_teacher),
         [section?.class_teacher],
     );
 
+    // runs after each mutation
     const mutationsOpt = {
         onSuccess() {
             refetch();
         },
     };
 
+    // creating section teacher for each section subject
     const { mutate: assignSectionTeacher } = useTitumirMutation<
         TeachersToSectionsToGradesSchema | null,
         AssignSectionTeacherBody
     >(
         [MutationContextKey.ADD_SECTION_TEACHER, params?.grade, params?.section],
         async (api, data) => {
-            if (!(short_name && params?.grade && params?.section)) return null;
+            if (!(short_name && isQueryable)) return null;
             const { json } = await api.assignSectionTeacher(
                 short_name,
                 parseInt(params.grade),
@@ -87,13 +94,14 @@ function SchoolSectionMembers() {
         mutationsOpt,
     );
 
+    //  section students assigning caller
     const { mutate: addSectionStudents } = useTitumirMutation<
         AddSectionStudentsReturns | null,
         AddSectionStudentsBody[]
     >(
         [MutationContextKey.ADD_SECTION_STUDENTS, params?.grade, params?.section],
         async (api, data) => {
-            if (!(short_name && params?.grade && params?.section)) return null;
+            if (!(short_name && isQueryable)) return null;
             const { json } = await api.addSectionStudents(
                 short_name,
                 parseInt(params.grade),
@@ -104,6 +112,11 @@ function SchoolSectionMembers() {
             return json;
         },
         mutationsOpt,
+    );
+
+    const studentIds = useMemo(
+        () => section?.studentsToSectionsToGrade?.map(({ user: { _id } }) => _id),
+        [section?.studentsToSectionsToGrade],
     );
 
     return (
@@ -192,6 +205,7 @@ function SchoolSectionMembers() {
                     heading="Add Students"
                     placeholder="Search Students..."
                     query-filters={{ role: USER_ROLE.student, school_id: school?._id }}
+                    filter-users={(user) => !studentIds?.includes(user._id) ?? true}
                 />
             </chakra.div>
         </VStack>

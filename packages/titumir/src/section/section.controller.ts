@@ -110,7 +110,6 @@ export class SectionController {
                         "grade",
                         "grade.grades_subjects",
                         "grade.grades_subjects.subject",
-                        "classes",
                         "class_teacher",
                         "teachersToSectionsToGrades",
                         "teachersToSectionsToGrades.subject",
@@ -257,6 +256,26 @@ export class SectionController {
             );
             return await this.studentSGService.removeStudent(body._id);
         } catch (error: any) {
+            this.logger.error(error?.message ?? "");
+            throw error;
+        }
+    }
+
+    @Get(":section/teachers")
+    @ApiParam({ name: "school", type: String })
+    async getTeachers(
+        @Param("grade", ParseIntPipe) standard: number,
+        @Param("section") name: string,
+    ) {
+        try {
+            return await this.teacherSGService.find(
+                {},
+                {
+                    where: { grade: { standard }, section: { name } },
+                    relations: ["grade", "section", "user"],
+                },
+            );
+        } catch (error) {
             this.logger.error(error?.message ?? "");
             throw error;
         }

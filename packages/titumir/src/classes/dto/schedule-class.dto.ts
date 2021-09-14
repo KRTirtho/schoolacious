@@ -54,9 +54,4 @@ export default class ScheduleClassDto {
         example: 2400,
     })
     duration!: number; // in seconds
-
-    @IsDefined()
-    @IsNotEmpty()
-    @ApiProperty({ type: String, description: "name of the section", example: "A" })
-    section_name!: string;
 }

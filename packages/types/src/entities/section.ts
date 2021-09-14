@@ -1,4 +1,3 @@
-import { ClassSchema } from "./class";
 import { GradeSchema } from "./grade";
 import { StudentsToSectionsToGradesSchema } from "./student-section-grade";
 import { TeachersToSectionsToGradesSchema } from "./teacher-section-grade";
@@ -9,6 +8,5 @@ export interface SectionSchema extends BaseSchema {
     grade: GradeSchema;
     teachersToSectionsToGrades?: TeachersToSectionsToGradesSchema[] | null;
     studentsToSectionsToGrade?: StudentsToSectionsToGradesSchema[] | null;
-    classes?: ClassSchema[] | null;
     class_teacher?: UserSchema | null;
 }

@@ -6,6 +6,9 @@ import {
     NotAcceptableException,
     Logger,
     Inject,
+    Param,
+    ParseIntPipe,
+    Get,
 } from "@nestjs/common";
 import ScheduleClassDTO from "./dto/schedule-class.dto";
 import { Roles } from "../decorator/roles.decorator";
@@ -24,10 +27,12 @@ import {
     ApiBody,
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
+    ApiProperty,
 } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { VerifySchool } from "../decorator/verify-school.decorator";
 
-@Controller("/school/:school/grade/:grade/class")
+@Controller("/school/:school/grade/:grade/section/:section/class")
 @ApiBearerAuth()
 export class ClassesController {
     constructor(
@@ -40,7 +45,37 @@ export class ClassesController {
         this.logger.setContext(ClassesController.name);
     }
 
-    @Post()
+    @Get()
+    @VerifySchool()
+    async getClasses(
+        @Param("section") sectionName: string,
+        @Param("grade", ParseIntPipe) standard: number,
+    ) {
+        try {
+            const classes = await this.classesService.find(
+                {},
+                {
+                    where: {
+                        host: {
+                            section: { name: sectionName },
+                            grade: { standard },
+                        },
+                    },
+                    relations: ["host", "host.section", "host.grade"],
+                },
+            );
+
+            return classes.map((c) => ({ ...c, section: undefined }));
+        } catch (error) {
+            this.logger.error(error?.message);
+            throw error;
+        }
+    }
+
+    /**
+     * @deprecated
+     */
+    @Post("deprecated")
     @VerifyGrade()
     @Roles(
         USER_ROLE.admin,
@@ -55,9 +90,12 @@ export class ClassesController {
     @ApiNotFoundResponse({
         description: "teacher not found in grade/section, section not found",
     })
+    @ApiProperty({ deprecated: true })
     async addClasses(
         @CurrentUser() user: VerifiedGradeUser,
         @Body(new ParseArrayPipe({ items: ScheduleClassDTO })) body: ScheduleClassDTO[],
+        @Param("section") sectionName: string,
+        @Param("grade", ParseIntPipe) standard: number,
     ) {
         try {
             // TODO: Check host exists & is valid for section✔
@@ -75,12 +113,19 @@ export class ClassesController {
             for (const el of body) {
                 const [host, section] = await Promise.all([
                     this.tsgService.findOne(
-                        { _id: el.host },
-                        { relations: ["section", "user"] },
+                        {
+                            user: { _id: el.host },
+                            section: { name: sectionName, grade: { standard } },
+                        },
+                        { relations: ["section", "user", "grade", "subject"] },
                     ),
-                    this.sectionService.findOne({
-                        name: el.section_name,
-                    }),
+                    this.sectionService.findOne(
+                        {
+                            name: sectionName,
+                            grade: { standard },
+                        },
+                        { relations: ["grade"] },
+                    ),
                 ]);
                 if (host.section._id !== section._id)
                     throw new NotAcceptableException(
@@ -99,10 +144,10 @@ export class ClassesController {
                     throw new NotAcceptableException(
                         "minimum break duration (10mins) or 6-class/day not followed for students",
                     );
+
                 validClasses.push({
                     ...el,
-                    host: host.user,
-                    section,
+                    host,
                     status: CLASS_STATUS.scheduled,
                 });
             }
@@ -120,6 +165,70 @@ export class ClassesController {
                 );
             }
             return { message: "successfully scheduled classes" };
+        } catch (error) {
+            this.logger.error(error?.message ?? "");
+            throw error;
+        }
+    }
+
+    @Post()
+    @VerifyGrade()
+    @Roles(
+        USER_ROLE.admin,
+        USER_ROLE.coAdmin,
+        USER_ROLE.gradeModerator,
+        USER_ROLE.classTeacher,
+    )
+    async addClass(
+        @CurrentUser() user: VerifiedGradeUser,
+        @Body() body: ScheduleClassDTO,
+        @Param("section") sectionName: string,
+        @Param("grade", ParseIntPipe) standard: number,
+    ) {
+        try {
+            const host = await this.tsgService.findOne(
+                {
+                    user: { _id: body.host },
+                    section: { name: sectionName },
+                    grade: { standard },
+                },
+                { relations: ["section", "user", "grade", "subject"] },
+            );
+            const [isValidHostClass, isValidStudentClass] = await Promise.all([
+                this.classesService.validateHostClass(body),
+                this.classesService.validateStudentClass(host.section, body.day),
+            ]);
+
+            if (!isValidHostClass)
+                throw new NotAcceptableException(
+                    "minimum break duration (10mins) or 6-class/day not followed for hosts",
+                );
+            if (!isValidStudentClass)
+                throw new NotAcceptableException(
+                    "minimum break duration (10mins) or 6-class/day not followed for students",
+                );
+            const scheduledClass = await this.classesService.create({
+                ...body,
+                host,
+                status: CLASS_STATUS.scheduled,
+            });
+            if (!this.scheduleRegistry.doesExists("cron", classJob(user.school._id))) {
+                const schoolClassJob = new CronJob(
+                    CronExpression.EVERY_DAY_AT_6AM,
+                    async () =>
+                        await this.classesService.createClassCronJob(user.grade._id),
+                );
+                this.scheduleRegistry.addCronJob(
+                    classJob(user.school._id),
+                    schoolClassJob,
+                );
+            }
+            Object.assign(scheduledClass.host, {
+                ...scheduledClass.host,
+                grade: undefined,
+                section: undefined,
+            });
+            return scheduledClass;
         } catch (error) {
             this.logger.error(error?.message ?? "");
             throw error;

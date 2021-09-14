@@ -3,6 +3,7 @@ import {
     CreateDateColumn,
     Entity,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
     Unique,
 } from "typeorm";
@@ -11,6 +12,7 @@ import Grade from "./grades.entity";
 import Section from "./sections.entity";
 import Subject from "./subjects.entity";
 import User from "./users.entity";
+import Class from "./classes.entity";
 
 @Entity()
 @Unique(["user", "section", "subject"])
@@ -32,6 +34,9 @@ export default class TeachersToSectionsToGrades
 
     @ManyToOne(() => Subject, (subject) => subject.teachersToSectionsToGrades)
     subject!: Subject;
+
+    @OneToMany(() => Class, (c) => c.host, { nullable: true })
+    classes?: Class[] | null;
 
     @Column()
     @CreateDateColumn()

@@ -5,10 +5,11 @@ import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React from "react";
 import { useAuthStore } from "state/authorization-store";
-import { SchoolSchema } from "@veschool/types";
+import { SchoolSchema, USER_ROLE } from "@veschool/types";
 import { userToName } from "utils/userToName";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { CoAdminBody } from "services/api/titumir";
+import { usePermissions } from "hooks/usePermissions";
 
 function SchoolCoAdmins() {
     const short_name = useAuthStore((s) => s.user?.school?.short_name);
@@ -22,13 +23,15 @@ function SchoolCoAdmins() {
         },
     );
 
+    const isAllowed = usePermissions([USER_ROLE.admin]);
+
     const { mutate: assignCoAdmins } = useTitumirMutation<
         SchoolSchema | null,
         CoAdminBody
     >(
         MutationContextKey.ASSIGN_CO_ADMINS,
         async (api, data) => {
-            if (!short_name) return null;
+            if (!isAllowed || !short_name) return null;
             const { json } = await api.assignCoAdmins(short_name, data);
             return json;
         },
@@ -45,53 +48,57 @@ function SchoolCoAdmins() {
                     <Text color={!school?.coAdmin1 ? "red.500" : ""} as="span">
                         {userToName(school?.coAdmin1)}
                     </Text>
-                    <AddUserPopover
-                        name="coAdmin1"
-                        onSubmit={(value, { resetForm, setSubmitting }, onClose) => {
-                            assignCoAdmins(
-                                { email: value.coAdmin1 as string, index: 1 },
-                                {
-                                    onSuccess() {
-                                        setSubmitting(false);
-                                        resetForm();
-                                        onClose();
+                    {isAllowed && (
+                        <AddUserPopover
+                            name="coAdmin1"
+                            onSubmit={(value, { resetForm, setSubmitting }, onClose) => {
+                                assignCoAdmins(
+                                    { email: value.coAdmin1 as string, index: 1 },
+                                    {
+                                        onSuccess() {
+                                            setSubmitting(false);
+                                            resetForm();
+                                            onClose();
+                                        },
+                                        onError() {
+                                            setSubmitting(false);
+                                        },
                                     },
-                                    onError() {
-                                        setSubmitting(false);
-                                    },
-                                },
-                            );
-                        }}
-                        placeholder="Search for co-admin..."
-                        heading="Add Co-admin 1"
-                        label="Co-admin"
-                    />
+                                );
+                            }}
+                            placeholder="Search for co-admin..."
+                            heading="Add Co-admin 1"
+                            label="Co-admin"
+                        />
+                    )}
                 </ListItem>
                 <ListItem p="2" fontWeight="semibold">
                     Co Admin 2:{" "}
                     <Text color={!school?.coAdmin2 ? "red.500" : ""} as="span">
                         {userToName(school?.coAdmin2)}
                     </Text>
-                    <AddUserPopover
-                        name="coAdmin2"
-                        placeholder="Search for co-admin..."
-                        heading="Add Co-admin 2"
-                        label="Co-admin"
-                        onSubmit={(value, { resetForm, setSubmitting }) => {
-                            assignCoAdmins(
-                                { email: value.coAdmin2 as string, index: 2 },
-                                {
-                                    onSuccess() {
-                                        setSubmitting(false);
-                                        resetForm();
+                    {isAllowed && (
+                        <AddUserPopover
+                            name="coAdmin2"
+                            placeholder="Search for co-admin..."
+                            heading="Add Co-admin 2"
+                            label="Co-admin"
+                            onSubmit={(value, { resetForm, setSubmitting }) => {
+                                assignCoAdmins(
+                                    { email: value.coAdmin2 as string, index: 2 },
+                                    {
+                                        onSuccess() {
+                                            setSubmitting(false);
+                                            resetForm();
+                                        },
+                                        onError() {
+                                            setSubmitting(false);
+                                        },
                                     },
-                                    onError() {
-                                        setSubmitting(false);
-                                    },
-                                },
-                            );
-                        }}
-                    />
+                                );
+                            }}
+                        />
+                    )}
                 </ListItem>
             </List>
         </Paper>

@@ -8,6 +8,7 @@ import {
     GradeToSubjectSchema,
     TeachersToSectionsToGradesSchema,
     StudentsToSectionsToGradesSchema,
+    ClassSchema,
 } from "@veschool/types";
 import qs from "query-string";
 
@@ -399,5 +400,18 @@ export default class Titumir {
             AddSectionStudentsReturns,
             AddSectionStudentsBody[]
         >(`/school/${school}/grade/${grade}/section/${section}/students`, "PUT", data);
+    }
+
+    async getSectionTeachers(school: string, grade: number, section: string) {
+        return await this.buildRequest<TeachersToSectionsToGradesSchema[]>(
+            `/school/${school}/grade/${grade}/section/${section}/teachers`,
+        );
+    }
+
+    // =====/classes/=====
+    async getClasses(school: string, grade: number, section: string) {
+        return await this.buildRequest<ClassSchema[]>(
+            `/school/${school}/grade/${grade}/section/${section}/class`,
+        );
     }
 }

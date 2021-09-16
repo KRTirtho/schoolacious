@@ -31,6 +31,8 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
     }
 
     async validateHostClass({ host, day }: ScheduleClassDto): Promise<boolean> {
+        // host will have classes on other sections/grade-sections. Thus
+        // ensuring host gets a break after every class
         const hostClasses = await this.find(
             {},
             {
@@ -55,7 +57,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
 
         let result = true;
         // validating if class follows the following
-        // minimum of 10mins break for both host
+        // minimum of 10mins break for both host & student
         for (const [index, { time, duration }] of classes.entries()) {
             if (index + 1 > classes.length - 1) break;
             const now = new Date();

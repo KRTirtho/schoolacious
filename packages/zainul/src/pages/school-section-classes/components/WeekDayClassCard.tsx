@@ -1,12 +1,4 @@
-import {
-    useColorModeValue,
-    chakra,
-    Heading,
-    HStack,
-    Icon,
-    VStack,
-    Text,
-} from "@chakra-ui/react";
+import { useColorModeValue, chakra, Heading, Icon, VStack, Text } from "@chakra-ui/react";
 import React, { FC } from "react";
 import { ClassSchema, TeachersToSectionsToGradesSchema } from "@veschool/types";
 import Paper from "components/Paper/Paper";
@@ -17,25 +9,34 @@ import CreateWeekDayClassPopover from "./CreateWeekDayClassPopover";
 import { useRouteMatch } from "react-router-dom";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
 import useTitumirQuery from "hooks/useTitumirQuery";
-import { QueryContextKey } from "configs/enums";
+import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { useAuthStore } from "state/authorization-store";
+import useTitumirMutation from "hooks/useTitumirMutation";
+import { ScheduleClassBody } from "services/api/titumir";
+import { secondsToMinutes, minutesToSeconds } from "date-fns";
+import { militaryTo12HourTime } from "utils/militaryTo12HourTime";
 
 export interface WeekDayClassCardProps {
-    day: string;
+    day: [string, string];
     classes: ClassSchema[];
 }
 
-export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({ day, classes }) => {
+export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({
+    day: [dayIndex, day],
+    classes,
+}) => {
     const textColor = useColorModeValue("primary.500", "primary.200");
 
     const { params } = useRouteMatch<SchoolSectionMembersParams>();
 
     const short_name = useAuthStore((s) => s.user?.school?.short_name);
 
-    const { data: sectionTeachers } = useTitumirQuery<
+    const isQueryable = params?.grade && params?.section;
+
+    const { data: sectionTeachers, refetch } = useTitumirQuery<
         TeachersToSectionsToGradesSchema[] | null
-    >(QueryContextKey.SECTION_TEACHERS, async (api) => {
-        if (!(short_name && params?.grade && params?.section)) return null;
+    >([QueryContextKey.SECTION_TEACHERS, params?.grade, params?.section], async (api) => {
+        if (!(short_name && isQueryable)) return null;
         const { json } = await api.getSectionTeachers(
             short_name,
             parseInt(params.grade),
@@ -43,6 +44,28 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({ day, classes }) =>
         );
         return json;
     });
+
+    const { mutate: scheduleClass } = useTitumirMutation<
+        ClassSchema | null,
+        ScheduleClassBody
+    >(
+        [MutationContextKey.CREATE_CLASS, day, params?.grade, params?.section],
+        async (api, data) => {
+            if (!(short_name && isQueryable)) return null;
+            const { json } = await api.createClass(
+                short_name,
+                parseInt(params.grade),
+                params.section,
+                data,
+            );
+            return json;
+        },
+        {
+            onSuccess() {
+                refetch();
+            },
+        },
+    );
 
     return (
         <Paper
@@ -58,32 +81,59 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({ day, classes }) =>
                 <Heading color={textColor} size="md">
                     {day}
                 </Heading>
-                <HStack w="full" wrap="wrap" justify="center">
+                <chakra.div
+                    display="flex"
+                    w="full"
+                    flexWrap="wrap"
+                    justifyContent="center"
+                >
                     {classes.map(({ _id, duration, host, time }, i) => (
-                        <Paper key={_id + i} as={chakra.div} maxW="32" p="2">
+                        <Paper key={_id + i} as={chakra.div} maxW="32" p="2" m="1">
                             <Heading size="sm" fontWeight="bold">
-                                English
+                                {host?.subject?.name}
                             </Heading>
                             <Text fontWeight="semibold">{userToName(host.user)}</Text>
                             <Text color="red.400">
                                 <Icon fontSize="xl">
                                     <FiClock />
                                 </Icon>
-                                {time}
+                                {militaryTo12HourTime(time)}
                             </Text>
                             <Text color="blue.400">
                                 <Icon fontSize="xl">
                                     <GiDuration />
                                 </Icon>
-                                {duration}mins
+                                {secondsToMinutes(duration)} mins
                             </Text>
                         </Paper>
                     ))}
                     <CreateWeekDayClassPopover
                         sectionTeachers={sectionTeachers}
                         day={day}
+                        onSubmit={(
+                            { host, time, duration },
+                            { setSubmitting, resetForm },
+                        ) => {
+                            scheduleClass(
+                                {
+                                    day: parseInt(dayIndex),
+                                    host,
+                                    time: `${time}:00`,
+                                    duration: minutesToSeconds(parseInt(duration)),
+                                },
+                                {
+                                    onSuccess() {
+                                        setSubmitting(false);
+                                        resetForm();
+                                    },
+                                    onError() {
+                                        setSubmitting(false);
+                                    },
+                                },
+                            );
+                        }}
                     />
-                </HStack>
+                </chakra.div>
             </VStack>
         </Paper>
     );

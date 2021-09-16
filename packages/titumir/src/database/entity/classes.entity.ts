@@ -18,6 +18,8 @@ export default class Class implements ClassSchema {
     @CreateDateColumn()
     created_at!: Date;
 
+    @Max(6)
+    @Min(0)
     @Column("int")
     day!: number;
 

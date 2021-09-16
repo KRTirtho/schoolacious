@@ -27,7 +27,7 @@ import {
     ApiBody,
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
-    ApiProperty,
+    ApiOperation,
 } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { VerifySchool } from "../decorator/verify-school.decorator";
@@ -61,11 +61,20 @@ export class ClassesController {
                             grade: { standard },
                         },
                     },
-                    relations: ["host", "host.section", "host.grade"],
+                    relations: [
+                        "host",
+                        "host.section",
+                        "host.grade",
+                        "host.subject",
+                        "host.user",
+                    ],
                 },
             );
 
-            return classes.map((c) => ({ ...c, section: undefined }));
+            return classes.map((c) => ({
+                ...c,
+                host: { ...c.host, section: undefined, grade: undefined },
+            }));
         } catch (error) {
             this.logger.error(error?.message);
             throw error;
@@ -73,7 +82,8 @@ export class ClassesController {
     }
 
     /**
-     * @deprecated
+     * @deprecated in favor of new monolithic approach to scheduling
+     * of classes
      */
     @Post("deprecated")
     @VerifyGrade()
@@ -90,7 +100,7 @@ export class ClassesController {
     @ApiNotFoundResponse({
         description: "teacher not found in grade/section, section not found",
     })
-    @ApiProperty({ deprecated: true })
+    @ApiOperation({ deprecated: true })
     async addClasses(
         @CurrentUser() user: VerifiedGradeUser,
         @Body(new ParseArrayPipe({ items: ScheduleClassDTO })) body: ScheduleClassDTO[],
@@ -98,12 +108,12 @@ export class ClassesController {
         @Param("grade", ParseIntPipe) standard: number,
     ) {
         try {
-            // TODO: Check host exists & is valid for section✔
-            // TODO: Check host has other classes at those times✔
-            // TODO: Check host gets enough break before class (5-10min)✔
-            // TODO: Check each class has minimum 5-10mins break✔
-            // TODO: Check class length per day (maximum allowed 6)✔
-            // TODO: Check students are having minimum break✔
+            // Check host exists & is valid for section✔
+            // Check host has other classes at those times✔
+            // Check host gets enough break before class (5-10min)✔
+            // Check each class has minimum 5-10mins break✔
+            // Check class length per day (maximum allowed 6)✔
+            // Check students are having minimum break✔
 
             // using loop to filter out the valid classes because in filter
             // or HOF invalid classes will get created && no way of

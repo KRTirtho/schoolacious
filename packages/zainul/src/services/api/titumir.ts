@@ -142,6 +142,13 @@ export interface AddSectionStudentsReturns {
     error: string[];
 }
 
+export interface ScheduleClassBody {
+    day: number;
+    time: string;
+    host: string;
+    duration: number;
+}
+
 export default class Titumir {
     constructor(public baseURL: string) {}
 
@@ -412,6 +419,19 @@ export default class Titumir {
     async getClasses(school: string, grade: number, section: string) {
         return await this.buildRequest<ClassSchema[]>(
             `/school/${school}/grade/${grade}/section/${section}/class`,
+        );
+    }
+
+    async createClass(
+        school: string,
+        grade: number,
+        section: string,
+        data: ScheduleClassBody,
+    ) {
+        return await this.buildRequest<ClassSchema, ScheduleClassBody>(
+            `/school/${school}/grade/${grade}/section/${section}/class`,
+            "POST",
+            data,
         );
     }
 }

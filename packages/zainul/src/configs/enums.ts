@@ -13,6 +13,7 @@ export enum MutationContextKey {
     ADD_GRADE_SUBJECTS = "mutate-add-grade-subjects",
     ADD_SECTION_TEACHER = "mutate-assign-section-teacher",
     ADD_SECTION_STUDENTS = "mutate-assign-section-students",
+    CREATE_CLASS = "mutate-create-class",
 }
 
 export enum QueryContextKey {

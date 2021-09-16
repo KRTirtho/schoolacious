@@ -10,27 +10,40 @@ import {
     PopoverContent,
     PopoverHeader,
     PopoverTrigger,
-    Select,
     Text,
+    Link as CLink,
 } from "@chakra-ui/react";
 import InputNumberField from "components/InputNumberField/InputNumberField";
 import TextField from "components/TextField/TextField";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import React, { FC } from "react";
 import { FiCheck, FiPlus } from "react-icons/fi";
 import { TiTimes } from "react-icons/ti";
 import * as yup from "yup";
 import { TeachersToSectionsToGradesSchema } from "@veschool/types";
 import { userToName } from "utils/userToName";
+import { Link } from "react-router-dom";
+import { SelectField } from "components/SelectField/SelectField";
+
+interface CreatClassBodySchema {
+    host: string;
+    duration: string;
+    time: string;
+}
 
 export interface CreateWeekDayClassPopoverProps {
     day: string;
     sectionTeachers?: TeachersToSectionsToGradesSchema[] | null;
+    onSubmit: (
+        values: CreatClassBodySchema,
+        formikHelpers: FormikHelpers<CreatClassBodySchema>,
+    ) => void | Promise<unknown>;
 }
 
 const CreateWeekDayClassPopover: FC<CreateWeekDayClassPopoverProps> = ({
     day,
     sectionTeachers,
+    onSubmit,
 }) => {
     const CreateClassSchema = yup.object().shape({
         host: yup.string().required(),
@@ -39,7 +52,7 @@ const CreateWeekDayClassPopover: FC<CreateWeekDayClassPopoverProps> = ({
     });
 
     return (
-        <Popover>
+        <Popover isLazy>
             <PopoverTrigger>
                 <IconButton
                     title="new class entry in routine"
@@ -51,7 +64,7 @@ const CreateWeekDayClassPopover: FC<CreateWeekDayClassPopoverProps> = ({
                     h="28"
                 />
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent style={{ margin: 0 }}>
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverHeader>
@@ -66,12 +79,11 @@ const CreateWeekDayClassPopover: FC<CreateWeekDayClassPopoverProps> = ({
                                 time: "",
                             }}
                             validationSchema={CreateClassSchema}
-                            onSubmit={() => {
-                                return;
-                            }}
+                            onSubmit={onSubmit}
                         >
                             <Form>
-                                <Field mt="3" component={Select} name="host">
+                                <Field name="host" component={SelectField}>
+                                    <option value="">Select a teacher</option>
                                     {sectionTeachers.map((teacher, i) => (
                                         <option
                                             key={teacher._id + i}
@@ -112,8 +124,15 @@ const CreateWeekDayClassPopover: FC<CreateWeekDayClassPopoverProps> = ({
                         </Formik>
                     ) : (
                         <Text>
-                            No teachers available in this section. Assign teachers in the
-                            section to create classes
+                            No teachers available in this section.{" "}
+                            <CLink
+                                color="blue.400"
+                                as={Link}
+                                to="/school/configure/grade-sections"
+                            >
+                                Assign teachers
+                            </CLink>{" "}
+                            in the section to create classes
                         </Text>
                     )}
                 </PopoverBody>

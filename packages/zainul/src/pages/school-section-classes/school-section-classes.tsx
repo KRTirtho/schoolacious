@@ -1,4 +1,4 @@
-import { HStack } from "@chakra-ui/react";
+import { Heading, HStack, VStack } from "@chakra-ui/react";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
 import React, { FC } from "react";
@@ -12,15 +12,15 @@ import { WeekDayClassCard } from "./components/WeekDayClassCard";
 const SchoolSectionClasses: FC = () => {
     const { params } = useRouteMatch<SchoolSectionMembersParams>();
 
-    const weekDays = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-    ];
+    const weekDays = Object.freeze({
+        0: "Sunday",
+        1: "Monday",
+        2: "Tuesday",
+        3: "Wednesday",
+        4: "Thursday",
+        5: "Friday",
+        6: "Saturday",
+    });
 
     const short_name = useAuthStore((s) => s.user?.school?.short_name);
 
@@ -42,18 +42,25 @@ const SchoolSectionClasses: FC = () => {
     );
 
     return (
-        <HStack wrap="wrap" justify="space-evenly">
-            {weekDays.map((day, i) => {
-                const todaysClasses = classes?.filter((c) => c.day === i);
-                return (
-                    <WeekDayClassCard
-                        key={uniqueId()}
-                        day={day}
-                        classes={todaysClasses ?? []}
-                    />
-                );
-            })}
-        </HStack>
+        <VStack align="flex-start">
+            <Heading size="md">
+                Grade {params?.grade} | Section {params?.section} Class Schedule
+            </Heading>
+            <HStack wrap="wrap" justify="space-evenly">
+                {Object.entries(weekDays).map((day, i) => {
+                    const todaysClasses = classes
+                        ?.filter((c) => c.day === i)
+                        .sort((a, b) => a.time.localeCompare(b.time));
+                    return (
+                        <WeekDayClassCard
+                            key={uniqueId()}
+                            day={day}
+                            classes={todaysClasses ?? []}
+                        />
+                    );
+                })}
+            </HStack>
+        </VStack>
     );
 };
 

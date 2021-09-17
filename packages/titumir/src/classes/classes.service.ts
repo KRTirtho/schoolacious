@@ -1,11 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import BasicEntityService, {
     PartialKey,
 } from "../database/abstracts/entity-service.abstract";
 import Class from "../database/entity/classes.entity";
-import { differenceInMinutes, parse, millisecondsToSeconds, getDay } from "date-fns";
+import {
+    differenceInMinutes,
+    parse,
+    getDay,
+    addSeconds,
+    isAfter,
+    isEqual,
+    secondsToMinutes,
+} from "date-fns";
 import ScheduleClassDto from "./dto/schedule-class.dto";
 import Section from "../database/entity/sections.entity";
 import { cronFromObj } from "../utils/cron-names.util";
@@ -15,8 +23,11 @@ import { NotificationGateway } from "../notification/notification.gateway";
 import { NotificationService } from "../notification/notification.service";
 import { StudentSectionGradeService } from "../section/student-section-grade.service";
 import { NOTIFICATION_STATUS } from "@veschool/types";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 export type CreateClassPayload = PartialKey<Class, "_id" | "created_at">;
+
+export type CurrentClassTimeMeta = Pick<Class, "duration" | "time">;
 
 @Injectable()
 export class ClassesService extends BasicEntityService<Class, CreateClassPayload> {
@@ -26,11 +37,18 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
         private notificationGateway: NotificationGateway,
         private notificationService: NotificationService,
         private ssgService: StudentSectionGradeService,
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
     ) {
         super(classRepo);
+        this.logger.setContext(ClassesService.name);
     }
 
-    async validateHostClass({ host, day }: ScheduleClassDto): Promise<boolean> {
+    async validateHostClass({
+        host,
+        day,
+        duration,
+        time,
+    }: ScheduleClassDto): Promise<boolean> {
         // host will have classes on other sections/grade-sections. Thus
         // ensuring host gets a break after every class
         const hostClasses = await this.find(
@@ -40,45 +58,51 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                 relations: ["host", "host.user"],
             },
         );
-        return await this.validateClasses(hostClasses);
+        return await this.validateClasses(hostClasses, { duration, time });
     }
 
-    async validateStudentClass(section: Section, day: number) {
+    async validateStudentClass(
+        section: Section,
+        day: number,
+        current: CurrentClassTimeMeta,
+    ) {
         const studentClasses = await this.find(
             {},
             { where: { host: { section }, day }, relations: ["host", "host.section"] },
         );
-        return this.validateClasses(studentClasses);
+        return this.validateClasses(studentClasses, current);
     }
 
-    private async validateClasses(classes: Class[]) {
+    private async validateClasses(classes: Class[], current: CurrentClassTimeMeta) {
         if (classes.length === 0) return true;
         else if (classes.length >= 6) return false;
 
-        let result = true;
-        // validating if class follows the following
-        // minimum of 10mins break for both host & student
-        for (const [index, { time, duration }] of classes.entries()) {
-            if (index + 1 > classes.length - 1) break;
-            const now = new Date();
-            const date = parse(time, "KK:mm:ss", now);
-            const next = classes[index + 1];
-            const dateNext = parse(next.time, "KK:mm:ss", now);
-            const diff = differenceInMinutes(date, dateNext);
+        return classes.every(({ time, duration }) => {
+            const format = "HH:mm:ss";
+
+            const parsedTime = parse(time, format, new Date());
+            const parsedCurrentTime = parse(current.time, format, new Date());
+            if (isEqual(parsedTime, parsedCurrentTime)) return false;
+            const diff = isAfter(parsedCurrentTime, parsedTime)
+                ? differenceInMinutes(parsedCurrentTime, parsedTime)
+                : differenceInMinutes(parsedTime, parsedCurrentTime);
+
+            const endTime = addSeconds(parsedTime, duration);
+            const endCurrentTime = addSeconds(parsedCurrentTime, current.duration);
+            const endDiff = isAfter(endTime, endCurrentTime)
+                ? differenceInMinutes(endTime, endCurrentTime)
+                : differenceInMinutes(endCurrentTime, endTime);
 
             if (
-                Math.abs(
-                    Math.max(
-                        millisecondsToSeconds(duration),
-                        millisecondsToSeconds(next.duration),
-                    ) - diff,
-                ) < 10
-            ) {
-                result = false;
-                break;
-            }
-        }
-        return result;
+                !(
+                    diff - secondsToMinutes(duration) >= 10 &&
+                    endDiff - secondsToMinutes(current.duration) >= 10
+                )
+            )
+                return false;
+
+            return true;
+        });
     }
 
     // this method will create  will appropriately

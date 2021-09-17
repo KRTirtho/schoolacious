@@ -89,7 +89,8 @@ const CreateWeekDayClassPopover: FC<CreateWeekDayClassPopoverProps> = ({
                                             key={teacher._id + i}
                                             value={teacher.user._id}
                                         >
-                                            {userToName(teacher.user)}
+                                            {userToName(teacher.user)} [
+                                            {teacher?.subject?.name}]
                                         </option>
                                     ))}
                                 </Field>

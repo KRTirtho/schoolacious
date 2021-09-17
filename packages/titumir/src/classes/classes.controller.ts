@@ -28,6 +28,7 @@ import {
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
     ApiOperation,
+    ApiParam,
 } from "@nestjs/swagger";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { VerifySchool } from "../decorator/verify-school.decorator";
@@ -47,6 +48,7 @@ export class ClassesController {
 
     @Get()
     @VerifySchool()
+    @ApiParam({ name: "school" })
     async getClasses(
         @Param("section") sectionName: string,
         @Param("grade", ParseIntPipe) standard: number,
@@ -143,7 +145,7 @@ export class ClassesController {
                     );
                 const [isValidHostClass, isValidStudentClass] = await Promise.all([
                     this.classesService.validateHostClass(el),
-                    this.classesService.validateStudentClass(section, el.day),
+                    this.classesService.validateStudentClass(section, el.day, { ...el }),
                 ]);
 
                 if (!isValidHostClass)
@@ -189,6 +191,7 @@ export class ClassesController {
         USER_ROLE.gradeModerator,
         USER_ROLE.classTeacher,
     )
+    @ApiParam({ name: "school" })
     async addClass(
         @CurrentUser() user: VerifiedGradeUser,
         @Body() body: ScheduleClassDTO,
@@ -206,9 +209,10 @@ export class ClassesController {
             );
             const [isValidHostClass, isValidStudentClass] = await Promise.all([
                 this.classesService.validateHostClass(body),
-                this.classesService.validateStudentClass(host.section, body.day),
+                this.classesService.validateStudentClass(host.section, body.day, {
+                    ...body,
+                }),
             ]);
-
             if (!isValidHostClass)
                 throw new NotAcceptableException(
                     "minimum break duration (10mins) or 6-class/day not followed for hosts",

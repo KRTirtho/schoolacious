@@ -2,12 +2,24 @@ import { ListItemProps, useColorModeValue, ListItem } from "@chakra-ui/react";
 import React, { FC } from "react";
 import { LinkProps, useLocation, Link } from "react-router-dom";
 
-export const SidebarItem: FC<ListItemProps & LinkProps> = (props) => {
+export type SidebarItemProps = ListItemProps &
+    LinkProps & {
+        /**
+         * matches path exactly with location.path else matches with
+         * startWith
+         * @default true
+         */
+        exact?: boolean;
+    };
+
+export const SidebarItem: FC<SidebarItemProps> = ({ exact = true, ...props }) => {
     const location = useLocation();
     const bg = useColorModeValue("gray.50", "gray.700");
     const borderBottomColor = useColorModeValue("gray.300", "gray.600");
 
-    const isActive = props.to === location.pathname;
+    const isActive = !exact
+        ? location.pathname.startsWith(props.to.toString())
+        : location.pathname === props.to;
     return (
         <ListItem
             bg={bg}

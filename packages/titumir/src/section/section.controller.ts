@@ -38,6 +38,7 @@ import { SectionService } from "./section.service";
 import { StudentSectionGradeService } from "./student-section-grade.service";
 import { TeacherSectionGradeService } from "./teacher-section-grade.service";
 import Subject from "../database/entity/subjects.entity";
+import TeachersToSectionsToGrades from "../database/entity/teachers_sections_grades.entity";
 
 async function verifyClassTeacher(
     user: User,
@@ -266,15 +267,20 @@ export class SectionController {
     async getTeachers(
         @Param("grade", ParseIntPipe) standard: number,
         @Param("section") name: string,
-    ) {
+    ): Promise<Omit<TeachersToSectionsToGrades, "section" | "grade">[]> {
         try {
-            return await this.teacherSGService.find(
+            const teachers = await this.teacherSGService.find(
                 {},
                 {
                     where: { grade: { standard }, section: { name } },
-                    relations: ["grade", "section", "user"],
+                    relations: ["grade", "section", "user", "subject"],
                 },
             );
+            return teachers.map((teacher) => ({
+                ...teacher,
+                grade: undefined,
+                section: undefined,
+            }));
         } catch (error) {
             this.logger.error(error?.message ?? "");
             throw error;

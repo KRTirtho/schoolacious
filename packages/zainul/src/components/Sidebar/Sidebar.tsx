@@ -13,7 +13,12 @@ import { Link, useLocation } from "react-router-dom";
 import { SidebarItem } from "./SidebarItem";
 
 export interface SidebarProps {
-    links: { to: string; title: string | ReactElement; icon?: ReactElement }[];
+    links: {
+        to: string;
+        title: string | ReactElement;
+        icon?: ReactElement;
+        exact?: boolean;
+    }[];
 }
 
 export const Sidebar: FC<SidebarProps> = ({ links }) => {
@@ -32,8 +37,8 @@ export const Sidebar: FC<SidebarProps> = ({ links }) => {
 
     return isLargeScreen ? (
         <List display="flex" flexDir="column" m="5" borderRadius="md" flex={1}>
-            {links.map(({ to, title }, i) => (
-                <SidebarItem key={to + i} to={to}>
+            {links.map(({ to, title, exact }, i) => (
+                <SidebarItem key={to + i} to={to} exact={exact}>
                     {title}
                 </SidebarItem>
             ))}

@@ -16,7 +16,7 @@ function SchoolConfigure() {
     const links = [
         { to: path + "/co-admins", title: "Co-admins" },
         { to: path + "/add-remove-members", title: "Members" },
-        { to: path + "/grade-sections", title: "Grades & Sections" },
+        { to: path + "/grade-sections", title: "Grades & Sections", exact: false },
         { to: path + "/subjects", title: "Subjects" },
         { to: path + "/invitations", title: "Invitations" },
         { to: path + "/join-requests", title: "Join Requests" },

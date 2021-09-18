@@ -1,6 +1,5 @@
-import { Controller, Get, Inject, Logger, Query } from "@nestjs/common";
+import { Controller, Get, Logger, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiQuery, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { INVITATION_OR_JOIN_TYPE } from "@veschool/types";
 import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
@@ -11,13 +10,11 @@ import { Throttle } from "@nestjs/throttler";
 @Controller("user")
 @ApiBearerAuth()
 export class UserController {
+    logger = new Logger(UserController.name);
     constructor(
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private readonly invitationJoinService: InvitationJoinService,
         private readonly userService: UserService,
-    ) {
-        this.logger.setContext(UserController.name);
-    }
+    ) {}
 
     @Get("me")
     @ApiUnauthorizedResponse()
@@ -25,7 +22,7 @@ export class UserController {
         try {
             return user;
         } catch (error) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -60,7 +57,7 @@ export class UserController {
                 .getMany();
             return users;
         } catch (error) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -74,7 +71,7 @@ export class UserController {
                 type: INVITATION_OR_JOIN_TYPE.invitation,
             });
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -87,7 +84,7 @@ export class UserController {
                 type: INVITATION_OR_JOIN_TYPE.join,
             });
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }

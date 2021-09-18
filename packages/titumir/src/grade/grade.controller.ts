@@ -2,14 +2,13 @@ import {
     Body,
     Controller,
     Get,
-    Logger,
     Param,
     ParseArrayPipe,
     Post,
     Put,
     ParseIntPipe,
-    Inject,
     Query,
+    Logger,
 } from "@nestjs/common";
 import School from "../database/entity/schools.entity";
 import User from "../database/entity/users.entity";
@@ -34,7 +33,6 @@ import {
     ApiNotFoundResponse,
     ApiParam,
 } from "@nestjs/swagger";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { VerifiedSchoolUser } from "../subject/subject.controller";
 
 export interface VerifiedGradeUser extends User {
@@ -45,14 +43,11 @@ export interface VerifiedGradeUser extends User {
 @Controller("/school/:school/grade")
 @ApiBearerAuth()
 export class GradeController {
+    logger = new Logger(GradeController.name);
     constructor(
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private readonly gradeService: GradeService,
         private readonly gradeToSubjectService: GradeSubjectService,
-    ) {
-        this.logger.setContext(GradeController.name);
-    }
-
+    ) {}
     @Get()
     @VerifySchool()
     async getAllGradeOfSchool(
@@ -87,7 +82,7 @@ export class GradeController {
             );
             return grades;
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -118,7 +113,7 @@ export class GradeController {
                 subjects: grade.grades_subjects?.map((gs) => gs.subject),
             };
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -160,7 +155,7 @@ export class GradeController {
             grade.examiner = gradeExaminer?.examiner;
             return grade;
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -186,7 +181,7 @@ export class GradeController {
             );
             return gradesToSubjects;
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -209,7 +204,7 @@ export class GradeController {
                 standard,
             });
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -237,7 +232,7 @@ export class GradeController {
                 standard,
             });
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }

@@ -14,8 +14,6 @@ import { SubjectModule } from "./subject/subject.module";
 import { UserModule } from "./user/user.module";
 import { ClassesModule } from "./classes/classes.module";
 import { NotificationModule } from "./notification/notification.module";
-import { WinstonModule, utilities } from "nest-winston";
-import winston from "winston";
 
 export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
 export const THROTTLER_GUARD = "THROTTLER_GUARD";
@@ -27,16 +25,6 @@ export const THROTTLER_GUARD = "THROTTLER_GUARD";
             limit: 10,
         }),
         ScheduleModule.forRoot(),
-        WinstonModule.forRoot({
-            transports: [
-                new winston.transports.Console({
-                    format: winston.format.combine(
-                        winston.format.ms(),
-                        utilities.format.nestLike("Titumir"),
-                    ),
-                }),
-            ],
-        }),
         DatabaseModule,
         AuthModule,
         UserModule,
@@ -50,6 +38,7 @@ export const THROTTLER_GUARD = "THROTTLER_GUARD";
     ],
     controllers: [AppController],
     providers: [
+        Logger,
         AppService,
         // guards
         { provide: THROTTLER_GUARD, useClass: ThrottlerGuard },

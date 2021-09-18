@@ -51,7 +51,6 @@
         "dotenv": "^8.2.0",
         "helmet": "^4.4.1",
         "lodash": "^4.17.21",
-        "nest-winston": "^1.5.0",
         "passport": "^0.4.1",
         "passport-jwt": "^4.0.0",
         "passport-local": "^1.0.0",
@@ -61,8 +60,7 @@
         "swagger-ui-express": "^4.1.6",
         "typeorm": "^0.2.32",
         "uuid": "^8.3.2",
-        "validator": "^13.6.0",
-        "winston": "^3.3.3"
+        "validator": "^13.6.0"
     },
     "devDependencies": {
         "@anatine/esbuild-decorators": "^0.2.11",

@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Inject, Logger, Param, Post } from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { Body, Controller, Get, Logger, Post } from "@nestjs/common";
+import { ApiBearerAuth, ApiParam } from "@nestjs/swagger";
 import User from "../database/entity/users.entity";
 import { USER_ROLE } from "@veschool/types";
 import { CurrentUser } from "../decorator/current-user.decorator";
@@ -16,32 +15,26 @@ export type VerifiedSchoolUser = Omit<User, "school"> & { school: School };
 @Controller("/school/:school/subject")
 @ApiBearerAuth()
 export class SubjectController {
-    constructor(
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
-        private readonly subjectService: SubjectService,
-    ) {
-        this.logger.setContext(SubjectController.name);
-    }
-
+    logger = new Logger(SubjectController.name);
+    constructor(private readonly subjectService: SubjectService) {}
     @Get("defaults")
     @VerifySchool()
-    getDefaultSubjects(@Param("school") _?: number) {
+    @ApiParam({ name: "school" })
+    getDefaultSubjects() {
         return defaultSubjects;
     }
 
     @Get()
     @VerifySchool()
-    async getAlSubject(
-        @CurrentUser() user: VerifiedSchoolUser,
-        @Param("school") _?: number,
-    ) {
+    @ApiParam({ name: "school" })
+    async getAlSubject(@CurrentUser() user: VerifiedSchoolUser) {
         try {
             return await this.subjectService.find(
                 { school: user.school },
                 { relations: ["grades_subjects", "grades_subjects.grade"] },
             );
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -49,11 +42,11 @@ export class SubjectController {
     @Post()
     @VerifySchool()
     @Roles(USER_ROLE.admin, USER_ROLE.coAdmin)
+    @ApiParam({ name: "school" })
     async createSubject(
         @Body()
         body: CreateSubjectDTO,
         @CurrentUser() user: VerifiedSchoolUser,
-        @Param("school") _?: number,
     ) {
         try {
             const subject = await this.subjectService.create({
@@ -63,7 +56,7 @@ export class SubjectController {
             Object.assign(subject.school, null);
             return subject;
         } catch (error: any) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }

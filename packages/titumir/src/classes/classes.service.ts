@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import BasicEntityService, {
@@ -23,7 +23,6 @@ import { NotificationGateway } from "../notification/notification.gateway";
 import { NotificationService } from "../notification/notification.service";
 import { StudentSectionGradeService } from "../section/student-section-grade.service";
 import { NOTIFICATION_STATUS } from "@veschool/types";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 export type CreateClassPayload = PartialKey<Class, "_id" | "created_at">;
 
@@ -31,16 +30,16 @@ export type CurrentClassTimeMeta = Pick<Class, "duration" | "time">;
 
 @Injectable()
 export class ClassesService extends BasicEntityService<Class, CreateClassPayload> {
+    logger = new Logger(ClassesService.name);
     constructor(
         private schedularRegistry: SchedulerRegistry,
         @InjectRepository(Class) private classRepo: Repository<Class>,
         private notificationGateway: NotificationGateway,
         private notificationService: NotificationService,
+
         private ssgService: StudentSectionGradeService,
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
     ) {
         super(classRepo);
-        this.logger.setContext(ClassesService.name);
     }
 
     async validateHostClass({
@@ -107,7 +106,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
 
     // this method will create  will appropriately
     // schedule other descendent cronjob for a day
-    async createClassCronJob(grade_id: string) {
+    async createClassCronJob() {
         // checking for todays valid cronjob
         const today = getDay(new Date());
         const classes = await this.find(
@@ -115,7 +114,6 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
             {
                 where: {
                     day: today,
-                    host: { grade: { _id: grade_id } },
                 },
                 relations: ["host", "host.section", "host.grade"],
             },
@@ -130,16 +128,21 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
             },
         );
 
-        for (const valid of classes) {
-            const [hour, minute, second] = valid.time.split(":");
-            const expression = cronFromObj({ day: valid.day, hour, minute, second });
+        for (const { _id, time, day, host } of classes) {
+            const [hour, minute, second] = time.split(":");
+            const expression = cronFromObj({
+                day,
+                hour,
+                minute,
+                second,
+            });
             const job = new CronJob(expression, async () => {
                 // TODO: Store the notification for valid students of grade's
                 const notificationsPayload = studentsOfGrades
-                    .filter(({ grade }) => grade._id === valid.host.section.grade._id)
+                    .filter(({ grade }) => grade._id === host.grade._id)
                     .map((user) => ({
                         user,
-                        message: `Its a class in ${valid.time}`,
+                        message: `Its a class in ${time}`,
                         src: "class",
                         status: NOTIFICATION_STATUS.unsent,
                     }));
@@ -156,7 +159,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                 this.notificationGateway.server;
                 // TODO: Not active? Send Push notification
             });
-            this.schedularRegistry.addCronJob(valid._id, job);
+            this.schedularRegistry.addCronJob(_id, job);
         }
     }
 }

@@ -1,14 +1,7 @@
-import {
-    ExecutionContext,
-    HttpException,
-    Inject,
-    Injectable,
-    Logger,
-} from "@nestjs/common";
+import { ExecutionContext, HttpException, Injectable, Logger } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import User from "../../database/entity/users.entity";
 import { USER_ROLE } from "@veschool/types";
 import { EXTEND_USER_RELATION_KEY } from "../../decorator/extend-user-relation.decorator";
@@ -34,8 +27,8 @@ type RequestWithParams = Request<{
 
 @Injectable()
 export default class JwtAuthGuard extends AuthGuard("jwt") {
+    logger = new Logger(JwtAuthGuard.name);
     constructor(
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private readonly reflector: Reflector,
         private readonly userService: UserService,
         private readonly gradeService: GradeService,
@@ -43,8 +36,8 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
         private readonly teacherSGService: TeacherSectionGradeService,
     ) {
         super();
-        this.logger.setContext(JwtAuthGuard.name);
     }
+
     async canActivate(context: ExecutionContext): Promise<boolean> {
         try {
             const request = context.switchToHttp().getRequest<RequestWithParams>();

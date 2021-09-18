@@ -1,4 +1,3 @@
-import { Inject, Logger } from "@nestjs/common";
 import {
     OnGatewayConnection,
     OnGatewayDisconnect,
@@ -6,23 +5,18 @@ import {
     WebSocketGateway,
     WebSocketServer,
 } from "@nestjs/websockets";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import SocketIO, { Socket, Server as WsServer } from "socket.io";
 import User from "../database/entity/users.entity";
 import { USER_STATUS } from "@veschool/types";
 import { UserService } from "../user/user.service";
+import { Logger } from "@nestjs/common";
 
 @WebSocketGateway()
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
+    logger = new Logger(NotificationGateway.name);
     @WebSocketServer() public server!: WsServer;
 
-    constructor(
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
-        private userService: UserService,
-    ) {
-        this.logger.setContext(NotificationGateway.name);
-    }
-
+    constructor(private userService: UserService) {}
     async handleDisconnect(client: Socket) {
         return await this.setUserStatus(client, USER_STATUS.offline);
     }
@@ -38,7 +32,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
 
             await this.userService.update(user, { status });
         } catch (error: any) {
-            this.logger.error(error?.message);
+            this.logger.error(error);
             throw error;
         }
     }

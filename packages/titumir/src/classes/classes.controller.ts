@@ -4,15 +4,14 @@ import {
     ParseArrayPipe,
     Post,
     NotAcceptableException,
-    Logger,
-    Inject,
     Param,
     ParseIntPipe,
     Get,
+    OnApplicationBootstrap,
+    Logger,
 } from "@nestjs/common";
 import ScheduleClassDTO from "./dto/schedule-class.dto";
 import { Roles } from "../decorator/roles.decorator";
-import { CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
 import { USER_ROLE, CLASS_STATUS } from "@veschool/types";
 import { ClassesService } from "./classes.service";
@@ -20,8 +19,6 @@ import { VerifiedGradeUser } from "../grade/grade.controller";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { SectionService } from "../section/section.service";
 import { TeacherSectionGradeService } from "../section/teacher-section-grade.service";
-import { classJob } from "../utils/cron-names.util";
-import { CronJob } from "cron";
 import {
     ApiBearerAuth,
     ApiBody,
@@ -30,20 +27,40 @@ import {
     ApiOperation,
     ApiParam,
 } from "@nestjs/swagger";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { VerifySchool } from "../decorator/verify-school.decorator";
+import { SchoolService } from "../school/school.service";
+import { CronExpression, SchedulerRegistry } from "@nestjs/schedule";
+import { CronJob } from "cron";
+import { classJob } from "../utils/cron-names.util";
 
 @Controller("/school/:school/grade/:grade/section/:section/class")
 @ApiBearerAuth()
-export class ClassesController {
+export class ClassesController implements OnApplicationBootstrap {
+    logger = new Logger(ClassesController.name);
     constructor(
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private classesService: ClassesService,
-        private scheduleRegistry: SchedulerRegistry,
         private sectionService: SectionService,
         private tsgService: TeacherSectionGradeService,
-    ) {
-        this.logger.setContext(ClassesController.name);
+        private schoolService: SchoolService,
+        private scheduleRegistry: SchedulerRegistry,
+    ) {}
+    async onApplicationBootstrap() {
+        const schools = await this.schoolService.find();
+        for (const { _id, short_name } of schools) {
+            if (!this.scheduleRegistry.doesExists("cron", classJob(_id))) {
+                this.createSchoolClassJob(_id);
+                this.logger.log(`Starting class-job for school "${short_name}"`);
+            }
+        }
+    }
+
+    createSchoolClassJob(school_id: string) {
+        // creating a "school-global" cron job
+        const schoolClassJob = new CronJob(
+            CronExpression.EVERY_DAY_AT_6AM,
+            async () => await this.classesService.createClassCronJob(),
+        );
+        this.scheduleRegistry.addCronJob(classJob(school_id), schoolClassJob);
     }
 
     @Get()
@@ -78,7 +95,7 @@ export class ClassesController {
                 host: { ...c.host, section: undefined, grade: undefined },
             }));
         } catch (error) {
-            this.logger.error(error?.message);
+            this.logger.error(error);
             throw error;
         }
     }
@@ -165,20 +182,9 @@ export class ClassesController {
             }
 
             await this.classesService.create(validClasses);
-            if (!this.scheduleRegistry.doesExists("cron", classJob(user.school._id))) {
-                const schoolClassJob = new CronJob(
-                    CronExpression.EVERY_DAY_AT_6AM,
-                    async () =>
-                        await this.classesService.createClassCronJob(user.grade._id),
-                );
-                this.scheduleRegistry.addCronJob(
-                    classJob(user.school._id),
-                    schoolClassJob,
-                );
-            }
             return { message: "successfully scheduled classes" };
         } catch (error) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }
@@ -226,25 +232,18 @@ export class ClassesController {
                 host,
                 status: CLASS_STATUS.scheduled,
             });
-            if (!this.scheduleRegistry.doesExists("cron", classJob(user.school._id))) {
-                const schoolClassJob = new CronJob(
-                    CronExpression.EVERY_DAY_AT_6AM,
-                    async () =>
-                        await this.classesService.createClassCronJob(user.grade._id),
-                );
-                this.scheduleRegistry.addCronJob(
-                    classJob(user.school._id),
-                    schoolClassJob,
-                );
-            }
+
             Object.assign(scheduledClass.host, {
                 ...scheduledClass.host,
                 grade: undefined,
                 section: undefined,
             });
+
+            if (!this.scheduleRegistry.doesExists("cron", classJob(user.school._id)))
+                this.createSchoolClassJob(user.school._id);
             return scheduledClass;
         } catch (error) {
-            this.logger.error(error?.message ?? "");
+            this.logger.error(error);
             throw error;
         }
     }

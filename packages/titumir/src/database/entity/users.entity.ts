@@ -13,7 +13,7 @@ import Notifications from "./notifications.entity";
 import School from "./schools.entity";
 import StudentsToSectionsToGrades from "./students_sections_grades.entity";
 import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
-import { UserSchema, USER_ROLE, USER_STATUS } from "@veschool/types"
+import { UserSchema, USER_ROLE, USER_STATUS } from "@veschool/types";
 
 @Entity("users")
 export default class User implements UserSchema {

@@ -14,11 +14,12 @@ import {
 } from "../config";
 import { AuthenticatedSocketIoAdapter } from "./auth/adapters/auth.adapter";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { ValidationPipe } from "@nestjs/common";
+import { ThrottlerGuard } from "@nestjs/throttler";
+import JwtAuthGuard from "./auth/guards/jwt-auth.guard";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { logger: false });
+    const app = await NestFactory.create(AppModule);
 
     // swagger stuff
     const options = new DocumentBuilder()
@@ -32,13 +33,12 @@ async function bootstrap() {
     SwaggerModule.setup("/swagger", app, document);
 
     const reflector = app.get(Reflector);
-    const jwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
+    const jwtAuthGuard: JwtAuthGuard = app.select(AppModule).get(JWT_AUTH_GUARD);
     const roleAuthGuard = new RoleAuthGuard(reflector);
-    const throttlerGuard = app.select(AppModule).get(THROTTLER_GUARD);
+    const throttlerGuard: ThrottlerGuard = app.select(AppModule).get(THROTTLER_GUARD);
     app.use(helmet());
     app.use(cookieParser(COOKIE_SIGNATURE));
     // app.use(csurf({ cookie: true }));
-    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
     app.enableCors({
         origin: /http:\/\/localhost:?[\d]+/,
         exposedHeaders: [CONST_REFRESH_TOKEN_HEADER],

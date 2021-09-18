@@ -2,14 +2,13 @@ import {
     Body,
     Controller,
     Headers,
-    Logger,
     Post,
     UseGuards,
     NotAcceptableException,
     UnauthorizedException,
-    Inject,
     Res,
     Get,
+    Logger,
 } from "@nestjs/common";
 import { Request, Response } from "express";
 import {
@@ -27,18 +26,16 @@ import { CurrentUser } from "../decorator/current-user.decorator";
 import User from "../database/entity/users.entity";
 import LoginDTO from "./dto/login.dto";
 import { ApiHeader, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 @Controller("auth")
 export class AuthController {
+    logger = new Logger(AuthController.name);
     constructor(
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: Logger,
         private readonly authService: AuthService,
         private readonly userService: UserService,
     ) {
-        this.logger.setContext(AuthController.name);
+        
     }
-
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post("login")
@@ -59,7 +56,7 @@ export class AuthController {
 
             return user;
         } catch (error: any) {
-            this.logger.error(error?.message);
+            this.logger.error(error);
             throw error;
         }
     }
@@ -86,7 +83,7 @@ export class AuthController {
             res?.set(CONST_REFRESH_TOKEN_HEADER, refresh_token);
             return { message: "Refreshed access_token" };
         } catch (error: any) {
-            this.logger.error(error?.message);
+            this.logger.error(error);
             if (error instanceof JsonWebTokenError) {
                 throw new UnauthorizedException(error.message);
             }
@@ -114,7 +111,7 @@ export class AuthController {
             );
             return { ...user, email, role };
         } catch (error: any) {
-            this.logger.error(error?.message);
+            this.logger.error(error);
             throw error;
         }
     }
@@ -125,7 +122,7 @@ export class AuthController {
             res.clearCookie(CONST_JWT_ACCESS_TOKEN_COOKIE);
             return { message: "Successfully Logged Out" };
         } catch (e: any) {
-            this.logger.error(e?.message ?? "");
+            this.logger.error(e);
             throw e;
         }
     }

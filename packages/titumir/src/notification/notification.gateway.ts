@@ -5,11 +5,12 @@ import {
     WebSocketGateway,
     WebSocketServer,
 } from "@nestjs/websockets";
-import SocketIO, { Socket, Server as WsServer } from "socket.io";
+import { Socket, Server as WsServer } from "socket.io";
 import User from "../database/entity/users.entity";
 import { USER_STATUS } from "@veschool/types";
 import { UserService } from "../user/user.service";
 import { Logger } from "@nestjs/common";
+import { Handshake } from "socket.io/dist/socket";
 
 @WebSocketGateway()
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -28,7 +29,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     private async setUserStatus(client: Socket, status: USER_STATUS) {
         try {
             // set the user's status to online on connect
-            const { user } = client.handshake as SocketIO.Handshake & { user: User };
+            const { user } = client.handshake as Handshake & { user: User };
 
             await this.userService.update(user, { status });
         } catch (error: any) {

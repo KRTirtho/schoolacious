@@ -1,6 +1,7 @@
 import { INestApplicationContext } from "@nestjs/common";
 import { IoAdapter } from "@nestjs/platform-socket.io";
 import { ExtractJwt } from "passport-jwt";
+import SocketIO from "socket.io";
 import { UserService } from "../../user/user.service";
 import { AuthService } from "../auth.service";
 
@@ -13,7 +14,7 @@ export class AuthenticatedSocketIoAdapter extends IoAdapter {
         this.userService = this.app.get(UserService);
     }
 
-    createIOServer(port: number, options: SocketIO.ServerOptions = {}): any {
+    createIOServer(port: number, options: SocketIO.ServerOptions): any {
         options.allowRequest = async (request, allowFunction) => {
             const verified = await (async () => {
                 try {

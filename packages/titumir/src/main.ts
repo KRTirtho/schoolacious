@@ -17,9 +17,10 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { ThrottlerGuard } from "@nestjs/throttler";
 import JwtAuthGuard from "./auth/guards/jwt-auth.guard";
+import { Logger } from "nestjs-pino";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
     // swagger stuff
     const options = new DocumentBuilder()
@@ -38,6 +39,7 @@ async function bootstrap() {
     const throttlerGuard: ThrottlerGuard = app.select(AppModule).get(THROTTLER_GUARD);
     app.use(helmet());
     app.use(cookieParser(COOKIE_SIGNATURE));
+    app.useLogger(app.get(Logger));
     // app.use(csurf({ cookie: true }));
     app.enableCors({
         origin: /http:\/\/localhost:?[\d]+/,

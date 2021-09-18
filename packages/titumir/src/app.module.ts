@@ -14,12 +14,25 @@ import { SubjectModule } from "./subject/subject.module";
 import { UserModule } from "./user/user.module";
 import { ClassesModule } from "./classes/classes.module";
 import { NotificationModule } from "./notification/notification.module";
+import { LoggerModule } from "nestjs-pino";
 
 export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
 export const THROTTLER_GUARD = "THROTTLER_GUARD";
 
 @Module({
     imports: [
+        LoggerModule.forRoot({
+            pinoHttp: {
+                autoLogging: {
+                    ignore: () => true,
+                },
+                prettyPrint: {
+                    colorize: true,
+                    translateTime: "yy-mm-dd HH:MM:ss",
+                    ignore: "hostname,pid,req.headers,req.remoteAddress,req.remotePort,err.response",
+                },
+            },
+        }),
         ThrottlerModule.forRoot({
             ttl: 60,
             limit: 10,

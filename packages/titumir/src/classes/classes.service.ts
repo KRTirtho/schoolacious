@@ -13,10 +13,11 @@ import {
     isAfter,
     isEqual,
     secondsToMinutes,
+    format,
 } from "date-fns";
 import ScheduleClassDto from "./dto/schedule-class.dto";
 import Section from "../database/entity/sections.entity";
-import { cronFromObj } from "../utils/cron-names.util";
+import { cronFromObj, individualClassJob } from "../utils/cron-names.util";
 import { CronJob } from "cron";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { NotificationGateway } from "../notification/notification.gateway";
@@ -106,7 +107,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
 
     // this method will create  will appropriately
     // schedule other descendent cronjob for a day
-    async createClassCronJob() {
+    async createClassCronJob(school_id: string) {
         // checking for todays valid cronjob
         const today = getDay(new Date());
         const classes = await this.find(
@@ -114,6 +115,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
             {
                 where: {
                     day: today,
+                    host: { grade: { school: school_id } },
                 },
                 relations: ["host", "host.section", "host.grade"],
             },
@@ -122,13 +124,13 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
             {},
             {
                 where: {
-                    section: In(classes.map(({ host: { section } }) => ({ section }))),
+                    section: In(classes.map((c) => c.host.section._id)),
                 },
                 relations: ["user"],
             },
         );
 
-        for (const { _id, time, day, host } of classes) {
+        for (const { _id, time, day } of classes) {
             const [hour, minute, second] = time.split(":");
             const expression = cronFromObj({
                 day,
@@ -137,15 +139,17 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                 second,
             });
             const job = new CronJob(expression, async () => {
+                const twentyFourHr = format(
+                    parse(time, "HH:mm:ss", new Date()),
+                    "hh:mm a",
+                );
                 // TODO: Store the notification for valid students of grade's
-                const notificationsPayload = studentsOfGrades
-                    .filter(({ grade }) => grade._id === host.grade._id)
-                    .map((user) => ({
-                        user,
-                        message: `Its a class in ${time}`,
-                        src: "class",
-                        status: NOTIFICATION_STATUS.unsent,
-                    }));
+                const notificationsPayload = studentsOfGrades.map(({ user }) => ({
+                    user,
+                    message: `Class is about to start in ${twentyFourHr}`,
+                    src: "class",
+                    status: NOTIFICATION_STATUS.unsent,
+                }));
                 const createdNotifications = await this.notificationService.create(
                     notificationsPayload,
                 );
@@ -159,7 +163,16 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                 this.notificationGateway.server;
                 // TODO: Not active? Send Push notification
             });
-            this.schedularRegistry.addCronJob(_id, job);
+            const jobId = individualClassJob(_id);
+            if (!this.schedularRegistry.doesExists("cron", jobId)) {
+                this.schedularRegistry.addCronJob(jobId, job);
+                job.start();
+                this.logger.log(
+                    `Scheduled individual:class ${_id} | ${job.nextDates()} | ${
+                        job.running
+                    }`,
+                );
+            }
         }
     }
 }

@@ -2,6 +2,10 @@ export function classJob(id: string) {
     return `class:${id}`;
 }
 
+export function individualClassJob(id: string) {
+    return `individual:${classJob(id)}`;
+}
+
 type CronObj = Partial<{
     second: string | number;
     minute: string | number;

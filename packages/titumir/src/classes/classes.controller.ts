@@ -49,17 +49,23 @@ export class ClassesController implements OnApplicationBootstrap {
         for (const { _id, short_name } of schools) {
             if (!this.scheduleRegistry.doesExists("cron", classJob(_id))) {
                 this.createSchoolClassJob(_id);
-                this.logger.log(`Starting class-job for school "${short_name}"`);
+                this.logger.log(`starting class-job for school "${short_name}"`);
             }
         }
     }
 
     createSchoolClassJob(school_id: string) {
         // creating a "school-global" cron job
-        const schoolClassJob = new CronJob(
-            CronExpression.EVERY_DAY_AT_6AM,
-            async () => await this.classesService.createClassCronJob(),
-        );
+        const schoolClassJob = new CronJob({
+            cronTime: CronExpression.EVERY_DAY_AT_6AM,
+            onTick: async () => {
+                await this.classesService.createClassCronJob(school_id);
+            },
+            // running the create individual class job on init to ensure no
+            // class get missed for scheduling before class-job's
+            // next-time check
+            runOnInit: true,
+        });
         this.scheduleRegistry.addCronJob(classJob(school_id), schoolClassJob);
     }
 
@@ -241,6 +247,7 @@ export class ClassesController implements OnApplicationBootstrap {
 
             if (!this.scheduleRegistry.doesExists("cron", classJob(user.school._id)))
                 this.createSchoolClassJob(user.school._id);
+            await this.classesService.createClassCronJob(user.school._id);
             return scheduledClass;
         } catch (error) {
             this.logger.error(error);

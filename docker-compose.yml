@@ -1,7 +1,7 @@
 version: "3"
 services:
     nginx:
-        image: nginx:1.19.10-alpine
+        image: nginx:1.21-alpine
         ports:
             - 4000:80
         volumes:
@@ -9,15 +9,22 @@ services:
         depends_on:
             - titumir
     postgres:
-        image: postgres:13.3-alpine
+        image: postgres:13-alpine
         restart: always
         volumes:
             - pgdata:/var/lib/postgresql/data
             - /app/.docker
+    redis:
+        image: redis:6-alpine
+        expose:
+            - 6379
     titumir:
         build:
             context: ./
+        links:
+            - redis
         depends_on:
+            - redis
             - postgres
 
 volumes:

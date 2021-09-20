@@ -15,6 +15,7 @@ import { UserModule } from "./user/user.module";
 import { ClassesModule } from "./classes/classes.module";
 import { NotificationModule } from "./notification/notification.module";
 import { LoggerModule } from "nestjs-pino";
+import { CacheModule } from "./cache/cache.module";
 
 export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
 export const THROTTLER_GUARD = "THROTTLER_GUARD";
@@ -37,6 +38,7 @@ export const THROTTLER_GUARD = "THROTTLER_GUARD";
             ttl: 60,
             limit: 10,
         }),
+        CacheModule,
         ScheduleModule.forRoot(),
         DatabaseModule,
         AuthModule,

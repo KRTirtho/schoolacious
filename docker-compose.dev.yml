@@ -2,7 +2,6 @@ version: "3"
 services:
     postgres:
         ports:
-            # only for development with vscode.sqltools
             - 5432:5432
         environment:
             - POSTGRES_PASSWORD=simple

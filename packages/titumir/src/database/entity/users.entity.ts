@@ -81,3 +81,8 @@ export default class User implements UserSchema {
     @Column("tsvector", { select: false, nullable: true })
     query_common?: any | null;
 }
+
+export interface UserCache {
+    status: USER_STATUS;
+    id: string;
+}

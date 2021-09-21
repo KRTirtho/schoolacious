@@ -15,6 +15,7 @@ import useTitumirMutation from "hooks/useTitumirMutation";
 import { ScheduleClassBody } from "services/api/titumir";
 import { secondsToMinutes, minutesToSeconds } from "date-fns";
 import { militaryTo12HourTime } from "utils/militaryTo12HourTime";
+import { useQueryClient } from "react-query";
 
 export interface WeekDayClassCardProps {
     day: [string, string];
@@ -33,7 +34,7 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({
 
     const isQueryable = params?.grade && params?.section;
 
-    const { data: sectionTeachers, refetch } = useTitumirQuery<
+    const { data: sectionTeachers } = useTitumirQuery<
         TeachersToSectionsToGradesSchema[] | null
     >([QueryContextKey.SECTION_TEACHERS, params?.grade, params?.section], async (api) => {
         if (!(short_name && isQueryable)) return null;
@@ -44,6 +45,8 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({
         );
         return json;
     });
+
+    const queryClient = useQueryClient();
 
     const { mutate: scheduleClass } = useTitumirMutation<
         ClassSchema | null,
@@ -62,7 +65,11 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({
         },
         {
             onSuccess() {
-                refetch();
+                queryClient.refetchQueries([
+                    QueryContextKey.CLASSES,
+                    params?.grade,
+                    params?.section,
+                ]);
             },
         },
     );

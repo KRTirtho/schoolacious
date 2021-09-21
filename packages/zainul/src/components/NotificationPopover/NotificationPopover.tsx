@@ -1,4 +1,6 @@
 import {
+    Badge,
+    chakra,
     Heading,
     IconButton,
     List,
@@ -14,11 +16,19 @@ import {
 } from "@chakra-ui/react";
 import { QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
-import React, { FC } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import { IoIosNotifications } from "react-icons/io";
-import { NotificationsSchema, NOTIFICATION_STATUS } from "@veschool/types";
+import {
+    NotificationsSchema,
+    NOTIFICATION_STATUS,
+    WS_SERVER_EVENTS,
+} from "@veschool/types";
+import { useSocket } from "services/ws/socket";
+import { useQueryClient } from "react-query";
 
 function NotificationPopover() {
+    const socket = useSocket();
+
     const { data: notifications } = useTitumirQuery<NotificationsSchema[]>(
         QueryContextKey.NOTIFICATIONS,
         async (api) => {
@@ -27,14 +37,39 @@ function NotificationPopover() {
         },
     );
 
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        socket.on(WS_SERVER_EVENTS.notification, (notification: NotificationsSchema) => {
+            queryClient.setQueryData<NotificationsSchema[]>(
+                QueryContextKey.NOTIFICATIONS,
+                (old = []) => [...old, notification],
+            );
+        });
+    }, []);
+
+    const unreadCount = useMemo(
+        () =>
+            notifications?.filter((n) => n.status === NOTIFICATION_STATUS.unread)
+                .length ?? 0,
+        [notifications],
+    );
+
     return (
         <Popover>
             <PopoverTrigger>
-                <IconButton
-                    variant="ghost"
-                    aria-label="notifications button"
-                    icon={<IoIosNotifications />}
-                />
+                <chakra.div pos="relative">
+                    {unreadCount > 0 && (
+                        <Badge pos="absolute" right="5%" top="5%" colorScheme="red">
+                            {unreadCount}
+                        </Badge>
+                    )}
+                    <IconButton
+                        variant="ghost"
+                        aria-label="notifications button"
+                        icon={<IoIosNotifications />}
+                    />
+                </chakra.div>
             </PopoverTrigger>
             <PopoverContent>
                 <PopoverHeader>
@@ -48,17 +83,11 @@ function NotificationPopover() {
                                     key={_id + i}
                                     message={message}
                                     src={src}
-                                    date={created_at}
+                                    date={new Date(created_at)}
                                     status={status}
                                 />
                             ),
                         )}
-                        <NotificationItem
-                            date={new Date()}
-                            message={"Get ready for the classes fool"}
-                            src={"class"}
-                            status={NOTIFICATION_STATUS.unread}
-                        />
                     </List>
                 </PopoverBody>
             </PopoverContent>

@@ -3,9 +3,8 @@ import {
     OnGatewayDisconnect,
     SubscribeMessage,
     WebSocketGateway,
-    WebSocketServer,
 } from "@nestjs/websockets";
-import { Socket, Server as WsServer } from "socket.io";
+import { Socket } from "socket.io";
 import User from "../database/entity/users.entity";
 import { USER_STATUS } from "@veschool/types";
 import { CACHE_MANAGER, Inject, Logger } from "@nestjs/common";
@@ -15,7 +14,6 @@ import { IncomingMessage } from "http";
 @WebSocketGateway()
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
     logger = new Logger(NotificationGateway.name);
-    @WebSocketServer() public server!: WsServer;
 
     constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
@@ -59,9 +57,5 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     @SubscribeMessage("message")
     handleMessage(): string {
         return "Hello world!";
-    }
-
-    sendNotification() {
-        return;
     }
 }

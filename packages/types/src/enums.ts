@@ -33,3 +33,9 @@ export enum NOTIFICATION_STATUS {
     unread = "unread",
     read = "read",
 }
+
+export enum WS_SERVER_EVENTS {
+    notification = "notification",
+}
+
+export enum WS_CLIENT_EVENT {}

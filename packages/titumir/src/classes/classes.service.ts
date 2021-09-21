@@ -20,7 +20,6 @@ import Section from "../database/entity/sections.entity";
 import { cronFromObj, individualClassJob } from "../utils/cron-names.util";
 import { CronJob } from "cron";
 import { SchedulerRegistry } from "@nestjs/schedule";
-import { NotificationGateway } from "../notification/notification.gateway";
 import { NotificationService } from "../notification/notification.service";
 import { StudentSectionGradeService } from "../section/student-section-grade.service";
 import { NOTIFICATION_STATUS } from "@veschool/types";
@@ -34,10 +33,8 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
     logger = new Logger(ClassesService.name);
     constructor(
         private schedularRegistry: SchedulerRegistry,
-        @InjectRepository(Class) private classRepo: Repository<Class>,
-        private notificationGateway: NotificationGateway,
+        @InjectRepository(Class) classRepo: Repository<Class>,
         private notificationService: NotificationService,
-
         private ssgService: StudentSectionGradeService,
     ) {
         super(classRepo);
@@ -153,14 +150,13 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                 const createdNotifications = await this.notificationService.create(
                     notificationsPayload,
                 );
-                // TODO: Active? Send WS notifications
-                this.notificationGateway.sendNotification();
-                // TODO: Check if user active
-                // use user's 'status' to check if its 'online' or
-                // 'offline' implement custom websocket event which will
-                // be sent from the client each time the client comes
-                // online
-                this.notificationGateway.server;
+
+                await Promise.all(
+                    createdNotifications.map(({ user, ...notification }) =>
+                        this.notificationService.sendNotification(user._id, notification),
+                    ),
+                );
+
                 // TODO: Not active? Send Push notification
             });
             const jobId = individualClassJob(_id);

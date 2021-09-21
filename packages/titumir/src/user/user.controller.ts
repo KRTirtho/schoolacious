@@ -6,6 +6,7 @@ import { CurrentUser } from "../decorator/current-user.decorator";
 import { InvitationJoinService } from "../invitation-join/invitation-join.service";
 import { UserService } from "./user.service";
 import { Throttle } from "@nestjs/throttler";
+import { NotificationService } from "../notification/notification.service";
 
 @Controller("user")
 @ApiBearerAuth()
@@ -14,6 +15,7 @@ export class UserController {
     constructor(
         private readonly invitationJoinService: InvitationJoinService,
         private readonly userService: UserService,
+        private readonly notificationService: NotificationService,
     ) {}
 
     @Get("me")
@@ -87,5 +89,10 @@ export class UserController {
             this.logger.error(error);
             throw error;
         }
+    }
+
+    @Get("notifications")
+    async getNotifications(@CurrentUser() user: User) {
+        return await this.notificationService.find({}, { where: { user } });
     }
 }

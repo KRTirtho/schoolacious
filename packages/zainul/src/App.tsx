@@ -7,10 +7,15 @@ import Titumir from "./services/api/titumir";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AuthorizationConfig from "./state/AuthorizationConfig";
 import Appbar from "components/Appbar/Appbar";
+import io from "socket.io-client";
 
 export const titumirApi = new Titumir("http://localhost:4000");
 
 const queryClient = new QueryClient();
+const socket = io("http://localhost:4000", {
+    withCredentials: true,
+    transports: ["websocket"],
+});
 
 function App() {
     return (

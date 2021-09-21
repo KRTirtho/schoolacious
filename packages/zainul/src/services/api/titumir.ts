@@ -9,6 +9,7 @@ import {
     TeachersToSectionsToGradesSchema,
     StudentsToSectionsToGradesSchema,
     ClassSchema,
+    NotificationsSchema,
 } from "@veschool/types";
 import qs from "query-string";
 
@@ -235,6 +236,10 @@ export default class Titumir {
 
     async getUserJoinRequests() {
         return await this.buildRequest<Invitations_JoinsSchema[]>("/user/join-requests");
+    }
+
+    async getNotifications() {
+        return await this.buildRequest<NotificationsSchema[]>("/user/notifications");
     }
 
     // =======/school/*=======

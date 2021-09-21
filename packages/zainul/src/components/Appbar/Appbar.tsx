@@ -12,7 +12,7 @@ import {
     useTheme,
     theme as base,
 } from "@chakra-ui/react";
-import { IoIosNotifications, IoIosSunny, IoIosMoon, IoIosLogOut } from "react-icons/io";
+import { IoIosSunny, IoIosMoon, IoIosLogOut } from "react-icons/io";
 import { RiUser3Line } from "react-icons/ri";
 import { Link, useHistory } from "react-router-dom";
 import { FaSchool, FaUserAlt } from "react-icons/fa";
@@ -20,6 +20,7 @@ import useLogout from "hooks/useLogout";
 import { useAuthStore } from "state/authorization-store";
 import useLoggedIn from "hooks/useLoggedIn";
 import { BsGear } from "react-icons/bs";
+import NotificationPopover from "components/NotificationPopover/NotificationPopover";
 
 function Appbar() {
     const history = useHistory();
@@ -55,11 +56,7 @@ function Appbar() {
             </Heading>
             {/* Action Button */}
             <Flex>
-                <IconButton
-                    variant="ghost"
-                    aria-label="notifications button"
-                    icon={<IoIosNotifications />}
-                />
+                <NotificationPopover />
 
                 <Menu isLazy>
                     <MenuButton as={IconButton} icon={<RiUser3Line />} variant="ghost" />

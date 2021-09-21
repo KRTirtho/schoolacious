@@ -30,6 +30,6 @@ export enum INVITATION_OR_JOIN_ROLE {
 }
 
 export enum NOTIFICATION_STATUS {
-    unsent = "unsent",
-    sent = "sent",
+    unread = "unread",
+    read = "read",
 }

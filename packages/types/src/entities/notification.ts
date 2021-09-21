@@ -6,4 +6,5 @@ export interface NotificationsSchema extends BaseSchema {
     message: string;
     src: string;
     status: NOTIFICATION_STATUS;
+    created_at: Date;
 }

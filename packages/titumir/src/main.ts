@@ -49,7 +49,7 @@ async function bootstrap() {
     app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
     app.useGlobalPipes(new ValidationPipe());
     app.useGlobalGuards(throttlerGuard, jwtAuthGuard, roleAuthGuard);
-    // app.useWebSocketAdapter(new AuthenticatedSocketIoAdapter(app));
+    app.useWebSocketAdapter(new AuthenticatedSocketIoAdapter(app));
     await app.listen(PORT);
 }
 bootstrap();

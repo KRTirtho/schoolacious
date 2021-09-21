@@ -30,6 +30,7 @@ export enum QueryContextKey {
     SECTION = "query-section", // single query
     CLASSES = "query-classes",
     SECTION_TEACHERS = "query-section-teachers",
+    NOTIFICATIONS = "query-notifications",
 }
 
 export enum LocalStorageKeys {

@@ -148,7 +148,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                     user,
                     message: `Class is about to start in ${twentyFourHr}`,
                     src: "class",
-                    status: NOTIFICATION_STATUS.unsent,
+                    status: NOTIFICATION_STATUS.unread,
                 }));
                 const createdNotifications = await this.notificationService.create(
                     notificationsPayload,

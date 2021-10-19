@@ -41,5 +41,8 @@
   "typescript.disableAutomaticTypeAcquisition": true,
   "editor.codeActionsOnSave": {
     "source.sortImports": false
-  }
+  },
+  "cSpell.words": [
+    "mediasoup"
+  ]
 }

@@ -2,7 +2,7 @@ import { INestApplicationContext } from "@nestjs/common";
 import { IoAdapter } from "@nestjs/platform-socket.io";
 import { CONST_JWT_ACCESS_TOKEN_COOKIE, COOKIE_SIGNATURE } from "../../../config";
 import { ServerOptions } from "socket.io";
-import { AuthService } from "../auth.service";
+import { AuthService } from "../../auth/auth.service";
 import cookie from "cookie";
 import { signedCookies } from "cookie-parser";
 

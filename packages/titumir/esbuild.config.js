@@ -15,9 +15,7 @@ build({
     platform: "node",
     target: "node14",
     format: "cjs",
-    // watch: true,
     plugins: [esbuildDecorators({ tsconfig })],
-    tsconfig,
 })
     .then(({ errors, warnings }) => {
         console.timeEnd(label);

@@ -1,6 +1,6 @@
-<mxfile>
+<mxfile host="65bd71144e">
     <diagram id="yPxyJZ8AM_hMuL3Unpa9" name="simple gitflow">
-        <mxGraphModel dx="734" dy="754" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+        <mxGraphModel dx="680" dy="1049" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -19,7 +19,7 @@
                 <mxCell id="3GI_sXjOdI9veExKT9Tl-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="3GI_sXjOdI9veExKT9Tl-6" target="3GI_sXjOdI9veExKT9Tl-8" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3GI_sXjOdI9veExKT9Tl-6" value="Create daily (workday) cronjob for the grade" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
+                <mxCell id="3GI_sXjOdI9veExKT9Tl-6" value="Create daily (workday) cronjob for the school" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="380" y="395" width="100" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="3GI_sXjOdI9veExKT9Tl-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="3GI_sXjOdI9veExKT9Tl-8" target="3GI_sXjOdI9veExKT9Tl-14" edge="1">
@@ -27,7 +27,7 @@
                         <mxPoint x="720" y="445" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="3GI_sXjOdI9veExKT9Tl-8" value="Once at 6 am relative to school's local time the job will run. Will fetch classes for the grade, check today's ones &amp;amp; schedule a notifacation job for that class" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
+                <mxCell id="3GI_sXjOdI9veExKT9Tl-8" value="Once at 6 am relative to school's local time the job will run. Will fetch classes for the school, check today's ones &amp;amp; schedule a notifacation job for that class" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="530" y="380" width="140" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="3GI_sXjOdI9veExKT9Tl-14" value="&lt;span&gt;The notification job will broadcast this to appropriate ones &amp;amp; starts the class when anyone joins &amp;amp; when class ends change status of class 'completed'&lt;/span&gt;" style="shape=offPageConnector;whiteSpace=wrap;html=1;" parent="1" vertex="1">

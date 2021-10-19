@@ -1,7 +1,7 @@
 FROM node:16
 
 WORKDIR /app
-RUN apt update && apt upgrade && apt install curl bash -y
+RUN apt update && apt upgrade && apt install curl bash build-essential -y
 RUN curl -sS https://webinstall.dev/watchexec | bash
 
 COPY ./package.json ./

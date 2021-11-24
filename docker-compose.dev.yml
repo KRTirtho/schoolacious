@@ -14,12 +14,12 @@ services:
             args:
                 NODE_ENV: development
         volumes:
-            - ./:/app
-            - /app/node_modules
-            - /app/packages/zainul
-            - /app/packages/titumir/node_modules
-            - /app/packages/titumir/dist
-            - /app/packages/types/node_modules
+            - ./:/home/node/app
+            - /home/node/app/node_modules
+            - /home/node/app/packages/zainul
+            - /home/node/app/packages/titumir/node_modules
+            - /home/node/app/packages/titumir/dist
+            - /home/node/app/packages/types/node_modules
         environment:
             - POSTGRES_PASSWORD=simple
             - POSTGRES_DB=veschool

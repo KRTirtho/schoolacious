@@ -13,7 +13,7 @@ services:
         restart: always
         volumes:
             - pgdata:/var/lib/postgresql/data
-            - /app/.docker
+            - /home/node/app/.docker
     redis:
         image: redis:6-alpine
         expose:

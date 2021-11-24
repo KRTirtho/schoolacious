@@ -1,13 +1,21 @@
-FROM node:16
+FROM node:lts
 
-WORKDIR /app
-RUN apt update && apt upgrade && apt install curl bash build-essential -y
+RUN apt-get update && apt-get upgrade && apt-get install curl bash build-essential -y
+USER node
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+ENV PATH=$PATH:/home/node/.npm-global/bin
+WORKDIR /home/node/app
 RUN curl -sS https://webinstall.dev/watchexec | bash
 
 COPY ./package.json ./
 COPY ./package-lock.json ./
 COPY ./lerna.json ./
 COPY ./packages/titumir ./packages/titumir
+
+USER root
+RUN chown -R node:node /home/node
+USER node
+
 RUN npm install
 
 ARG NODE_ENV

@@ -9,8 +9,6 @@
         "dev": "cross-env FORCE_COLOR=1 lerna run dev --parallel",
         "build": "cross-env FORCE_COLOR=1 lerna run build --parallel",
         "lint": "cross-env FORCE_COLOR=1 lerna run lint --parallel",
-        "postinstall": "npm run bootstrap",
-        "postuninstall": "npm run bootstrap",
         "titumir": "npm run -w packages/titumir --",
         "zainul": "npm run -w packages/zainul --",
         "types": "npm run -w packages/types --"

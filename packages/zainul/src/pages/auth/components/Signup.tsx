@@ -59,7 +59,7 @@ function Signup() {
                         last_name: last_name.value,
                     });
                     if (isSuccess) resetForm();
-                    else setSubmitting(false);
+                    setSubmitting(false);
                 }}
             >
                 <Stack direction="column" spacing="2">

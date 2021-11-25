@@ -51,7 +51,7 @@ function Login() {
                 onSubmit={(_, __, { resetForm, setSubmitting }) => {
                     login({ email: email.value, password: password.value });
                     if (isSuccess) resetForm();
-                    else setSubmitting(false);
+                    setSubmitting(false);
                 }}
             >
                 <Flex direction="column">

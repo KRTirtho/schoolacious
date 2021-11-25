@@ -5,12 +5,18 @@ import {
     Input as ChakraInput,
     FormErrorMessage,
     InputProps as ChakraInputProps,
-    TextareaProps,
-    Textarea,
+    TextareaProps as ChakraTextareaProps,
+    Textarea as ChakraTextarea,
 } from "@chakra-ui/react";
 import { FieldProps } from "formik";
 import { v4 as uuid } from "uuid";
-import { Input, InputProps, SemanticValidationProps } from "react-binden";
+import {
+    Input,
+    InputProps,
+    SemanticValidationProps,
+    Textarea,
+    TextareaProps,
+} from "react-binden";
 
 export type TextFieldProps = FieldProps &
     Omit<ChakraInputProps, "name" | "value" | "error"> & {
@@ -36,7 +42,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextFiel
 });
 
 export type TextareaFieldProps = FieldProps &
-    Omit<TextareaProps, "name" | "value" | "error"> & {
+    Omit<ChakraTextareaProps, "name" | "value" | "error"> & {
         label?: string;
     };
 
@@ -48,7 +54,7 @@ export function TextareaField({ field, form, ...props }: TextareaFieldProps) {
             <FormLabel fontWeight="bold" htmlFor={id}>
                 {props?.label}
             </FormLabel>
-            <Textarea {...field} id={id} {...props} />
+            <ChakraTextarea {...field} id={id} {...props} />
             <FormErrorMessage>{form.errors?.[name]}</FormErrorMessage>
         </FormControl>
     );
@@ -71,6 +77,26 @@ export const ActualField = forwardRef<HTMLInputElement, ActualFieldProps>(
                     {...props}
                     ref={ref}
                 />
+                <FormErrorMessage>{props.model.error}</FormErrorMessage>
+            </FormControl>
+        );
+    },
+);
+
+export type ActualTextareaProps = TextareaProps &
+    Omit<ChakraTextareaProps, SemanticValidationProps | "as"> & {
+        label?: string;
+    };
+
+export const ActualTextarea = forwardRef<HTMLTextAreaElement, ActualTextareaProps>(
+    function ActualTextarea(props, ref) {
+        const id: string = props?.id ?? uuid();
+        return (
+            <FormControl isInvalid={!!(props.model.error && props.model.touched)}>
+                <FormLabel fontWeight="bold" htmlFor={id}>
+                    {props?.label}
+                </FormLabel>
+                <Textarea as={ChakraTextarea} id={id} {...props} ref={ref} />
                 <FormErrorMessage>{props.model.error}</FormErrorMessage>
             </FormControl>
         );

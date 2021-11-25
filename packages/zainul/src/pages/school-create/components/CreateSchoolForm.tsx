@@ -1,35 +1,20 @@
 import { Button, Stack } from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
-import TextField, { TextareaField } from "components/TextField/TextField";
+import { ActualField as Field, ActualTextarea } from "components/TextField/TextField";
+import { Form, useModel, regex } from "react-binden";
 import React from "react";
-import * as yup from "yup";
 import { CreateSchool } from "services/api/titumir";
 import { SchoolSchema } from "@veschool/types";
 import { INVALID_EMAIL_MSG } from "pages/auth/components/Login";
-import { REQUIRED_MSG } from "pages/auth/components/Signup";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { MutationContextKey } from "configs/enums";
 
 export const SHORT_NAME_MATCHES_MSG = "only {a-z,-,0-9} is allowed";
 function CreateSchoolForm() {
-    const CreateSchoolSchema = yup.object().shape({
-        name: yup.string().required(REQUIRED_MSG),
-        email: yup.string().email(INVALID_EMAIL_MSG).required(REQUIRED_MSG),
-        phone: yup.number().required(REQUIRED_MSG),
-        description: yup.string(),
-        short_name: yup
-            .string()
-            .matches(/^[a-z\d-]+$/, SHORT_NAME_MATCHES_MSG)
-            .required(REQUIRED_MSG),
-    });
-
-    const initValues: CreateSchool = {
-        name: "",
-        email: "",
-        phone: "",
-        description: "",
-        short_name: "",
-    };
+    const name = useModel("");
+    const email = useModel("");
+    const phone = useModel("");
+    const description = useModel("");
+    const short_name = useModel("");
 
     const { mutate: createSchool, isSuccess } = useTitumirMutation<
         SchoolSchema,
@@ -39,64 +24,63 @@ function CreateSchoolForm() {
     );
 
     return (
-        <Formik
-            initialValues={initValues}
-            onSubmit={(values, { resetForm, setSubmitting }) => {
-                createSchool(values);
+        <Form
+            onSubmit={(_, __, { resetForm, setSubmitting }) => {
+                createSchool({
+                    name: name.value,
+                    email: email.value,
+                    phone: phone.value,
+                    description: description.value,
+                    short_name: short_name.value,
+                });
                 if (isSuccess) resetForm();
-                else setSubmitting(false);
+                setSubmitting(false);
             }}
-            validationSchema={CreateSchoolSchema}
         >
-            <Form>
-                <Stack direction={{ base: "column", md: "row" }} spacing={2}>
-                    <Field
-                        name="name"
-                        component={TextField}
-                        required
-                        label="School Name"
-                        placeholder="e.g. Shamsul Haque Khan School"
-                    />
-                    <Field
-                        type="email"
-                        name="email"
-                        component={TextField}
-                        required
-                        label="Email"
-                        placeholder="school@test.com"
-                    />
-                </Stack>
-                <Stack direction={{ base: "column", md: "row" }} spacing={2}>
-                    <Field
-                        type="tel"
-                        name="phone"
-                        component={TextField}
-                        required
-                        label="Phone"
-                        placeholder="e.g. 8801122334455"
-                    />
-                    <Field
-                        name="short_name"
-                        component={TextField}
-                        required
-                        label="Short Name"
-                        placeholder="e.g. school-231"
-                    />
-                </Stack>
+            <Stack direction={{ base: "column", md: "row" }} spacing={2}>
                 <Field
-                    name="description"
-                    component={TextareaField}
+                    model={name}
                     required
-                    label="Description"
-                    margin="normal"
-                    rows={5}
-                    placeholder="Describe the fundamentals of your school "
+                    label="School Name"
+                    placeholder="e.g. Shamsul Haque Khan School"
                 />
-                <Button isFullWidth mt="2" type="submit">
-                    Create
-                </Button>
-            </Form>
-        </Formik>
+                <Field
+                    type="email"
+                    model={email}
+                    label="Email"
+                    placeholder="school@test.com"
+                    pattern={[regex.email, INVALID_EMAIL_MSG]}
+                    required
+                />
+            </Stack>
+            <Stack direction={{ base: "column", md: "row" }} spacing={2}>
+                <Field
+                    type="tel"
+                    model={phone}
+                    label="Phone"
+                    placeholder="e.g. 8801122334455"
+                    required
+                />
+                <Field
+                    model={short_name}
+                    label="Short Name"
+                    placeholder="e.g. school-231"
+                    pattern={[/^[a-z\d-]+$/, SHORT_NAME_MATCHES_MSG]}
+                    required
+                />
+            </Stack>
+            <ActualTextarea
+                model={description}
+                label="Description"
+                margin="normal"
+                rows={5}
+                placeholder="Describe the fundamentals of your school "
+                required
+            />
+            <Button isFullWidth mt="2" type="submit">
+                Create
+            </Button>
+        </Form>
     );
 }
 

@@ -1,18 +1,19 @@
-import React, { forwardRef } from "react";
+import React, { ComponentPropsWithRef, ComponentType, forwardRef } from "react";
 import {
     FormControl,
     FormLabel,
-    Input,
+    Input as ChakraInput,
     FormErrorMessage,
-    InputProps,
+    InputProps as ChakraInputProps,
     TextareaProps,
     Textarea,
 } from "@chakra-ui/react";
 import { FieldProps } from "formik";
 import { v4 as uuid } from "uuid";
+import { Input, InputProps, SemanticValidationProps } from "react-binden";
 
 export type TextFieldProps = FieldProps &
-    Omit<InputProps, "name" | "value" | "error"> & {
+    Omit<ChakraInputProps, "name" | "value" | "error"> & {
         label?: string;
     };
 
@@ -28,7 +29,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextFiel
             <FormLabel fontWeight="bold" htmlFor={id}>
                 {props?.label}
             </FormLabel>
-            <Input {...field} id={id} {...props} ref={ref} />
+            <ChakraInput {...field} id={id} {...props} ref={ref} />
             <FormErrorMessage>{form.errors?.[name]}</FormErrorMessage>
         </FormControl>
     );
@@ -54,3 +55,24 @@ export function TextareaField({ field, form, ...props }: TextareaFieldProps) {
 }
 
 export default TextField;
+
+export type ActualFieldProps = InputProps &
+    Omit<ChakraInputProps, SemanticValidationProps | "as"> & {
+        label?: string;
+    };
+
+export const ActualField = forwardRef<HTMLInputElement, ActualFieldProps>(
+    function ActualField({ label = "", ...props }, ref) {
+        return (
+            <FormControl isInvalid={!!(props.model.error && props.model.touched)}>
+                <FormLabel>{label}</FormLabel>
+                <Input
+                    as={ChakraInput as ComponentType<ComponentPropsWithRef<"input">>}
+                    {...props}
+                    ref={ref}
+                />
+                <FormErrorMessage>{props.model.error}</FormErrorMessage>
+            </FormControl>
+        );
+    },
+);

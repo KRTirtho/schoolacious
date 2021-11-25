@@ -24,6 +24,7 @@
         "lodash-es": "^4.17.21",
         "query-string": "^7.0.1",
         "react": "^17.0.0",
+        "react-binden": "^0.3.0",
         "react-dom": "^17.0.0",
         "react-icons": "^4.2.0",
         "react-query": "^3.16.0",

@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React, { ComponentPropsWithRef, ComponentType, useState } from "react";
 import {
     FormControl,
     FormLabel,
-    Input,
+    Input as ChakraInput,
     FormErrorMessage,
     InputGroup,
     InputRightElement,
 } from "@chakra-ui/react";
 import { v4 as uuid } from "uuid";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
-import { TextFieldProps } from "../TextField/TextField";
+import { ActualFieldProps } from "../TextField/TextField";
+import { Input } from "react-binden";
 
-function MaskedPasswordField({ field, form, ...props }: TextFieldProps) {
+function MaskedPasswordField({
+    required,
+    pattern,
+    max,
+    maxLength,
+    min,
+    minLength,
+    ...props
+}: ActualFieldProps) {
     const [showPassword, setShowPassword] = useState(false);
 
     function showHidePassword() {
@@ -21,20 +30,22 @@ function MaskedPasswordField({ field, form, ...props }: TextFieldProps) {
     const id = props.id ?? uuid();
 
     return (
-        <FormControl isInvalid={!!(form.errors.name && form.touched.name)}>
+        <FormControl isInvalid={!!(props.model.error && props.model.touched)}>
             <FormLabel htmlFor={id}>{props?.label}</FormLabel>
             <InputGroup>
                 <Input
                     type={showPassword ? "text" : "password"}
-                    {...field}
                     id={id}
                     {...props}
+                    required={required}
+                    {...{ pattern, max, maxLength, min, minLength }}
+                    as={ChakraInput as ComponentType<ComponentPropsWithRef<"input">>}
                 />
                 <InputRightElement onClick={showHidePassword} {...props}>
                     {showPassword ? <IoIosEyeOff /> : <IoIosEye />}
                 </InputRightElement>
             </InputGroup>
-            <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+            <FormErrorMessage>{props.model.error}</FormErrorMessage>
         </FormControl>
     );
 }

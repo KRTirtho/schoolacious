@@ -32,6 +32,7 @@ import {
     ApiNotAcceptableResponse,
     ApiNotFoundResponse,
     ApiParam,
+    ApiQuery,
 } from "@nestjs/swagger";
 import { VerifiedSchoolUser } from "../subject/subject.controller";
 
@@ -48,8 +49,10 @@ export class GradeController {
         private readonly gradeService: GradeService,
         private readonly gradeToSubjectService: GradeSubjectService,
     ) {}
+
     @Get()
     @VerifySchool()
+    @ApiQuery({ name: "extended", required: false, type: String })
     async getAllGradeOfSchool(
         @CurrentUser() user: VerifiedSchoolUser,
         @Param("school") _: string,
@@ -72,8 +75,9 @@ export class GradeController {
             );
 
             const grades = await this.gradeService.find(
-                { school: user.school },
+                {},
                 {
+                    where: { school: user.school },
                     relations:
                         extendedRelationArr && isValidExtendedRelation
                             ? extendedRelationArr

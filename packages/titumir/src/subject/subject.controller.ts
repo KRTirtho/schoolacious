@@ -30,8 +30,11 @@ export class SubjectController {
     async getAlSubject(@CurrentUser() user: VerifiedSchoolUser) {
         try {
             return await this.subjectService.find(
-                { school: user.school },
-                { relations: ["grades_subjects", "grades_subjects.grade"] },
+                {},
+                {
+                    where: { school: user.school },
+                    relations: ["grades_subjects", "grades_subjects.grade"],
+                },
             );
         } catch (error: any) {
             this.logger.error(error);

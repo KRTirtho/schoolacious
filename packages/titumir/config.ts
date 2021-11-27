@@ -11,6 +11,8 @@ export const DATABASE_PASSWORD = process.env.POSTGRES_PASSWORD;
 export const DATABASE_USERNAME = process.env.DATABASE_USERNAME;
 export const NOT_A_SECRET = process.env.NOT_A_SECRET;
 export const COOKIE_SIGNATURE = process.env.COOKIE_SIGNATURE;
+export const OPENVIDU_SERVER_URL = process.env.OPENVIDU_SERVER_URL as string;
+export const OPENVIDU_SECRET = process.env.OPENVIDU_SECRET as string;
 export const PORT = process.env.PORT ?? 4000;
 
 // constants

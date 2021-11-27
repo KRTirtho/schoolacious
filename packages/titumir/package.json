@@ -58,6 +58,7 @@
         "helmet": "^4.4.1",
         "lodash": "^4.17.21",
         "nestjs-pino": "^2.3.1",
+        "openvidu-node-client": "^2.20.2",
         "passport": "^0.4.1",
         "passport-jwt": "^4.0.0",
         "passport-local": "^1.0.0",

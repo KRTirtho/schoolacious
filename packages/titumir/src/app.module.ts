@@ -16,6 +16,8 @@ import { ClassesModule } from "./classes/classes.module";
 import { NotificationModule } from "./notification/notification.module";
 import { LoggerModule } from "nestjs-pino";
 import { CacheModule } from "./cache/cache.module";
+import { OpenViduModule } from "./open-vidu/open-vidu.module";
+import { OPENVIDU_SECRET, OPENVIDU_SERVER_URL } from "../config";
 
 export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
 export const THROTTLER_GUARD = "THROTTLER_GUARD";
@@ -50,6 +52,7 @@ export const THROTTLER_GUARD = "THROTTLER_GUARD";
         SectionModule,
         ClassesModule,
         NotificationModule,
+        OpenViduModule.forRoot({ url: OPENVIDU_SERVER_URL, secret: OPENVIDU_SECRET }),
     ],
     controllers: [AppController],
     providers: [

@@ -9,6 +9,7 @@ import {
     Get,
     OnApplicationBootstrap,
     Logger,
+    ForbiddenException,
 } from "@nestjs/common";
 import ScheduleClassDTO from "./dto/schedule-class.dto";
 import { Roles } from "../decorator/roles.decorator";
@@ -32,6 +33,9 @@ import { SchoolService } from "../school/school.service";
 import { CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from "cron";
 import { classJob } from "../utils/cron-names.util";
+import { OpenViduService } from "../open-vidu/open-vidu.service";
+import { ExtendUserRelation } from "../decorator/extend-user-relation.decorator";
+import { OpenViduRole } from "openvidu-node-client";
 
 @Controller("/school/:school/grade/:grade/section/:section/class")
 @ApiBearerAuth()
@@ -43,6 +47,7 @@ export class ClassesController implements OnApplicationBootstrap {
         private tsgService: TeacherSectionGradeService,
         private schoolService: SchoolService,
         private scheduleRegistry: SchedulerRegistry,
+        private openviduService: OpenViduService,
     ) {}
     async onApplicationBootstrap() {
         const schools = await this.schoolService.find();
@@ -249,6 +254,57 @@ export class ClassesController implements OnApplicationBootstrap {
                 this.createSchoolClassJob(user.school._id);
             await this.classesService.createClassCronJob(user.school._id);
             return scheduledClass;
+        } catch (error) {
+            this.logger.error(error);
+            throw error;
+        }
+    }
+
+    @Get(":sessionId")
+    @VerifyGrade()
+    @ExtendUserRelation(
+        "studentsToSectionsToGrade",
+        "studentsToSectionsToGrade.section",
+        "studentsToSectionsToGrade.section.class_teacher",
+    )
+    async joinSession(
+        @Param("sessionId") sessionId: string,
+        @CurrentUser() user: VerifiedGradeUser,
+    ) {
+        try {
+            const session = this.openviduService.activeSessions.find(
+                (session) => session.sessionId === sessionId,
+            );
+            const theClass = await this.classesService.findOne(
+                { sessionId },
+                { relations: ["host", "host.user"] },
+            );
+            // checking if user is the host & doing operation accordingly
+            if (theClass.host.user._id === user._id) {
+                const connection = await session?.createConnection({
+                    role: OpenViduRole.MODERATOR,
+                });
+
+                return {
+                    token: connection?.token,
+                    subscribers: connection?.subscribers,
+                    publishers: connection?.publishers,
+                    createdAt: connection?.createdAt,
+                };
+            }
+            // checking the user is a student & belongs to this class/grade
+            const classTeacherIds = user.studentsToSectionsToGrade?.map(
+                (ssg) => ssg.section.class_teacher?._id,
+            );
+            if (classTeacherIds?.includes(theClass.host.user._id)) {
+                const connection = await session?.createConnection({
+                    role: OpenViduRole.PUBLISHER,
+                });
+                return {
+                    token: connection?.token,
+                    createdAt: connection?.createdAt,
+                };
+            } else throw new ForbiddenException("user doesn't belong the class session");
         } catch (error) {
             this.logger.error(error);
             throw error;

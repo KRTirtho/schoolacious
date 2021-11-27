@@ -37,4 +37,7 @@ export default class Class implements ClassSchema {
     @Min(600) // 10min
     @Column({ type: "int" })
     duration!: number;
+
+    @Column("uuid", { nullable: true })
+    sessionId?: string;
 }

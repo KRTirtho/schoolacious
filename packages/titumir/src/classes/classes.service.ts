@@ -23,8 +23,9 @@ import { SchedulerRegistry } from "@nestjs/schedule";
 import { NotificationService } from "../notification/notification.service";
 import { StudentSectionGradeService } from "../section/student-section-grade.service";
 import { NOTIFICATION_STATUS } from "@veschool/types";
+import { OpenViduService } from "../open-vidu/open-vidu.service";
 
-export type CreateClassPayload = PartialKey<Class, "_id" | "created_at">;
+export type CreateClassPayload = PartialKey<Class, "_id" | "created_at" | "sessionId">;
 
 export type CurrentClassTimeMeta = Pick<Class, "duration" | "time">;
 
@@ -36,6 +37,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
         @InjectRepository(Class) classRepo: Repository<Class>,
         private notificationService: NotificationService,
         private ssgService: StudentSectionGradeService,
+        private openviduService: OpenViduService,
     ) {
         super(classRepo);
     }
@@ -135,11 +137,16 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                 minute,
                 second,
             });
-            const job = new CronJob(expression, async () => {
+            const classJob = new CronJob(expression, async () => {
                 const twentyFourHr = format(
                     parse(time, "HH:mm:ss", new Date()),
                     "hh:mm a",
                 );
+                // Creating openvidu session for the class
+                const session = await this.openviduService.createSession();
+
+                await this.update({ _id }, { sessionId: session.sessionId });
+
                 // TODO: Store the notification for valid students of grade's
                 const notificationsPayload = studentsOfGrades.map(({ user }) => ({
                     user,
@@ -159,13 +166,13 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
 
                 // TODO: Not active? Send Push notification
             });
-            const jobId = individualClassJob(_id);
-            if (!this.schedularRegistry.doesExists("cron", jobId)) {
-                this.schedularRegistry.addCronJob(jobId, job);
-                job.start();
+            const classJobId = individualClassJob(_id);
+            if (!this.schedularRegistry.doesExists("cron", classJobId)) {
+                this.schedularRegistry.addCronJob(classJobId, classJob);
+                classJob.start();
                 this.logger.log(
-                    `Scheduled individual:class ${_id} | ${job.nextDates()} | ${
-                        job.running
+                    `Scheduled individual:class ${_id} | ${classJob.nextDates()} | ${
+                        classJob.running
                     }`,
                 );
             }

@@ -267,6 +267,9 @@ export class ClassesController implements OnApplicationBootstrap {
         "studentsToSectionsToGrade.section",
         "studentsToSectionsToGrade.section.class_teacher",
     )
+    @ApiParam({ name: "school" })
+    @ApiParam({ name: "grade" })
+    @ApiParam({ name: "section" })
     async joinSession(
         @Param("sessionId") sessionId: string,
         @CurrentUser() user: VerifiedGradeUser,
@@ -304,7 +307,8 @@ export class ClassesController implements OnApplicationBootstrap {
                     token: connection?.token,
                     createdAt: connection?.createdAt,
                 };
-            } else throw new ForbiddenException("user doesn't belong the class session");
+            } else
+                throw new ForbiddenException("user doesn't belong to the class session");
         } catch (error) {
             this.logger.error(error);
             throw error;

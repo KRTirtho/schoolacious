@@ -117,6 +117,7 @@ export class SectionController {
                 },
             );
 
+            // finding the associated teacher with the subject & returning
             const subjects =
                 section.grade.grades_subjects?.map(({ subject }) => {
                     const tsg = section.teachersToSectionsToGrades?.find(
@@ -124,7 +125,6 @@ export class SectionController {
                     );
                     return { subject, teacher: tsg?.user ?? null };
                 }) ?? null;
-
             return {
                 ...section,
                 subjects,

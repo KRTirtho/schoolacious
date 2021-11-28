@@ -15,6 +15,7 @@ import SchoolJoin from "pages/school-join/school-join";
 import UserJoinRequests from "pages/user-join-requests/user-join-requests";
 import SchoolConfigure from "pages/school-configure/school-configure";
 import UserConfigure from "pages/user-configure/user-configure";
+import ClassSession from "pages/class-session/class-session";
 
 export default function Routes() {
     return (
@@ -48,6 +49,10 @@ export default function Routes() {
             </ProtectedRoute>
             <ProtectedRoute exact path="/user/join-requests">
                 <UserJoinRequests />
+            </ProtectedRoute>
+
+            <ProtectedRoute exact path="/class/:grade/:section/:sessionId">
+                <ClassSession />
             </ProtectedRoute>
 
             <NotProtectedRoute path="/auth">

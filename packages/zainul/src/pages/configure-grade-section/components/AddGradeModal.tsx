@@ -11,6 +11,7 @@ import {
     Stack,
     FormErrorMessage,
 } from "@chakra-ui/react";
+import { FaPlusSquare } from "react-icons/fa";
 import React, { FC } from "react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
@@ -91,7 +92,7 @@ const AddGradeModal: FC<AddGradeModalProps> = ({ grades }) => {
 
     return (
         <>
-            <Button variant="ghost" onClick={onToggle}>
+            <Button variant="ghost" onClick={onToggle} leftIcon={<FaPlusSquare />}>
                 Add Grades
             </Button>
             <Modal

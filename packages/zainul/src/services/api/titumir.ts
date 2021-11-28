@@ -150,6 +150,13 @@ export interface ScheduleClassBody {
     duration: number;
 }
 
+export interface ClassSessionMetadata {
+    token: string;
+    subscribers?: string[];
+    publishers?: string[];
+    createdAt: string;
+}
+
 export default class Titumir {
     constructor(public baseURL: string) {}
 
@@ -437,6 +444,12 @@ export default class Titumir {
             `/school/${school}/grade/${grade}/section/${section}/class`,
             "POST",
             data,
+        );
+    }
+
+    async joinSession(school: string, grade: number, section: string, sessionId: string) {
+        return await this.buildRequest<ClassSessionMetadata>(
+            `/school/${school}/grade/${grade}/section/${section}/class/${sessionId}`,
         );
     }
 }

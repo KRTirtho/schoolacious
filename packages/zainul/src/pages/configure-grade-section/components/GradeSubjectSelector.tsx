@@ -17,6 +17,7 @@ import {
     Button,
     useDisclosure,
     Link as CLink,
+    Tooltip,
 } from "@chakra-ui/react";
 import { GradeToSubjectSchema } from "@veschool/types";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
@@ -106,16 +107,19 @@ const GradeSubjectSelector: FC<GradeSubjectEditPopoverProps> = ({
     return (
         <Popover isOpen={isOpen} onClose={onClose} onOpen={onOpen}>
             <PopoverTrigger>
-                <IconButton
-                    aria-label="Manage grade subjects"
-                    size="xs"
-                    icon={<FiEdit3 />}
-                    colorScheme="gray"
-                />
+                <Tooltip label="Edit grade subjects">
+                    <IconButton
+                        aria-label="Manage grade subjects"
+                        size="sm"
+                        icon={<FiEdit3 />}
+                        colorScheme="gray"
+                        onClick={onOpen}
+                    />
+                </Tooltip>
             </PopoverTrigger>
             <PopoverContent>
                 <PopoverArrow />
-                <PopoverBody>
+                <PopoverBody maxH="60vh" overflowY="auto">
                     {curatedSubjects && curatedSubjects.length > 0 ? (
                         curatedSubjects?.map(({ name, _id }, i) => (
                             <GradeSubjectSelectorItem

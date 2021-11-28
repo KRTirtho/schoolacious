@@ -29,6 +29,7 @@ export enum QueryContextKey {
     SCHOOL_SUBJECTS = "query-school-subjects",
     SECTION = "query-section", // single query
     CLASSES = "query-classes",
+    CLASS_SESSION = "query-class-session",
     SECTION_TEACHERS = "query-section-teachers",
     NOTIFICATIONS = "query-notifications",
 }

@@ -25,6 +25,7 @@ import { useAuthStore } from "state/authorization-store";
 import * as yup from "yup";
 import { SectionSchema } from "@veschool/types";
 import { AddGradeModalProps } from "./AddGradeModal";
+import { FaPlusSquare } from "react-icons/fa";
 
 export type AddSectionModal = AddGradeModalProps;
 
@@ -60,7 +61,7 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
 
     return (
         <>
-            <Button variant="ghost" onClick={onToggle}>
+            <Button variant="ghost" onClick={onToggle} leftIcon={<FaPlusSquare />}>
                 Add Section
             </Button>
             <Modal

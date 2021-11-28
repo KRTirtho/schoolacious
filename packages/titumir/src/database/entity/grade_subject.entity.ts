@@ -3,7 +3,7 @@ import { GradeToSubjectSchema } from "@veschool/types";
 import Grade from "./grades.entity";
 import Subject from "./subjects.entity";
 
-@Entity()
+@Entity("grade-subject")
 @Unique(["grade", "subject"])
 export default class GradeToSubject implements GradeToSubjectSchema {
     @PrimaryGeneratedColumn("uuid")

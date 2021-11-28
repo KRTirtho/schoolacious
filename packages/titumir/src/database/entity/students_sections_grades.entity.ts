@@ -11,7 +11,7 @@ import Grade from "./grades.entity";
 import Section from "./sections.entity";
 import User from "./users.entity";
 
-@Entity()
+@Entity("students-sections-grades")
 @Unique(["grade", "section", "user"])
 export default class StudentsToSectionsToGrades
     implements StudentsToSectionsToGradesSchema

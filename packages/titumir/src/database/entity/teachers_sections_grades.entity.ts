@@ -14,7 +14,7 @@ import Subject from "./subjects.entity";
 import User from "./users.entity";
 import Class from "./classes.entity";
 
-@Entity()
+@Entity("teachers-sections-grades")
 @Unique(["user", "section", "subject"])
 @Unique(["section", "subject"])
 export default class TeachersToSectionsToGrades

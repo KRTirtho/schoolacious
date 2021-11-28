@@ -11,12 +11,17 @@ import {
 import { FieldProps } from "formik";
 import { v4 as uuid } from "uuid";
 import {
+    FieldOptions,
     Input,
     InputProps,
     SemanticValidationProps,
     Textarea,
-    TextareaProps,
 } from "react-binden";
+
+export interface TextareaProps
+    extends Omit<FieldOptions, "as" | "pattern" | "min" | "max"> {
+    as?: ComponentType<ComponentPropsWithRef<"textarea">>;
+}
 
 export type TextFieldProps = FieldProps &
     Omit<ChakraInputProps, "name" | "value" | "error"> & {

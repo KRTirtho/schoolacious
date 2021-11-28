@@ -16,6 +16,6 @@ import { UserModule } from "../user/user.module";
     ],
     controllers: [GradeController],
     providers: [GradeService, GradeSubjectService],
-    exports: [GradeService],
+    exports: [GradeService, GradeSubjectService],
 })
 export class GradeModule {}

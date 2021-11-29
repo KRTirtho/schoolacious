@@ -33,6 +33,10 @@ function ConfigureGradeSection() {
     return (
         <Switch>
             <Route exact path={path}>
+                <HStack justify="space-evenly">
+                    <AddGradeModal grades={standards} />
+                    <AddSectionModal grades={standards} />
+                </HStack>
                 <Accordion allowMultiple allowToggle>
                     <VStack spacing="1" align="center">
                         {grades?.map((grade) => (
@@ -40,10 +44,6 @@ function ConfigureGradeSection() {
                         ))}
                     </VStack>
                 </Accordion>
-                <HStack justify="space-evenly">
-                    <AddGradeModal grades={standards} />
-                    <AddSectionModal grades={standards} />
-                </HStack>
             </Route>
             <Route path={`${path}/:grade/:section/members`}>
                 <SchoolSectionMembers />

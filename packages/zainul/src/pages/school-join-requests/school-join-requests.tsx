@@ -1,4 +1,4 @@
-import { chakra, Table, Thead, Tr, Th, Tbody } from "@chakra-ui/react";
+import { chakra, Table, Thead, Tr, Th, Tbody, useToast } from "@chakra-ui/react";
 import TableRowTile from "components/TableRowTile/TableRowTile";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirMutation from "hooks/useTitumirMutation";
@@ -34,6 +34,8 @@ function SchoolJoinRequests() {
         },
     );
 
+    const toast = useToast({ isClosable: true, variant: "subtle", position: "bottom" });
+
     return (
         <chakra.div overflowX="auto">
             <Table variant="striped">
@@ -61,18 +63,27 @@ function SchoolJoinRequests() {
                                 heading={username}
                                 middle={role}
                                 date={created_at}
-                                onFirstButtonClick={() =>
+                                onFirstButtonClick={() => {
                                     completeInvitationJoin({
                                         _id,
                                         action: INVITATION_OR_JOIN_ACTION.reject,
-                                    })
-                                }
-                                onSecondButtonClick={() =>
+                                    });
+                                    toast({
+                                        title: "Cancelled Join Request",
+                                        description: `${username}'s is removed from join list'`,
+                                    });
+                                }}
+                                onSecondButtonClick={() => {
                                     completeInvitationJoin({
                                         _id,
                                         action: INVITATION_OR_JOIN_ACTION.accept,
-                                    })
-                                }
+                                    });
+                                    toast({
+                                        title: "Accepted Join Request",
+                                        description: `${username}'s is added as a ${role}`,
+                                        status: "success",
+                                    });
+                                }}
                             />
                         );
                     })}

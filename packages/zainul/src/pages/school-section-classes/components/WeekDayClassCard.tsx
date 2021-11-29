@@ -5,6 +5,10 @@ import Paper from "components/Paper/Paper";
 import { FiClock } from "react-icons/fi";
 import { GiDuration } from "react-icons/gi";
 import { userToName } from "utils/userToName";
+import {
+    globalToLocalTimeString,
+    localToGlobalTimeString,
+} from "utils/local-global-time";
 import CreateWeekDayClassPopover from "./CreateWeekDayClassPopover";
 import { useRouteMatch } from "react-router-dom";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
@@ -104,7 +108,7 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({
                                 <Icon fontSize="xl">
                                     <FiClock />
                                 </Icon>
-                                {militaryTo12HourTime(time)}
+                                {globalToLocalTimeString(time)}
                             </Text>
                             <Text color="blue.400">
                                 <Icon fontSize="xl">
@@ -125,7 +129,7 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({
                                 {
                                     day: parseInt(dayIndex),
                                     host,
-                                    time: `${time}:00`,
+                                    time: localToGlobalTimeString(time),
                                     duration: minutesToSeconds(parseInt(duration)),
                                 },
                                 {

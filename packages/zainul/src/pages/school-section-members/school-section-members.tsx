@@ -32,8 +32,6 @@ import { TeachersToSectionsToGradesSchema, USER_ROLE } from "@veschool/types";
 import AddMultipleUserSlide from "components/AddMultipleUserSlide/AddMultipleUserSlide";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
 
-
-
 function SchoolSectionMembers() {
     // gives out the grade/section
     const { params } = useRouteMatch<SchoolSectionMembersParams>();

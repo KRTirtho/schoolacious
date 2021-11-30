@@ -10,6 +10,7 @@ import {
     StudentsToSectionsToGradesSchema,
     ClassSchema,
     NotificationsSchema,
+    USER_ROLE,
 } from "@veschool/types";
 import qs from "query-string";
 
@@ -144,8 +145,7 @@ export interface AddSectionStudentsReturns {
 }
 
 export interface ScheduleClassBody {
-    day: number;
-    time: string;
+    date: Date;
     host: string;
     duration: number;
 }
@@ -229,10 +229,10 @@ export default class Titumir {
         return await this.buildRequest<UserSchema>("/user/me");
     }
 
-    async queryUser(q: string, filters?: { school_id?: string; role?: string }) {
+    async queryUser(q: string, filters?: { school_id?: string; roles?: USER_ROLE[] }) {
         const url = qs.stringifyUrl({
             url: "/user/query",
-            query: { q, ...filters },
+            query: { q, school_id: filters?.school_id, role: filters?.roles?.join(":") },
         });
         return await this.buildRequest<UserSchema[]>(url);
     }
@@ -243,10 +243,6 @@ export default class Titumir {
 
     async getUserJoinRequests() {
         return await this.buildRequest<Invitations_JoinsSchema[]>("/user/join-requests");
-    }
-
-    async getNotifications() {
-        return await this.buildRequest<NotificationsSchema[]>("/user/notifications");
     }
 
     // =======/school/*=======
@@ -451,5 +447,10 @@ export default class Titumir {
         return await this.buildRequest<ClassSessionMetadata>(
             `/school/${school}/grade/${grade}/section/${section}/class/${sessionId}`,
         );
+    }
+
+    // notifications
+    async getAllNotifications() {
+        return await this.buildRequest<NotificationsSchema[]>("/notification");
     }
 }

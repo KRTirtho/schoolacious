@@ -12,9 +12,14 @@ export interface QueryUserProps extends TextFieldProps {
      * `_id` of the users that will be ignored
      */
     filterUsers?: string[] | null;
+    roles?: USER_ROLE[];
 }
 
-function QueryUser({ filterUsers, ...props }: QueryUserProps) {
+function QueryUser({
+    filterUsers,
+    roles = [USER_ROLE.teacher],
+    ...props
+}: QueryUserProps) {
     const query = props.field?.value;
     const school = useAuthStore((s) => s.user?.school);
 
@@ -22,7 +27,7 @@ function QueryUser({ filterUsers, ...props }: QueryUserProps) {
         [QueryContextKey.QUERY_USER, props.field.name],
         (api) =>
             api
-                .queryUser(query, { school_id: school?._id, role: USER_ROLE.teacher })
+                .queryUser(query, { school_id: school?._id, roles })
                 .then(({ json }) => json),
         {
             enabled: false,

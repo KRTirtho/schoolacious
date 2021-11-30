@@ -1,7 +1,6 @@
 import {
     Body,
     Controller,
-    ParseArrayPipe,
     Post,
     NotAcceptableException,
     Param,
@@ -10,6 +9,7 @@ import {
     OnApplicationBootstrap,
     Logger,
     ForbiddenException,
+    NotFoundException,
 } from "@nestjs/common";
 import ScheduleClassDTO from "./dto/schedule-class.dto";
 import { Roles } from "../decorator/roles.decorator";
@@ -18,24 +18,17 @@ import { USER_ROLE, CLASS_STATUS } from "@veschool/types";
 import { ClassesService } from "./classes.service";
 import { VerifiedGradeUser } from "../grade/grade.controller";
 import { CurrentUser } from "../decorator/current-user.decorator";
-import { SectionService } from "../section/section.service";
 import { TeacherSectionGradeService } from "../section/teacher-section-grade.service";
-import {
-    ApiBearerAuth,
-    ApiBody,
-    ApiNotAcceptableResponse,
-    ApiNotFoundResponse,
-    ApiOperation,
-    ApiParam,
-} from "@nestjs/swagger";
+import { ApiBearerAuth, ApiParam } from "@nestjs/swagger";
 import { VerifySchool } from "../decorator/verify-school.decorator";
 import { SchoolService } from "../school/school.service";
 import { CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from "cron";
 import { classJob } from "../utils/cron-names.util";
 import { OpenViduService } from "../open-vidu/open-vidu.service";
-import { ExtendUserRelation } from "../decorator/extend-user-relation.decorator";
 import { OpenViduRole } from "openvidu-node-client";
+import { localDateToDayTime } from "../utils/local-date-to-day-time.utils";
+import { StudentSectionGradeService } from "../section/student-section-grade.service";
 
 @Controller("/school/:school/grade/:grade/section/:section/class")
 @ApiBearerAuth()
@@ -43,11 +36,11 @@ export class ClassesController implements OnApplicationBootstrap {
     logger = new Logger(ClassesController.name);
     constructor(
         private classesService: ClassesService,
-        private sectionService: SectionService,
         private tsgService: TeacherSectionGradeService,
         private schoolService: SchoolService,
         private scheduleRegistry: SchedulerRegistry,
         private openviduService: OpenViduService,
+        private ssgService: StudentSectionGradeService,
     ) {}
     async onApplicationBootstrap() {
         const schools = await this.schoolService.find();
@@ -111,95 +104,6 @@ export class ClassesController implements OnApplicationBootstrap {
         }
     }
 
-    /**
-     * @deprecated in favor of new monolithic approach to scheduling
-     * of classes
-     */
-    @Post("deprecated")
-    @VerifyGrade()
-    @Roles(
-        USER_ROLE.admin,
-        USER_ROLE.coAdmin,
-        USER_ROLE.gradeModerator,
-        USER_ROLE.classTeacher,
-    )
-    @ApiBody({ type: [ScheduleClassDTO] })
-    @ApiNotAcceptableResponse({
-        description: "non-section-teacher as host, minimum break durations not obeyed",
-    })
-    @ApiNotFoundResponse({
-        description: "teacher not found in grade/section, section not found",
-    })
-    @ApiOperation({ deprecated: true })
-    async addClasses(
-        @CurrentUser() user: VerifiedGradeUser,
-        @Body(new ParseArrayPipe({ items: ScheduleClassDTO })) body: ScheduleClassDTO[],
-        @Param("section") sectionName: string,
-        @Param("grade", ParseIntPipe) standard: number,
-    ) {
-        try {
-            // Check host exists & is valid for section✔
-            // Check host has other classes at those times✔
-            // Check host gets enough break before class (5-10min)✔
-            // Check each class has minimum 5-10mins break✔
-            // Check class length per day (maximum allowed 6)✔
-            // Check students are having minimum break✔
-
-            // using loop to filter out the valid classes because in filter
-            // or HOF invalid classes will get created && no way of
-            // throwing error from within them
-            const validClasses = [];
-
-            for (const el of body) {
-                const [host, section] = await Promise.all([
-                    this.tsgService.findOne(
-                        {
-                            user: { _id: el.host },
-                            section: { name: sectionName, grade: { standard } },
-                        },
-                        { relations: ["section", "user", "grade", "subject"] },
-                    ),
-                    this.sectionService.findOne(
-                        {
-                            name: sectionName,
-                            grade: { standard },
-                        },
-                        { relations: ["grade"] },
-                    ),
-                ]);
-                if (host.section._id !== section._id)
-                    throw new NotAcceptableException(
-                        "host isn't a valid teacher of the section",
-                    );
-                const [isValidHostClass, isValidStudentClass] = await Promise.all([
-                    this.classesService.validateHostClass(el),
-                    this.classesService.validateStudentClass(section, el.day, { ...el }),
-                ]);
-
-                if (!isValidHostClass)
-                    throw new NotAcceptableException(
-                        "minimum break duration (10mins) or 6-class/day not followed for hosts",
-                    );
-                if (!isValidStudentClass)
-                    throw new NotAcceptableException(
-                        "minimum break duration (10mins) or 6-class/day not followed for students",
-                    );
-
-                validClasses.push({
-                    ...el,
-                    host,
-                    status: CLASS_STATUS.scheduled,
-                });
-            }
-
-            await this.classesService.create(validClasses);
-            return { message: "successfully scheduled classes" };
-        } catch (error) {
-            this.logger.error(error);
-            throw error;
-        }
-    }
-
     @Post()
     @VerifyGrade()
     @Roles(
@@ -211,7 +115,7 @@ export class ClassesController implements OnApplicationBootstrap {
     @ApiParam({ name: "school" })
     async addClass(
         @CurrentUser() user: VerifiedGradeUser,
-        @Body() body: ScheduleClassDTO,
+        @Body() { date, ...body }: ScheduleClassDTO,
         @Param("section") sectionName: string,
         @Param("grade", ParseIntPipe) standard: number,
     ) {
@@ -224,10 +128,14 @@ export class ClassesController implements OnApplicationBootstrap {
                 },
                 { relations: ["section", "user", "grade", "subject"] },
             );
+
+            const { day, time } = localDateToDayTime(new Date(date));
+
             const [isValidHostClass, isValidStudentClass] = await Promise.all([
-                this.classesService.validateHostClass(body),
-                this.classesService.validateStudentClass(host.section, body.day, {
+                this.classesService.validateHostClass({ ...body, time, day }),
+                this.classesService.validateStudentClass(host.section, day, {
                     ...body,
+                    time,
                 }),
             ]);
             if (!isValidHostClass)
@@ -240,6 +148,8 @@ export class ClassesController implements OnApplicationBootstrap {
                 );
             const scheduledClass = await this.classesService.create({
                 ...body,
+                day,
+                time,
                 host,
                 status: CLASS_STATUS.scheduled,
             });
@@ -261,51 +171,56 @@ export class ClassesController implements OnApplicationBootstrap {
     }
 
     @Get(":sessionId")
-    @VerifyGrade()
-    @ExtendUserRelation(
-        "studentsToSectionsToGrade",
-        "studentsToSectionsToGrade.section",
-        "studentsToSectionsToGrade.section.class_teacher",
-    )
     @ApiParam({ name: "school" })
     @ApiParam({ name: "grade" })
     @ApiParam({ name: "section" })
     async joinSession(
         @Param("sessionId") sessionId: string,
         @CurrentUser() user: VerifiedGradeUser,
+        @Param("grade", ParseIntPipe) standard: number,
+        @Param("section") sectionName: string,
     ) {
         try {
             const session = this.openviduService.activeSessions.find(
                 (session) => session.sessionId === sessionId,
             );
+            if (!session)
+                throw new NotFoundException(
+                    `${sessionId} session not found or has expired`,
+                );
             const theClass = await this.classesService.findOne(
                 { sessionId },
                 { relations: ["host", "host.user"] },
             );
             // checking if user is the host & doing operation accordingly
             if (theClass.host.user._id === user._id) {
-                const connection = await session?.createConnection({
+                const connection = await session.createConnection({
                     role: OpenViduRole.MODERATOR,
                 });
 
                 return {
-                    token: connection?.token,
-                    subscribers: connection?.subscribers,
-                    publishers: connection?.publishers,
-                    createdAt: connection?.createdAt,
+                    token: connection.token,
+                    subscribers: connection.subscribers,
+                    publishers: connection.publishers,
+                    createdAt: connection.createdAt,
                 };
             }
             // checking the user is a student & belongs to this class/grade
-            const classTeacherIds = user.studentsToSectionsToGrade?.map(
-                (ssg) => ssg.section.class_teacher?._id,
+            const ssg = await this.ssgService.findOne(
+                {
+                    user,
+                    section: { name: sectionName, grade: { standard } },
+                },
+                { relations: ["section", "user", "section.grade"] },
             );
-            if (classTeacherIds?.includes(theClass.host.user._id)) {
-                const connection = await session?.createConnection({
+
+            if (ssg) {
+                const connection = await session.createConnection({
                     role: OpenViduRole.PUBLISHER,
                 });
                 return {
-                    token: connection?.token,
-                    createdAt: connection?.createdAt,
+                    token: connection.token,
+                    createdAt: connection.createdAt,
                 };
             } else
                 throw new ForbiddenException("user doesn't belong to the class session");

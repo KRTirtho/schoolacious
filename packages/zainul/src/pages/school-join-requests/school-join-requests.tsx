@@ -23,7 +23,7 @@ function SchoolJoinRequests() {
         return json;
     });
 
-    const { mutate: completeInvitationJoin } = useTitumirMutation<
+    const { mutate: completeInvitationJoin, error } = useTitumirMutation<
         { message: string },
         CompleteInvitationJoinBody
     >(
@@ -34,7 +34,7 @@ function SchoolJoinRequests() {
         },
     );
 
-    const toast = useToast({ isClosable: true, variant: "subtle", position: "bottom" });
+    const toast = useToast({ isClosable: true, variant: "solid", position: "bottom" });
 
     return (
         <chakra.div overflowX="auto">
@@ -64,25 +64,51 @@ function SchoolJoinRequests() {
                                 middle={role}
                                 date={created_at}
                                 onFirstButtonClick={() => {
-                                    completeInvitationJoin({
-                                        _id,
-                                        action: INVITATION_OR_JOIN_ACTION.reject,
-                                    });
-                                    toast({
-                                        title: "Cancelled Join Request",
-                                        description: `${username}'s is removed from join list'`,
-                                    });
+                                    completeInvitationJoin(
+                                        {
+                                            _id,
+                                            action: INVITATION_OR_JOIN_ACTION.reject,
+                                        },
+                                        {
+                                            onSuccess() {
+                                                toast({
+                                                    title: "Cancelled Join Request",
+                                                    description: `${username}'s is removed from join list'`,
+                                                });
+                                            },
+                                            onError() {
+                                                toast({
+                                                    title: "Failed to cancel join request",
+                                                    description: error?.message,
+                                                    status: "error",
+                                                });
+                                            },
+                                        },
+                                    );
                                 }}
                                 onSecondButtonClick={() => {
-                                    completeInvitationJoin({
-                                        _id,
-                                        action: INVITATION_OR_JOIN_ACTION.accept,
-                                    });
-                                    toast({
-                                        title: "Accepted Join Request",
-                                        description: `${username}'s is added as a ${role}`,
-                                        status: "success",
-                                    });
+                                    completeInvitationJoin(
+                                        {
+                                            _id,
+                                            action: INVITATION_OR_JOIN_ACTION.accept,
+                                        },
+                                        {
+                                            onSuccess() {
+                                                toast({
+                                                    title: "Accepted Join Request",
+                                                    description: `${username}'s is added as a ${role}`,
+                                                    status: "success",
+                                                });
+                                            },
+                                            onError() {
+                                                toast({
+                                                    title: "Failed to accept join request",
+                                                    description: error?.message,
+                                                    status: "error",
+                                                });
+                                            },
+                                        },
+                                    );
                                 }}
                             />
                         );

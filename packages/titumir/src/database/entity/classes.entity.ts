@@ -38,6 +38,6 @@ export default class Class implements ClassSchema {
     @Column({ type: "int" })
     duration!: number;
 
-    @Column("uuid", { nullable: true })
+    @Column("varchar", { length: 20, nullable: true })
     sessionId?: string;
 }

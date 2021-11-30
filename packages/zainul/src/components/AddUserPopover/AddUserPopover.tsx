@@ -20,7 +20,7 @@ import { FiEdit } from "react-icons/fi";
 import * as yup from "yup";
 
 interface AddUserPopoverProps
-    extends Pick<QueryUserProps, "placeholder" | "label" | "filterUsers"> {
+    extends Pick<QueryUserProps, "placeholder" | "label" | "filterUsers" | "roles"> {
     trigger?: ReactElement;
     onSubmit<Values extends Record<string, unknown>>(
         values: Values,
@@ -39,6 +39,7 @@ export const AddUserPopover: FC<AddUserPopoverProps> = ({
     placeholder,
     label,
     filterUsers,
+    roles,
 }) => {
     const { isOpen, onClose, onToggle, onOpen } = useDisclosure();
 
@@ -79,6 +80,7 @@ export const AddUserPopover: FC<AddUserPopoverProps> = ({
                                     component={QueryUser}
                                     filterUsers={filterUsers}
                                     placeholder={placeholder}
+                                    roles={roles}
                                 />
                             </PopoverBody>
                             <PopoverFooter>

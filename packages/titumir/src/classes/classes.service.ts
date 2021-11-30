@@ -47,7 +47,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
         day,
         duration,
         time,
-    }: ScheduleClassDto): Promise<boolean> {
+    }: Omit<ScheduleClassDto, "date"> & { day: number; time: string }): Promise<boolean> {
         // host will have classes on other sections/grade-sections. Thus
         // ensuring host gets a break after every class
         const hostClasses = await this.find(
@@ -138,33 +138,41 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
                 second,
             });
             const classJob = new CronJob(expression, async () => {
-                const twentyFourHr = format(
-                    parse(time, "HH:mm:ss", new Date()),
-                    "hh:mm a",
-                );
-                // Creating openvidu session for the class
-                const session = await this.openviduService.createSession();
+                try {
+                    const twentyFourHr = format(
+                        parse(time, "HH:mm:ss", new Date()),
+                        "hh:mm a",
+                    );
+                    // Creating openvidu session for the class
+                    const session = await this.openviduService.createSession();
 
-                await this.update({ _id }, { sessionId: session.sessionId });
+                    await this.update({ _id }, { sessionId: session.sessionId });
 
-                // TODO: Store the notification for valid students of grade's
-                const notificationsPayload = studentsOfGrades.map(({ user }) => ({
-                    user,
-                    message: `Class is about to start in ${twentyFourHr}`,
-                    src: "class",
-                    status: NOTIFICATION_STATUS.unread,
-                }));
-                const createdNotifications = await this.notificationService.create(
-                    notificationsPayload,
-                );
+                    // TODO: Store the notification for valid students of grade's
+                    const notificationsPayload = studentsOfGrades.map(({ user }) => ({
+                        user,
+                        message: `Class is about to start in ${twentyFourHr}`,
+                        src: "class",
+                        status: NOTIFICATION_STATUS.unread,
+                    }));
+                    const createdNotifications = await this.notificationService.create(
+                        notificationsPayload,
+                    );
 
-                await Promise.all(
-                    createdNotifications.map(({ user, ...notification }) =>
-                        this.notificationService.sendNotification(user._id, notification),
-                    ),
-                );
+                    await Promise.all(
+                        createdNotifications.map(({ user, ...notification }) =>
+                            this.notificationService.sendNotification(
+                                user._id,
+                                notification,
+                            ),
+                        ),
+                    );
 
-                // TODO: Not active? Send Push notification
+                    // TODO: Not active? Send Push notification
+                } catch (error) {
+                    this.logger.error(error);
+                    throw error;
+                }
             });
             const classJobId = individualClassJob(_id);
             if (!this.schedularRegistry.doesExists("cron", classJobId)) {

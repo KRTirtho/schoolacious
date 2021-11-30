@@ -6,36 +6,18 @@ import {
     IsUUID,
     Max,
     Min,
-    Matches,
+    IsDateString,
 } from "class-validator";
 
-const hhmmssRegex = /^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/g;
 export default class ScheduleClassDto {
-    @IsDefined()
-    @IsNumber()
-    @Min(0)
-    @Max(6)
-    @ApiProperty({
-        type: Number,
-        minimum: 0,
-        maximum: 6,
-        description: "day of the week",
-        example: 2,
-    })
-    day!: number;
-
-    @IsDefined()
+    @IsDateString()
     @IsNotEmpty()
-    @Matches(hhmmssRegex, {
-        message: "time should contain following format HH:mm:ss",
-    })
     @ApiProperty({
-        type: String,
-        description: "class start time in HH:MM:SS format in 24hrs",
-        pattern: String(hhmmssRegex),
-        example: "17:30:00",
+        type: Date,
+        description: "local date of the class defining the week-day & time",
+        example: "Tue Nov 30 2021 22:25:00 GMT+0600 (Bangladesh Standard Time)",
     })
-    time!: string;
+    date!: string;
 
     @IsDefined()
     @IsUUID()

@@ -32,7 +32,7 @@ function NotificationPopover() {
     const { data: notifications } = useTitumirQuery<NotificationsSchema[]>(
         QueryContextKey.NOTIFICATIONS,
         async (api) => {
-            const { json } = await api.getNotifications();
+            const { json } = await api.getAllNotifications();
             return json;
         },
     );

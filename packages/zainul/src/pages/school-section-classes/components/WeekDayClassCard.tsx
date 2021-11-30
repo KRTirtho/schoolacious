@@ -5,10 +5,7 @@ import Paper from "components/Paper/Paper";
 import { FiClock } from "react-icons/fi";
 import { GiDuration } from "react-icons/gi";
 import { userToName } from "utils/userToName";
-import {
-    globalToLocalTimeString,
-    localToGlobalTimeString,
-} from "utils/local-global-time";
+import { globalToLocalTimeString } from "utils/local-global-time";
 import CreateWeekDayClassPopover from "./CreateWeekDayClassPopover";
 import { useRouteMatch } from "react-router-dom";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
@@ -17,19 +14,15 @@ import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { useAuthStore } from "state/authorization-store";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { ScheduleClassBody } from "services/api/titumir";
-import { secondsToMinutes, minutesToSeconds } from "date-fns";
-import { militaryTo12HourTime } from "utils/militaryTo12HourTime";
+import { secondsToMinutes, minutesToSeconds, parse } from "date-fns";
 import { useQueryClient } from "react-query";
 
 export interface WeekDayClassCardProps {
-    day: [string, string];
+    day: string;
     classes: ClassSchema[];
 }
 
-export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({
-    day: [dayIndex, day],
-    classes,
-}) => {
+export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({ day, classes }) => {
     const textColor = useColorModeValue("primary.500", "primary.200");
 
     const { params } = useRouteMatch<SchoolSectionMembersParams>();
@@ -125,11 +118,15 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({
                             { host, time, duration },
                             { setSubmitting, resetForm },
                         ) => {
+                            const date = parse(
+                                `${day} ${time}`,
+                                "EEEE HH:mm",
+                                new Date(),
+                            );
                             scheduleClass(
                                 {
-                                    day: parseInt(dayIndex),
                                     host,
-                                    time: localToGlobalTimeString(time),
+                                    date,
                                     duration: minutesToSeconds(parseInt(duration)),
                                 },
                                 {

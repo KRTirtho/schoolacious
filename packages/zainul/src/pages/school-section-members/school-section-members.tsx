@@ -175,6 +175,10 @@ function SchoolSectionMembers() {
                                             }}
                                             placeholder="Search teacher..."
                                             heading={`Teacher for ${subject.name}`}
+                                            roles={[
+                                                USER_ROLE.teacher,
+                                                USER_ROLE.classTeacher,
+                                            ]}
                                         />
                                     </HStack>
                                 </Td>

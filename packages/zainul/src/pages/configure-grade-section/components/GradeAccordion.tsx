@@ -10,7 +10,7 @@ import {
     useColorModeValue,
     theme,
 } from "@chakra-ui/react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { GradeSchema } from "@veschool/types";
 import Paper from "components/Paper/Paper";
 import React, { FC } from "react";
@@ -24,8 +24,6 @@ interface GradeAccordionProps {
 }
 
 const GradeAccordion: FC<GradeAccordionProps> = ({ grade }) => {
-    const { path } = useRouteMatch();
-
     const { gradeColor, sectionColor } = useColorModeValue(
         { gradeColor: theme.colors.blue[600], sectionColor: theme.colors.cyan[800] },
         { gradeColor: theme.colors.blue[400], sectionColor: theme.colors.cyan[500] },
@@ -88,14 +86,14 @@ const GradeAccordion: FC<GradeAccordionProps> = ({ grade }) => {
                                 colorScheme="gray"
                                 aria-label="Configure section members"
                                 icon={<FaUsersCog />}
-                                to={`${path}/${grade.standard}/${section.name}/members`}
+                                to={`${grade.standard}/${section.name}/members`}
                             />
                             <IconButton
                                 as={Link}
                                 colorScheme="gray"
                                 aria-label="Configure section classes"
                                 icon={<SiGoogleclassroom />}
-                                to={`${path}/${grade.standard}/${section.name}/classes`}
+                                to={`${grade.standard}/${section.name}/classes`}
                             />
                         </HStack>
                     </Paper>

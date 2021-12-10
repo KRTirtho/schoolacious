@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { IoIosSunny, IoIosMoon, IoIosLogOut } from "react-icons/io";
 import { RiUser3Line } from "react-icons/ri";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaSchool, FaUserAlt } from "react-icons/fa";
 import useLogout from "hooks/useLogout";
 import { useAuthStore } from "state/authorization-store";
@@ -23,7 +23,7 @@ import { BsGear } from "react-icons/bs";
 import NotificationPopover from "components/NotificationPopover/NotificationPopover";
 
 function Appbar() {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const { toggleColorMode } = useColorMode();
     const logout = useLogout();
@@ -38,6 +38,11 @@ function Appbar() {
 
     const loggedIn = useLoggedIn();
 
+    const onClickLogout = () => {
+        logout();
+        navigate("/", { replace: true });
+    };
+
     if (!loggedIn) return <></>;
 
     return (
@@ -51,7 +56,7 @@ function Appbar() {
             p="1"
             zIndex="1"
         >
-            <Heading onClick={() => history.push("/")} cursor="pointer" as="h5" size="lg">
+            <Heading onClick={() => navigate("/")} cursor="pointer" as="h5" size="lg">
                 VESchool
             </Heading>
             {/* Action Button */}
@@ -83,7 +88,7 @@ function Appbar() {
                         >
                             Settings
                         </MenuItem>
-                        <MenuItem onClick={logout} icon={<IoIosLogOut />}>
+                        <MenuItem onClick={onClickLogout} icon={<IoIosLogOut />}>
                             Logout
                         </MenuItem>
                     </MenuList>

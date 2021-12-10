@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import chakraTheme from "./styles/chakra-theme";
-import Routes from "./routing/RouteConfig";
+import ApplicationRoutes from "./routing/RouteConfig";
 import Titumir from "./services/api/titumir";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AuthorizationConfig from "./state/AuthorizationConfig";
@@ -20,7 +20,7 @@ function App() {
                     {/* <ReactQueryDevtools /> */}
                     <ChakraProvider theme={chakraTheme}>
                         <Appbar />
-                        <Routes></Routes>
+                        <ApplicationRoutes></ApplicationRoutes>
                     </ChakraProvider>
                 </QueryClientProvider>
             </AuthorizationConfig>

@@ -12,7 +12,7 @@ import {
 import { usePermissions } from "hooks/usePermissions";
 import React from "react";
 import { IoIosSettings } from "react-icons/io";
-import { Redirect, Link } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { useAuthStore } from "state/authorization-store";
 import { USER_ROLE } from "@veschool/types";
 
@@ -44,7 +44,7 @@ function School() {
                     />
                     <HStack>
                         <Heading size="lg">{school?.name}</Heading>
-                        {school === undefined && <Redirect to="/school/create" />}
+                        {school === undefined && <Navigate to="create" />}
                         <Clink color="green.200" as={Link} to="/">
                             @{school?.short_name}
                         </Clink>

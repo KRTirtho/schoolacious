@@ -1,7 +1,7 @@
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React, { useMemo } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAuthStore } from "state/authorization-store";
 import {
     chakra,
@@ -34,13 +34,11 @@ import { SchoolSectionMembersParams } from "pages/configure-grade-section/config
 
 function SchoolSectionMembers() {
     // gives out the grade/section
-    const { params } = useRouteMatch<SchoolSectionMembersParams>();
+    const params = useParams<keyof SchoolSectionMembersParams>();
 
     const school = useAuthStore((s) => s.user?.school);
 
     const short_name = school?.short_name;
-
-    const isQueryable = params?.grade && params?.section;
 
     // fetching sections from server
     const { data: section, refetch } = useTitumirQuery<SectionWithSubject | null>(
@@ -48,7 +46,7 @@ function SchoolSectionMembers() {
         // section.name are non-unique
         [QueryContextKey.SECTION, params?.grade, params?.section],
         async (api) => {
-            if (!(isQueryable && short_name)) return null;
+            if (!(params?.grade && params?.section && short_name)) return null;
             const { json } = await api.getSection(
                 short_name,
                 parseInt(params.grade),
@@ -79,7 +77,7 @@ function SchoolSectionMembers() {
     >(
         [MutationContextKey.ADD_SECTION_TEACHER, params?.grade, params?.section],
         async (api, data) => {
-            if (!(short_name && isQueryable)) return null;
+            if (!(short_name && params?.grade && params?.section)) return null;
             const { json } = await api.assignSectionTeacher(
                 short_name,
                 parseInt(params.grade),
@@ -99,7 +97,7 @@ function SchoolSectionMembers() {
     >(
         [MutationContextKey.ADD_SECTION_STUDENTS, params?.grade, params?.section],
         async (api, data) => {
-            if (!(short_name && isQueryable)) return null;
+            if (!(short_name && params?.grade && params?.section)) return null;
             const { json } = await api.addSectionStudents(
                 short_name,
                 parseInt(params.grade),

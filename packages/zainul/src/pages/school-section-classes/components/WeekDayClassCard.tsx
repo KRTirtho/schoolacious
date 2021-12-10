@@ -7,7 +7,7 @@ import { GiDuration } from "react-icons/gi";
 import { userToName } from "utils/userToName";
 import { globalToLocalTimeString } from "utils/local-global-time";
 import CreateWeekDayClassPopover from "./CreateWeekDayClassPopover";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
@@ -25,16 +25,14 @@ export interface WeekDayClassCardProps {
 export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({ day, classes }) => {
     const textColor = useColorModeValue("primary.500", "primary.200");
 
-    const { params } = useRouteMatch<SchoolSectionMembersParams>();
+    const params = useParams<keyof SchoolSectionMembersParams>();
 
     const short_name = useAuthStore((s) => s.user?.school?.short_name);
-
-    const isQueryable = params?.grade && params?.section;
 
     const { data: sectionTeachers } = useTitumirQuery<
         TeachersToSectionsToGradesSchema[] | null
     >([QueryContextKey.SECTION_TEACHERS, params?.grade, params?.section], async (api) => {
-        if (!(short_name && isQueryable)) return null;
+        if (!(short_name && params?.grade && params?.section)) return null;
         const { json } = await api.getSectionTeachers(
             short_name,
             parseInt(params.grade),
@@ -51,7 +49,7 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({ day, classes }) =>
     >(
         [MutationContextKey.CREATE_CLASS, day, params?.grade, params?.section],
         async (api, data) => {
-            if (!(short_name && isQueryable)) return null;
+            if (!(short_name && params?.grade && params?.section)) return null;
             const { json } = await api.createClass(
                 short_name,
                 parseInt(params.grade),

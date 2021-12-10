@@ -37,14 +37,13 @@ import { VideoLayout } from "./components/VideoLayout";
 type SessionEvenHandler = Parameters<Session["on"]>["1"];
 
 const ClassSession = () => {
-    const { sessionId, grade, section } =
-        useParams<{ sessionId: string; grade: string; section: string }>();
+    const { sessionId, grade, section } = useParams<"sessionId" | "grade" | "section">();
 
     const school = useAuthStore((s) => s.user?.school);
     const { data } = useTitumirQuery<ClassSessionMetadata | null>(
         QueryContextKey.CLASS_SESSION,
         async (api) => {
-            if (!school || !grade || !section) return null;
+            if (!school || !grade || !section || !sessionId) return null;
             const sessionMetadata = await api.joinDevelopmentSession(
                 school?._id,
                 parseInt(grade),
@@ -189,7 +188,7 @@ const ClassSession = () => {
                             <chakra.span color="green.400">{grade}</chakra.span>
                             {" / "}
                             <chakra.span color="blue.400">
-                                {decodeURI(section)}
+                                {section && decodeURI(section)}
                             </chakra.span>
                             {" / "}
                             <chakra.span color="pink.400">{sessionId}</chakra.span>
@@ -227,7 +226,9 @@ const ClassSession = () => {
                 </Text>
                 <Text>
                     Section:{" "}
-                    <chakra.span color="blue.400">{decodeURI(section)}</chakra.span>
+                    <chakra.span color="blue.400">
+                        {section && decodeURI(section)}
+                    </chakra.span>
                 </Text>
                 <Text>
                     Session: <chakra.span color="pink.400">{sessionId}</chakra.span>

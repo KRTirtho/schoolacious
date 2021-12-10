@@ -1,7 +1,7 @@
 import { Flex, Heading, Button, Link as MuiLink } from "@chakra-ui/react";
 import React from "react";
 import { useMutation } from "react-query";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { titumirApi } from "App";
 import MaskedPasswordField from "components/MaskedPasswordField/MaskedPasswordField";
 import { ActualField } from "components/TextField/TextField";
@@ -20,7 +20,7 @@ export const MINIMUM_CHAR_MSG = "Minimum 8 chars";
 export const INVALID_EMAIL_MSG = "Invalid email";
 
 function Login() {
-    const history = useHistory();
+    const navigate = useNavigate();
     const setTokens = useTokenStore((s) => s.setTokens);
     const setUser = useAuthStore((s) => s.setUser);
     const { mutate: login, isSuccess } = useMutation<
@@ -34,7 +34,7 @@ function Login() {
             if (refreshToken) {
                 setTokens?.({ refreshToken });
             }
-            setTimeout(() => history.push("/"), 500);
+            setTimeout(() => navigate("/"), 500);
         },
     });
 

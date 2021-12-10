@@ -6,11 +6,11 @@ import { GradeSchema } from "@veschool/types";
 import AddGradeModal from "./components/AddGradeModal";
 import { QueryContextKey } from "configs/enums";
 import AddSectionModal from "./components/AddSectionModal";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import SchoolSectionMembers from "pages/school-section-members/school-section-members";
-import NotFound404 from "routing/404";
 import SchoolSectionClasses from "pages/school-section-classes/school-section-classes";
 import GradeAccordion from "./components/GradeAccordion";
+import NotFound404 from "routing/404";
 
 function ConfigureGradeSection() {
     const school = useAuthStore((s) => s.user?.school);
@@ -28,33 +28,30 @@ function ConfigureGradeSection() {
 
     const standards = useMemo(() => grades?.map(({ standard }) => standard), [grades]);
 
-    const { path } = useRouteMatch();
-
     return (
-        <Switch>
-            <Route exact path={path}>
-                <HStack justify="space-evenly">
-                    <AddGradeModal grades={standards} />
-                    <AddSectionModal grades={standards} />
-                </HStack>
-                <Accordion allowMultiple allowToggle>
-                    <VStack spacing="1" align="center">
-                        {grades?.map((grade) => (
-                            <GradeAccordion grade={grade} key={grade._id} />
-                        ))}
-                    </VStack>
-                </Accordion>
-            </Route>
-            <Route path={`${path}/:grade/:section/members`}>
-                <SchoolSectionMembers />
-            </Route>
-            <Route path={`${path}/:grade/:section/classes`}>
-                <SchoolSectionClasses />
-            </Route>
-            <Route path="*">
-                <NotFound404 />
-            </Route>
-        </Switch>
+        <Routes>
+            <Route
+                path=""
+                element={
+                    <>
+                        <HStack justify="space-evenly">
+                            <AddGradeModal grades={standards} />
+                            <AddSectionModal grades={standards} />
+                        </HStack>
+                        <Accordion allowMultiple allowToggle>
+                            <VStack spacing="1" align="center">
+                                {grades?.map((grade) => (
+                                    <GradeAccordion grade={grade} key={grade._id} />
+                                ))}
+                            </VStack>
+                        </Accordion>
+                    </>
+                }
+            />
+            <Route path=":grade/:section/members" element={<SchoolSectionMembers />} />
+            <Route path=":grade/:section/classes" element={<SchoolSectionClasses />} />
+            <Route path="*" element={<NotFound404 />} />
+        </Routes>
     );
 }
 

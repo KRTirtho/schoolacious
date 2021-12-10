@@ -1,7 +1,7 @@
 import { Button, Heading, Stack } from "@chakra-ui/react";
 import React from "react";
 import { useMutation } from "react-query";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { titumirApi } from "App";
 import { MutationContextKey } from "configs/enums";
 import {
@@ -19,7 +19,7 @@ import { Form, regex, useModel } from "react-binden";
 export const REQUIRED_MSG = "Required";
 
 function Signup() {
-    const history = useHistory();
+    const navigate = useNavigate();
     const first_name = useModel("");
     const last_name = useModel("");
     const email = useModel("");
@@ -40,7 +40,7 @@ function Signup() {
             if (refreshToken) {
                 setTokens?.({ refreshToken });
             }
-            setTimeout(() => history.push("/"), 500);
+            setTimeout(() => navigate("/"), 500);
         },
     });
 

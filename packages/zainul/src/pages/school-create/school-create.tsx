@@ -1,9 +1,9 @@
-import { Container, Icon, Heading } from "@chakra-ui/react";
 import React from "react";
 import CreateSchoolForm from "./components/CreateSchoolForm";
+import { Container, Icon, Heading } from "@chakra-ui/react";
 import { FaSchool } from "react-icons/fa";
-import { Redirect } from "react-router-dom";
-import { useAuthStore } from "../../state/authorization-store";
+import { Navigate } from "react-router-dom";
+import { useAuthStore } from "state/authorization-store";
 
 function SchoolCreate() {
     const user = useAuthStore((s) => s.user);
@@ -17,7 +17,7 @@ function SchoolCreate() {
                 Create a School
             </Heading>
             <CreateSchoolForm />
-            {user?.school && <Redirect to="/school" />}
+            {user?.school && <Navigate to="/school" />}
         </Container>
     );
 }

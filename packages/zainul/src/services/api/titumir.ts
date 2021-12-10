@@ -449,6 +449,19 @@ export default class Titumir {
         );
     }
 
+    /**@ignore */
+    /**@development this route is only for development purposes for the WebRTC conference UI */
+    async joinDevelopmentSession(
+        school: string,
+        grade: number,
+        section: string,
+        sessionId: string,
+    ) {
+        return await this.buildRequest<ClassSessionMetadata>(
+            `/school/${school}/grade/${grade}/section/${section}/class/dev/${sessionId}`,
+        );
+    }
+
     // notifications
     async getAllNotifications() {
         return await this.buildRequest<NotificationsSchema[]>("/notification");

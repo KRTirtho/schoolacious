@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import {
     OpenVidu,
     Publisher,
+    Session,
     StreamEvent,
     StreamManager,
     Subscriber,
@@ -13,8 +14,27 @@ import useTitumirQuery from "hooks/useTitumirQuery";
 import { QueryContextKey } from "configs/enums";
 import { useAuthStore } from "state/authorization-store";
 import { ClassSessionMetadata } from "services/api/titumir";
-import { Button, chakra, Heading, HStack, Text, VStack } from "@chakra-ui/react";
-import OpenViduVideo from "./components/OpenViduVideo";
+import {
+    Button,
+    chakra,
+    Heading,
+    HStack,
+    IconButton,
+    Text,
+    Tooltip,
+    VStack,
+} from "@chakra-ui/react";
+import Paper from "components/Paper/Paper";
+import {
+    BsCameraVideoFill,
+    BsCameraVideoOffFill,
+    BsMicFill,
+    BsMicMuteFill,
+} from "react-icons/bs";
+import { FaPhoneSlash } from "react-icons/fa";
+import { VideoLayout } from "./components/VideoLayout";
+
+type SessionEvenHandler = Parameters<Session["on"]>["1"];
 
 const ClassSession = () => {
     const { sessionId, grade, section } =
@@ -25,7 +45,7 @@ const ClassSession = () => {
         QueryContextKey.CLASS_SESSION,
         async (api) => {
             if (!school || !grade || !section) return null;
-            const sessionMetadata = await api.joinSession(
+            const sessionMetadata = await api.joinDevelopmentSession(
                 school?._id,
                 parseInt(grade),
                 section,
@@ -33,6 +53,7 @@ const ClassSession = () => {
             );
             return sessionMetadata.json;
         },
+        { refetchOnReconnect: false, refetchOnWindowFocus: false },
     );
 
     const openvidu = useMemo(() => new OpenVidu(), []);
@@ -41,6 +62,8 @@ const ClassSession = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
     const [publisher, setPublisher] = useState<Publisher>();
+    const [publishAudio, setPublishAudio] = useState(true);
+    const [publishVideo, setPublishVideo] = useState(true);
 
     useEffect(() => {
         return () => {
@@ -48,31 +71,55 @@ const ClassSession = () => {
         };
     }, []);
 
-    function deleteSubscriber(streamManager: StreamManager) {
-        const index = subscribers.indexOf(streamManager as Subscriber, 0);
-        if (index > -1) {
-            const copySubscriber = [...subscribers];
-            copySubscriber.splice(index, 1);
-            setSubscribers(copySubscriber);
-        }
-    }
-
-    async function joinSession() {
-        session.on("streamCreated", (event) => {
+    useEffect(() => {
+        const onStreamCreated: SessionEvenHandler = (event) => {
             const subscriber = session.subscribe((event as StreamEvent).stream, "");
-
-            setSubscribers([...subscribers, subscriber]);
-        });
-
-        session.on("streamDestroyed", (event) => {
+            setSubscribers((prev) => [...prev, subscriber]);
+        };
+        const onStreamDestroyed: SessionEvenHandler = (event) => {
             event.preventDefault();
             deleteSubscriber((event as StreamEvent).stream.streamManager);
-        });
-
-        session.on("exception", (exception) => {
+        };
+        const onSessionException: SessionEvenHandler = (exception) => {
             console.error("[OpenViduException]: ", exception);
-        });
+        };
 
+        session.on("streamCreated", onStreamCreated);
+        session.on("streamDestroyed", onStreamDestroyed);
+        session.on("exception", onSessionException);
+
+        return () => {
+            session.off("streamCreated", onStreamCreated);
+            session.off("streamDestroyed", onStreamDestroyed);
+            session.off("exception", onSessionException);
+        };
+    });
+
+    useEffect(() => {
+        publisher?.publishAudio(publishAudio);
+    }, [publishAudio]);
+    useEffect(() => {
+        publisher?.publishVideo(publishVideo);
+    }, [publishVideo]);
+
+    function toggleAudio() {
+        setPublishAudio(!publishAudio);
+    }
+
+    function toggleVideo() {
+        setPublishVideo(!publishVideo);
+    }
+
+    function deleteSubscriber(streamManager: StreamManager) {
+        setSubscribers(
+            subscribers.filter(
+                (subscriber) =>
+                    subscriber.stream.streamId !== streamManager.stream.streamId,
+            ),
+        );
+    }
+
+    const joinSession = useCallback(async () => {
         if (data?.token) {
             try {
                 await session.connect(data?.token);
@@ -80,8 +127,8 @@ const ClassSession = () => {
                 const publisher = openvidu.initPublisher("", {
                     audioSource: undefined,
                     videoSource: undefined,
-                    publishAudio: true,
-                    publishVideo: true,
+                    publishAudio,
+                    publishVideo,
                     resolution: "1280x720",
                     frameRate: 25,
                     insertMode: VideoInsertMode.APPEND,
@@ -94,58 +141,105 @@ const ClassSession = () => {
                 console.error("[OpenViduConnectionException]: ", error);
             }
         }
-    }
+    }, [data?.token, session, openvidu, publishAudio, publishVideo]);
 
-    function leaveSession() {
+    const leaveSession = useCallback(() => {
         session.disconnect();
         unstable_batchedUpdates(() => {
             setSubscribers([]);
             setPublisher(undefined);
             setIsConnected(false);
         });
-    }
+    }, [session]);
+
+    const controls = (
+        <>
+            <Tooltip label="Mute/Unmute Mic">
+                <IconButton
+                    shadow="md"
+                    rounded="50%"
+                    variant="ghost"
+                    aria-label="Mute/Unmute Mic"
+                    colorScheme="red"
+                    icon={publishAudio ? <BsMicFill /> : <BsMicMuteFill />}
+                    onClick={toggleAudio}
+                />
+            </Tooltip>
+            <Tooltip label="Turn on/off camera">
+                <IconButton
+                    shadow="md"
+                    rounded="50%"
+                    colorScheme="blue"
+                    variant="ghost"
+                    aria-label="Turn on/off camera"
+                    icon={publishVideo ? <BsCameraVideoFill /> : <BsCameraVideoOffFill />}
+                    onClick={toggleVideo}
+                />
+            </Tooltip>
+        </>
+    );
 
     if (isConnected) {
         return (
             <VStack>
                 <chakra.section w="full">
                     <HStack justify="space-between" px="2" py="1">
-                        <Heading>
-                            Session <chakra.span color="green.400">{grade}</chakra.span>
-                            {" > "}
+                        <Heading size="lg">Session</Heading>
+                        <Text>
+                            <chakra.span color="green.400">{grade}</chakra.span>
+                            {" / "}
                             <chakra.span color="blue.400">
                                 {decodeURI(section)}
                             </chakra.span>
-                            {" > "}
+                            {" / "}
                             <chakra.span color="pink.400">{sessionId}</chakra.span>
-                        </Heading>
-                        <Button onClick={leaveSession} colorScheme="red">
-                            Leave
-                        </Button>
+                        </Text>
                     </HStack>
                 </chakra.section>
-                <HStack w="full" wrap="wrap">
-                    {publisher && <OpenViduVideo streamManager={publisher} />}
-                    {subscribers.map((subscriber, i) => (
-                        <OpenViduVideo key={i} streamManager={subscriber} />
-                    ))}
+                {publisher && (
+                    <VideoLayout publisher={publisher} subscribers={subscribers} />
+                )}
+                <HStack justify="center" pos="fixed" bottom="5%">
+                    {controls}
+                    <Tooltip label="Leave conference">
+                        <IconButton
+                            icon={<FaPhoneSlash />}
+                            aria-label="leave conference"
+                            onClick={leaveSession}
+                            colorScheme="red"
+                            rounded="50%"
+                            shadow="md"
+                        />
+                    </Tooltip>
                 </HStack>
             </VStack>
         );
     }
 
     return (
-        <VStack>
-            <Heading size="lg">Join Session</Heading>
-            <Text fontSize="lg">
-                <chakra.span color="green.400">{grade}</chakra.span>
-                {" > "}
-                <chakra.span color="blue.400">{decodeURI(section)}</chakra.span>
-                {" > "}
-                <chakra.span color="pink.400">{sessionId}</chakra.span>
-            </Text>
-            <Button onClick={joinSession}>Join</Button>
-        </VStack>
+        <Paper mt="5">
+            <VStack align="flex-start" p="2">
+                <Heading alignSelf="center" size="lg">
+                    Join Session
+                </Heading>
+                <Text>
+                    Grade: <chakra.span color="green.400">{grade}</chakra.span>
+                </Text>
+                <Text>
+                    Section:{" "}
+                    <chakra.span color="blue.400">{decodeURI(section)}</chakra.span>
+                </Text>
+                <Text>
+                    Session: <chakra.span color="pink.400">{sessionId}</chakra.span>
+                </Text>
+                <HStack alignSelf="center" py="2">
+                    {controls}
+                </HStack>
+                <Button alignSelf="center" onClick={joinSession}>
+                    Join
+                </Button>
+            </VStack>
+        </Paper>
     );
 };
 

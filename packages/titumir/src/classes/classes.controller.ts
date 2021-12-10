@@ -229,4 +229,28 @@ export class ClassesController implements OnApplicationBootstrap {
             throw error;
         }
     }
+
+    /**@ignore */
+    /**@development This route is only for development purposes for WebRTC conference UI  */
+    @Get("dev/:sessionId")
+    async joinDevelopmentSession(@Param("sessionId") sessionId: string) {
+        try {
+            await this.openviduService.fetch();
+            const session =
+                this.openviduService.activeSessions.find(
+                    (session) => session.sessionId === sessionId,
+                ) ??
+                (await this.openviduService.createSession({
+                    customSessionId: sessionId,
+                }));
+
+            const connection = await session.createConnection({
+                role: OpenViduRole.MODERATOR,
+            });
+            return connection;
+        } catch (error) {
+            this.logger.error(error);
+            throw error;
+        }
+    }
 }

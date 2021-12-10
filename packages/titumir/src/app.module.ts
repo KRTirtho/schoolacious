@@ -29,10 +29,13 @@ export const THROTTLER_GUARD = "THROTTLER_GUARD";
                 autoLogging: {
                     ignore: () => true,
                 },
-                prettyPrint: {
-                    colorize: true,
-                    translateTime: "yy-mm-dd HH:MM:ss",
-                    ignore: "hostname,pid,req.headers,req.remoteAddress,req.remotePort,err.response",
+                transport: {
+                    target: "pino-pretty",
+                    options: {
+                        colorize: true,
+                        translateTime: "yy-mm-dd HH:MM:ss",
+                        ignore: "hostname,pid,req.headers,req.remoteAddress,req.remotePort,err.response",
+                    },
                 },
             },
         }),

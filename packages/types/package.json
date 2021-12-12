@@ -8,6 +8,9 @@
     ],
     "author": "KR Tirtho <krtirtho@gmail.com>",
     "homepage": "https://github.com/KRTirtho/veschool/tree/master/packages/types#readme",
+    "files": [
+        "dist"
+    ],
     "license": "MIT",
     "main": "dist/index",
     "module": "dist/esm/index",

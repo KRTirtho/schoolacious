@@ -32,6 +32,7 @@ export enum INVITATION_OR_JOIN_ROLE {
 export enum NOTIFICATION_STATUS {
     unread = "unread",
     read = "read",
+    viewed = "viewed",
 }
 
 export enum WS_SERVER_EVENTS {

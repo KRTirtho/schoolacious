@@ -12,8 +12,7 @@ import {
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import React from "react";
-import { CreateSubjectBody } from "services/api/titumir";
-import { useAuthStore } from "state/authorization-store";
+import { SubjectProperties } from "services/titumir-api/modules/school";
 import { SubjectSchema } from "@veschool/types";
 import { Field, Form, Formik } from "formik";
 import TextField, { TextareaField } from "components/TextField/TextField";
@@ -23,16 +22,14 @@ import { useQueryClient } from "react-query";
 function AddSubjectsModal() {
     const { isOpen, onToggle, onClose } = useDisclosure();
 
-    const school = useAuthStore((s) => s.user?.school?.short_name);
-
     const queryClient = useQueryClient();
 
     const { mutate: createSubjects } = useTitumirMutation<
         SubjectSchema,
-        CreateSubjectBody
+        SubjectProperties
     >(
         MutationContextKey.CREATE_SCHOOL_SUBJECTS,
-        (api, data) => api.createSubjects(school!, data).then(({ json }) => json),
+        (api, data) => api.school.createSubject(data).then(({ json }) => json),
         {
             onSuccess() {
                 queryClient.refetchQueries(QueryContextKey.SCHOOL_SUBJECTS);

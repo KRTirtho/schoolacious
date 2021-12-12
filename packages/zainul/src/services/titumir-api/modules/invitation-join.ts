@@ -1,4 +1,3 @@
-import { TitumirResponse } from "services/api/titumir";
 import {
     Invitations_JoinsSchema,
     INVITATION_OR_JOIN_ROLE,
@@ -6,7 +5,7 @@ import {
     SchoolSchema,
     UserSchema,
 } from "@veschool/types";
-import { Connector } from "../Connector";
+import { Connector, TitumirResponse } from "../Connector";
 
 export enum INVITATION_OR_JOIN_ACTION {
     accept = "accept",
@@ -39,8 +38,8 @@ export interface JoinRequestProperties {
 }
 
 export class TitumirInvitationJoinModule extends Connector {
-    constructor() {
-        super("/invitation-join", TitumirInvitationJoinModule.name);
+    constructor(prefix: string) {
+        super(prefix, "/invitation-join", TitumirInvitationJoinModule.name);
     }
 
     async createInvitations(

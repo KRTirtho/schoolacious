@@ -1,8 +1,5 @@
-import { MutationContextKey, QueryContextKey } from "configs/enums";
-import useTitumirQuery from "hooks/useTitumirQuery";
 import React, { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useAuthStore } from "state/authorization-store";
 import {
     chakra,
     Divider,
@@ -18,13 +15,16 @@ import {
     Tr,
     VStack,
 } from "@chakra-ui/react";
+import { MutationContextKey, QueryContextKey } from "configs/enums";
+import useTitumirQuery from "hooks/useTitumirQuery";
+import { useAuthStore } from "state/authorization-store";
 import { userToName } from "utils/userToName";
-import {
-    AddSectionStudentsBody,
-    AddSectionStudentsReturns,
-    AssignSectionTeacherBody,
-    SectionWithSubject,
-} from "services/api/titumir";
+import type {
+    SectionAddStudentsProperties,
+    SectionStudentsResponseProperties,
+    SectionAddTeacherProperties,
+    SectionSchemaWithSubject,
+} from "services/titumir-api/modules/section";
 import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
 import { AddUserPopover } from "components/AddUserPopover/AddUserPopover";
 import useTitumirMutation from "hooks/useTitumirMutation";
@@ -38,20 +38,15 @@ function SchoolSectionMembers() {
 
     const school = useAuthStore((s) => s.user?.school);
 
-    const short_name = school?.short_name;
-
     // fetching sections from server
-    const { data: section, refetch } = useTitumirQuery<SectionWithSubject | null>(
+    const { data: section, refetch } = useTitumirQuery<SectionSchemaWithSubject | null>(
         // using array of keys for uniqueness of each section as
         // section.name are non-unique
         [QueryContextKey.SECTION, params?.grade, params?.section],
         async (api) => {
-            if (!(params?.grade && params?.section && short_name)) return null;
-            const { json } = await api.getSection(
-                short_name,
-                parseInt(params.grade),
-                params.section,
-            );
+            if (!(params?.grade && params?.section)) return null;
+            api.setGradeId(parseInt(params.grade));
+            const { json } = await api.section.get(params.section);
 
             return json;
         },
@@ -73,17 +68,13 @@ function SchoolSectionMembers() {
     // creating section teacher for each section subject
     const { mutate: assignSectionTeacher } = useTitumirMutation<
         TeachersToSectionsToGradesSchema | null,
-        AssignSectionTeacherBody
+        SectionAddTeacherProperties
     >(
         [MutationContextKey.ADD_SECTION_TEACHER, params?.grade, params?.section],
         async (api, data) => {
-            if (!(short_name && params?.grade && params?.section)) return null;
-            const { json } = await api.assignSectionTeacher(
-                short_name,
-                parseInt(params.grade),
-                params.section,
-                data,
-            );
+            if (!(params?.grade && params?.section)) return null;
+            api.setGradeId(parseInt(params.grade));
+            const { json } = await api.section.addTeacher(data, params.section);
 
             return json;
         },
@@ -92,18 +83,14 @@ function SchoolSectionMembers() {
 
     //  section students assigning caller
     const { mutate: addSectionStudents } = useTitumirMutation<
-        AddSectionStudentsReturns | null,
-        AddSectionStudentsBody[]
+        SectionStudentsResponseProperties | null,
+        SectionAddStudentsProperties[]
     >(
         [MutationContextKey.ADD_SECTION_STUDENTS, params?.grade, params?.section],
         async (api, data) => {
-            if (!(short_name && params?.grade && params?.section)) return null;
-            const { json } = await api.addSectionStudents(
-                short_name,
-                parseInt(params.grade),
-                params.section,
-                data,
-            );
+            if (!(params?.grade && params?.section)) return null;
+            api.setGradeId(parseInt(params.grade));
+            const { json } = await api.section.addStudents(data, params.section);
 
             return json;
         },

@@ -13,7 +13,7 @@ import useTitumirQuery from "hooks/useTitumirQuery";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { useAuthStore } from "state/authorization-store";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { ScheduleClassBody } from "services/api/titumir";
+import { ClassProperties } from "services/titumir-api/modules/class";
 import { secondsToMinutes, minutesToSeconds, parse } from "date-fns";
 import { useQueryClient } from "react-query";
 
@@ -33,11 +33,9 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({ day, classes }) =>
         TeachersToSectionsToGradesSchema[] | null
     >([QueryContextKey.SECTION_TEACHERS, params?.grade, params?.section], async (api) => {
         if (!(short_name && params?.grade && params?.section)) return null;
-        const { json } = await api.getSectionTeachers(
-            short_name,
-            parseInt(params.grade),
-            params.section,
-        );
+
+        api.setGradeId(parseInt(params.grade));
+        const { json } = await api.section.listTeacher(params.section);
         return json;
     });
 
@@ -45,17 +43,15 @@ export const WeekDayClassCard: FC<WeekDayClassCardProps> = ({ day, classes }) =>
 
     const { mutate: scheduleClass } = useTitumirMutation<
         ClassSchema | null,
-        ScheduleClassBody
+        ClassProperties
     >(
         [MutationContextKey.CREATE_CLASS, day, params?.grade, params?.section],
         async (api, data) => {
             if (!(short_name && params?.grade && params?.section)) return null;
-            const { json } = await api.createClass(
-                short_name,
-                parseInt(params.grade),
-                params.section,
-                data,
-            );
+
+            api.setGradeId(parseInt(params.grade));
+            api.setSectionId(params.section);
+            const { json } = await api.class.create(data);
             return json;
         },
         {

@@ -2,14 +2,14 @@ import React, { useMemo } from "react";
 import { OptionTypeBase } from "react-select";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import {
-    InvitationBody,
+    InvitationProperties,
     Invitations_Joins,
-    INVITATION_OR_JOIN_ROLE,
-} from "services/api/titumir";
+} from "services/titumir-api/modules/invitation-join";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { useQueryClient } from "react-query";
 import { capitalize } from "lodash-es";
 import AddMultipleUserSlide from "components/AddMultipleUserSlide/AddMultipleUserSlide";
+import { INVITATION_OR_JOIN_ROLE } from "@veschool/types";
 
 export interface OptionType extends OptionTypeBase {
     label: React.ReactElement;
@@ -24,9 +24,11 @@ interface InviteMembersDrawerProps {
 function InviteMembersDrawer({ role }: InviteMembersDrawerProps) {
     const queryClient = useQueryClient();
 
-    const { mutate: invite } = useTitumirMutation<Invitations_Joins[], InvitationBody[]>(
-        MutationContextKey.INVITATION,
-        (api, invitations) => api.invite(invitations).then(({ json }) => json),
+    const { mutate: invite } = useTitumirMutation<
+        Invitations_Joins[],
+        InvitationProperties[]
+    >(MutationContextKey.INVITATION, (api, invitations) =>
+        api.invitationJoin.createInvitations(invitations).then(({ json }) => json),
     );
 
     const character = useMemo(() => capitalize(role.valueOf()), [role]);

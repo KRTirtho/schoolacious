@@ -26,8 +26,8 @@ function QueryUser({
     const { data: optionsRaw, refetch } = useTitumirQuery<UserSchema[]>(
         [QueryContextKey.QUERY_USER, props.field.name],
         (api) =>
-            api
-                .queryUser(query, { school_id: school?._id, roles })
+            api.user
+                .query(query, { school_id: school?._id, roles })
                 .then(({ json }) => json),
         {
             enabled: false,

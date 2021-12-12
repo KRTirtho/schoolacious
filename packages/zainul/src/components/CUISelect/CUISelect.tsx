@@ -1,9 +1,7 @@
 import {
-    chakra,
     FormControl,
     FormErrorMessage,
     FormLabel,
-    Text,
     theme,
     Theme,
     useColorModeValue,

@@ -20,12 +20,11 @@ import { Formik, Form, Field } from "formik";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import React, { FC } from "react";
 import { useQueryClient } from "react-query";
-import { CreateSectionBody } from "services/api/titumir";
-import { useAuthStore } from "state/authorization-store";
 import * as yup from "yup";
 import { SectionSchema } from "@veschool/types";
 import { AddGradeModalProps } from "./AddGradeModal";
 import { FaPlusSquare } from "react-icons/fa";
+import { SectionProperties } from "services/titumir-api/modules/section";
 
 export type AddSectionModal = AddGradeModalProps;
 
@@ -38,18 +37,16 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
         grade: yup.number().required(),
     });
 
-    const short_name = useAuthStore((s) => s.user?.school?.short_name);
-
     const queryClient = useQueryClient();
 
     const { mutate: createSection, error } = useTitumirMutation<
-        SectionSchema | null,
-        CreateSectionBody
+        SectionSchema,
+        SectionProperties & { grade: string }
     >(
         MutationContextKey.CREATE_SECTION,
-        async (api, data) => {
-            if (!short_name) return null;
-            const { json } = await api.createSection(short_name, data);
+        async (api, { grade, ...data }) => {
+            api.setGradeId(parseInt(grade));
+            const { json } = await api.section.create(data);
             return json;
         },
         {

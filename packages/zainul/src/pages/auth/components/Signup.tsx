@@ -2,19 +2,19 @@ import { Button, Heading, Stack } from "@chakra-ui/react";
 import React from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { titumirApi } from "App";
 import { MutationContextKey } from "configs/enums";
-import {
-    CONST_REFRESH_TOKEN_KEY,
-    SignupBody,
-    TitumirResponse,
-} from "services/api/titumir";
 import { UserSchema } from "@veschool/types";
 import { ActualField as Field } from "components/TextField/TextField";
 import MaskedPasswordField from "components/MaskedPasswordField/MaskedPasswordField";
 import { useAuthStore } from "state/authorization-store";
 import { useTokenStore } from "state/token-store";
 import { Form, regex, useModel } from "react-binden";
+import { useTitumirApiStore } from "state/titumir-store";
+import {
+    CONST_REFRESH_TOKEN_KEY,
+    SignupProperties,
+} from "services/titumir-api/modules/auth";
+import { TitumirResponse } from "services/titumir-api/Connector";
 
 export const REQUIRED_MSG = "Required";
 
@@ -29,11 +29,13 @@ function Signup() {
     const setTokens = useTokenStore((s) => s.setTokens);
     const setUser = useAuthStore((s) => s.setUser);
 
+    const api = useTitumirApiStore();
+
     const { mutate: signup, isSuccess } = useMutation<
         TitumirResponse<UserSchema>,
         Error,
-        SignupBody
-    >(MutationContextKey.SIGNUP, (body) => titumirApi.signup(body), {
+        SignupProperties
+    >(MutationContextKey.SIGNUP, (body) => api.auth.signup(body), {
         onSuccess({ json, headers }) {
             setUser(json);
             const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);

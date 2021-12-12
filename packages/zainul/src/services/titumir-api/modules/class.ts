@@ -1,6 +1,5 @@
 import { ClassSchema } from "@veschool/types";
-import { TitumirResponse } from "services/api/titumir";
-import { Connector } from "../Connector";
+import { Connector, TitumirResponse } from "../Connector";
 import { SectionPrefixIds } from "./section";
 
 export interface ClassProperties {
@@ -21,8 +20,9 @@ export interface ClassPrefixIds extends SectionPrefixIds {
 }
 
 export class TitumirClassModule extends Connector {
-    constructor(public prefixIds: ClassPrefixIds) {
+    constructor(prefix: string, public prefixIds: ClassPrefixIds) {
         super(
+            prefix,
             `/school/${prefixIds.school}/grade/${prefixIds.grade}/section/${prefixIds.section}/class`,
             TitumirClassModule.name,
         );

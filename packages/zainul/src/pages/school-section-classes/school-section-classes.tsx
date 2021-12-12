@@ -5,7 +5,6 @@ import React, { FC } from "react";
 import { useParams } from "react-router-dom";
 import { ClassSchema } from "@veschool/types";
 import { QueryContextKey } from "configs/enums";
-import { useAuthStore } from "state/authorization-store";
 import { uniqueId } from "lodash-es";
 import { WeekDayClassCard } from "./components/WeekDayClassCard";
 
@@ -22,18 +21,15 @@ const SchoolSectionClasses: FC = () => {
         "Saturday",
     ];
 
-    const short_name = useAuthStore((s) => s.user?.school?.short_name);
-
     const { data: classes } = useTitumirQuery<ClassSchema[] | null>(
         [QueryContextKey.CLASSES, params?.grade, params?.section],
         async (api) => {
-            if (!(short_name && params.grade && params.section)) return null;
+            if (!(params.grade && params.section)) return null;
 
-            const { json } = await api.getClasses(
-                short_name,
-                parseInt(params.grade),
-                params.section,
-            );
+            api.setGradeId(parseInt(params.grade));
+            api.setSectionId(params.section);
+
+            const { json } = await api.class.list();
 
             return json;
         },

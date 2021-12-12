@@ -1,7 +1,6 @@
 import { Accordion, HStack, VStack } from "@chakra-ui/react";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React, { useMemo } from "react";
-import { useAuthStore } from "state/authorization-store";
 import { GradeSchema } from "@veschool/types";
 import AddGradeModal from "./components/AddGradeModal";
 import { QueryContextKey } from "configs/enums";
@@ -13,14 +12,18 @@ import GradeAccordion from "./components/GradeAccordion";
 import NotFound404 from "routing/404";
 
 function ConfigureGradeSection() {
-    const school = useAuthStore((s) => s.user?.school);
-    const { data: grades } = useTitumirQuery<GradeSchema[] | null>(
+    const { data: grades } = useTitumirQuery<GradeSchema[]>(
         QueryContextKey.GRADES,
         async (api) => {
-            if (!school) return null;
-            const { json } = await api.getGrades(school.short_name, {
-                extended:
-                    "sections,moderator,sections.class_teacher,examiner,grades_subjects,grades_subjects.subject",
+            const { json } = await api.grade.list({
+                extendedProperties: [
+                    "sections",
+                    "moderator",
+                    "sections.class_teacher",
+                    "examiner",
+                    "grades_subjects",
+                    "grades_subjects.subject",
+                ],
             });
             return json;
         },

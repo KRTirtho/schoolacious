@@ -1,10 +1,11 @@
-import { titumirApi } from "App";
+import { useTitumirApiStore } from "state/titumir-store";
 import { useTokenStore } from "state/token-store";
 
 function useLogout() {
+    const api = useTitumirApiStore();
     const clearTokens = useTokenStore((s) => s.clearTokens);
     function clearAll() {
-        titumirApi.logout().then(() => clearTokens());
+        api.auth.logout().then(() => clearTokens());
     }
     return clearAll;
 }

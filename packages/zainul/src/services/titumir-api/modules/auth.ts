@@ -1,6 +1,5 @@
 import { UserSchema } from "@veschool/types";
-import { TitumirResponse } from "services/api/titumir";
-import { Connector } from "../Connector";
+import { Connector, TitumirResponse } from "../Connector";
 
 export const CONST_REFRESH_TOKEN_KEY = "x-refresh-token";
 export interface LoginProperties {
@@ -12,16 +11,24 @@ export type SignupProperties = LoginProperties &
     Pick<UserSchema, "first_name" | "last_name">;
 
 export class TitumirAuthModule extends Connector {
-    constructor() {
-        super("/auth", TitumirAuthModule.name);
+    constructor(prefix: string) {
+        super(prefix, "/auth", TitumirAuthModule.name);
     }
 
     async login(body: LoginProperties): Promise<TitumirResponse<UserSchema>> {
-        return await this.buildRequest<UserSchema>("login", "POST", body);
+        return await this.buildRequest<UserSchema, LoginProperties>(
+            "login",
+            "POST",
+            body,
+        );
     }
 
     async signup(body: SignupProperties): Promise<TitumirResponse<UserSchema>> {
-        return await this.buildRequest<UserSchema>("signup", "POST", body);
+        return await this.buildRequest<UserSchema, SignupProperties>(
+            "signup",
+            "POST",
+            body,
+        );
     }
 
     async refresh(token: string) {

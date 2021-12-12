@@ -1,6 +1,5 @@
 import { GradeSchema, GradeToSubjectSchema } from "@veschool/types";
-import { TitumirResponse } from "services/api/titumir";
-import { Connector } from "../Connector";
+import { Connector, TitumirResponse } from "../Connector";
 
 export interface GradeProperties {
     standard: number;
@@ -28,8 +27,8 @@ export interface GradeListOptions {
 }
 
 export class TitumirGradeModule extends Connector {
-    constructor(public school: string, public gradeId?: number) {
-        super(`/school/${school}/grade`, TitumirGradeModule.name);
+    constructor(prefix: string, public school: string, public gradeId?: number) {
+        super(prefix, `/school/${school}/grade`, TitumirGradeModule.name);
     }
 
     public setGradeId(gradeId: number) {
@@ -59,11 +58,11 @@ export class TitumirGradeModule extends Connector {
     }
 
     async createSubjects(
-        grade: number,
         subjects: AddGradeSubjectsBody[],
+        grade?: number,
     ): Promise<TitumirResponse<GradeToSubjectSchema[]>> {
         return await this.buildRequest<GradeToSubjectSchema[], AddGradeSubjectsBody[]>(
-            `${grade}/subject`,
+            `${grade ?? this.gradeId}/subject`,
             "POST",
             subjects,
         );

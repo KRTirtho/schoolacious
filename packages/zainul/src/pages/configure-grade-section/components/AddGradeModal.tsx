@@ -16,8 +16,7 @@ import React, { FC } from "react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { useAuthStore } from "state/authorization-store";
-import { GradeBody } from "services/api/titumir";
+import { GradeProperties } from "services/titumir-api/modules/grade";
 import { GradeSchema } from "@veschool/types";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { useQueryClient } from "react-query";
@@ -42,7 +41,6 @@ export interface AddGradeModalProps {
 }
 
 const AddGradeModal: FC<AddGradeModalProps> = ({ grades }) => {
-    const short_name = useAuthStore((s) => s.user?.school?.short_name);
     const { isOpen, onClose, onToggle } = useDisclosure();
 
     const queryClient = useQueryClient();
@@ -51,11 +49,10 @@ const AddGradeModal: FC<AddGradeModalProps> = ({ grades }) => {
         mutate: createGrade,
         isLoading,
         error,
-    } = useTitumirMutation<GradeSchema | null, GradeBody>(
+    } = useTitumirMutation<GradeSchema, GradeProperties>(
         MutationContextKey.CREATE_GRADES,
         async (api, body) => {
-            if (!short_name) return null;
-            const { json } = await api.createGrade(short_name, body);
+            const { json } = await api.grade.create(body);
             return json;
         },
         {

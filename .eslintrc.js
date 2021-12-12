@@ -12,7 +12,7 @@ module.exports = {
         "plugin:import/typescript",
     ],
     root: true,
-    
+
     parserOptions: {
         sourceType: "module",
     },
@@ -23,6 +23,11 @@ module.exports = {
         "*.json",
         "**/*.json",
     ],
+    settings: {
+        react: {
+            version: "17.0.0",
+        },
+    },
     rules: {
         "prettier/prettier": "warn",
         "linebreak-style": "off",

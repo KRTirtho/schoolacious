@@ -1,10 +1,9 @@
 import { UserSchema, USER_ROLE, Invitations_JoinsSchema } from "@veschool/types";
-import { TitumirResponse } from "services/api/titumir";
-import { Connector } from "../Connector";
+import { Connector, TitumirResponse } from "../Connector";
 
 export class TitumirUserModule extends Connector {
-    constructor() {
-        super("/user", TitumirUserModule.name);
+    constructor(prefix: string) {
+        super(prefix, "/user", TitumirUserModule.name);
     }
 
     async me(): Promise<TitumirResponse<UserSchema>> {

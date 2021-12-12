@@ -5,8 +5,7 @@ import {
     TeachersToSectionsToGradesSchema,
     UserSchema,
 } from "@veschool/types";
-import { TitumirResponse } from "services/api/titumir";
-import { Connector } from "../Connector";
+import { Connector, TitumirResponse } from "../Connector";
 
 export interface SectionStudentsResponseProperties {
     users: StudentsToSectionsToGradesSchema[];
@@ -33,8 +32,13 @@ export type SectionSchemaWithSubject = Omit<SectionSchema, "grade"> & {
 };
 
 export class TitumirSectionModule extends Connector {
-    constructor(public prefixIds: SectionPrefixIds, public sectionId?: string) {
+    constructor(
+        prefix: string,
+        public prefixIds: SectionPrefixIds,
+        public sectionId?: string,
+    ) {
         super(
+            prefix,
             `/school/${prefixIds.school}/grade/${prefixIds.grade}/section`,
             TitumirSectionModule.name,
         );

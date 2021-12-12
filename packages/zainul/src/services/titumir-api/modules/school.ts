@@ -1,6 +1,6 @@
 import { SchoolSchema, SubjectSchema, UserSchema } from "@veschool/types";
-import { Invitations_Joins, TitumirResponse } from "services/api/titumir";
-import { Connector } from "../Connector";
+import { Connector, TitumirResponse } from "../Connector";
+import { Invitations_Joins } from "./invitation-join";
 
 export interface SchoolListOptions {
     noInviteJoin?: boolean;
@@ -22,8 +22,8 @@ export interface SubjectProperties {
 }
 
 export class TitumirSchoolModule extends Connector {
-    constructor(public schoolId?: string) {
-        super("/school", TitumirSchoolModule.name);
+    constructor(prefix: string, public schoolId?: string) {
+        super(prefix, "/school", TitumirSchoolModule.name);
     }
 
     public setSchoolId(schoolId: string) {

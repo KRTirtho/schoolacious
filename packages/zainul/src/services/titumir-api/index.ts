@@ -15,35 +15,41 @@ export default class Titumir {
     schoolId = "";
     gradeId = 0;
     sectionId = "";
-    constructor(prefixIds?: Options) {
+
+    auth: TitumirAuthModule;
+    user: TitumirUserModule;
+    notification: TitumirNotificationModule;
+    invitationJoin: TitumirInvitationJoinModule;
+    school: TitumirSchoolModule;
+    grade: TitumirGradeModule;
+    section: TitumirSectionModule;
+    class: TitumirClassModule;
+
+    constructor(public prefix: string, prefixIds?: Options) {
         if (prefixIds?.school) this.schoolId = prefixIds?.school;
         if (prefixIds?.grade) this.gradeId = prefixIds?.grade;
         if (prefixIds?.section) this.sectionId = prefixIds?.section;
-    }
 
-    public auth: TitumirAuthModule = new TitumirAuthModule();
-    public user: TitumirUserModule = new TitumirUserModule();
-    public notification: TitumirNotificationModule = new TitumirNotificationModule();
-    public invitationJoin: TitumirInvitationJoinModule =
-        new TitumirInvitationJoinModule();
-
-    public school: TitumirSchoolModule = new TitumirSchoolModule(this.schoolId);
-    public grade: TitumirGradeModule = new TitumirGradeModule(
-        this.schoolId,
-        this.gradeId,
-    );
-    public section: TitumirSectionModule = new TitumirSectionModule(
-        {
+        this.auth = new TitumirAuthModule(prefix);
+        this.user = new TitumirUserModule(prefix);
+        this.notification = new TitumirNotificationModule(prefix);
+        this.invitationJoin = new TitumirInvitationJoinModule(prefix);
+        this.school = new TitumirSchoolModule(prefix, this.schoolId);
+        this.grade = new TitumirGradeModule(prefix, this.schoolId, this.gradeId);
+        this.section = new TitumirSectionModule(
+            prefix,
+            {
+                school: this.schoolId,
+                grade: this.gradeId,
+            },
+            this.sectionId,
+        );
+        this.class = new TitumirClassModule(prefix, {
             school: this.schoolId,
             grade: this.gradeId,
-        },
-        this.sectionId,
-    );
-    public class: TitumirClassModule = new TitumirClassModule({
-        school: this.schoolId,
-        grade: this.gradeId,
-        section: this.sectionId,
-    });
+            section: this.sectionId,
+        });
+    }
 
     public setSchoolId(schoolId: string) {
         this.schoolId = schoolId;

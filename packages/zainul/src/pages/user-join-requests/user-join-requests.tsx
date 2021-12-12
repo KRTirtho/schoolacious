@@ -5,20 +5,20 @@ import { Invitations_JoinsSchema } from "@veschool/types";
 import { chakra, Table, Thead, Tr, Th, Tbody } from "@chakra-ui/react";
 import TableRowTile from "components/TableRowTile/TableRowTile";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { CancelInvitationJoinBody } from "services/api/titumir";
+import { InvitationJoinCancellationProperties } from "services/titumir-api/modules/invitation-join";
 
 function UserJoinRequests() {
     const { data: joinRequests, refetch } = useTitumirQuery<Invitations_JoinsSchema[]>(
         QueryContextKey.JOIN_REQUEST_SENT,
-        (api) => api.getUserJoinRequests().then(({ json }) => json),
+        (api) => api.user.listJoinRequest().then(({ json }) => json),
     );
 
     const { mutate: cancelInvitationJoin } = useTitumirMutation<
         { message: string },
-        CancelInvitationJoinBody
+        InvitationJoinCancellationProperties
     >(
         MutationContextKey.CANCEL_INVITATION_JOIN,
-        (api, data) => api.cancelInvitationJoin(data).then(({ json }) => json),
+        (api, data) => api.invitationJoin.cancel(data).then(({ json }) => json),
         {
             onSuccess: () => refetch(),
         },

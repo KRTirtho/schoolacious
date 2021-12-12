@@ -12,8 +12,7 @@ import {
 import { useParams } from "react-router-dom";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { QueryContextKey } from "configs/enums";
-import { useAuthStore } from "state/authorization-store";
-import { ClassSessionMetadata } from "services/api/titumir";
+import { ClassSessionProperties } from "services/titumir-api/modules/class";
 import {
     Button,
     chakra,
@@ -39,17 +38,13 @@ type SessionEvenHandler = Parameters<Session["on"]>["1"];
 const ClassSession = () => {
     const { sessionId, grade, section } = useParams<"sessionId" | "grade" | "section">();
 
-    const school = useAuthStore((s) => s.user?.school);
-    const { data } = useTitumirQuery<ClassSessionMetadata | null>(
+    const { data } = useTitumirQuery<ClassSessionProperties | null>(
         QueryContextKey.CLASS_SESSION,
         async (api) => {
-            if (!school || !grade || !section || !sessionId) return null;
-            const sessionMetadata = await api.joinDevelopmentSession(
-                school?._id,
-                parseInt(grade),
-                section,
-                sessionId,
-            );
+            if (!grade || !section || !sessionId) return null;
+            api.setGradeId(parseInt(grade));
+            api.setSectionId(section);
+            const sessionMetadata = await api.class.getDevelopmentSession(sessionId);
             return sessionMetadata.json;
         },
         { refetchOnReconnect: false, refetchOnWindowFocus: false },

@@ -2,19 +2,19 @@ import { Flex, Heading, Button, Link as MuiLink } from "@chakra-ui/react";
 import React from "react";
 import { useMutation } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { titumirApi } from "App";
 import MaskedPasswordField from "components/MaskedPasswordField/MaskedPasswordField";
 import { ActualField } from "components/TextField/TextField";
 import { MutationContextKey } from "configs/enums";
-import {
-    TitumirResponse,
-    LoginBody,
-    CONST_REFRESH_TOKEN_KEY,
-} from "services/api/titumir";
 import { UserSchema } from "@veschool/types";
 import { useAuthStore } from "state/authorization-store";
 import { useTokenStore } from "state/token-store";
 import { useModel, Form, regex } from "react-binden";
+import { useTitumirApiStore } from "state/titumir-store";
+import { TitumirResponse } from "services/titumir-api/Connector";
+import {
+    CONST_REFRESH_TOKEN_KEY,
+    LoginProperties,
+} from "services/titumir-api/modules/auth";
 
 export const MINIMUM_CHAR_MSG = "Minimum 8 chars";
 export const INVALID_EMAIL_MSG = "Invalid email";
@@ -23,11 +23,12 @@ function Login() {
     const navigate = useNavigate();
     const setTokens = useTokenStore((s) => s.setTokens);
     const setUser = useAuthStore((s) => s.setUser);
+    const api = useTitumirApiStore();
     const { mutate: login, isSuccess } = useMutation<
         TitumirResponse<UserSchema>,
         Error,
-        LoginBody
-    >(MutationContextKey.LOGIN, (body) => titumirApi.login(body), {
+        LoginProperties
+    >(MutationContextKey.LOGIN, (body) => api.auth.login(body), {
         onSuccess({ json, headers }) {
             setUser(json);
             const refreshToken = headers.get(CONST_REFRESH_TOKEN_KEY);

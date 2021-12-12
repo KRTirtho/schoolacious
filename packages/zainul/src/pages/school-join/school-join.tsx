@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
     Avatar,
     Heading,
@@ -16,14 +17,17 @@ import {
 } from "@chakra-ui/react";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
-import React, { useState } from "react";
 import { FaGraduationCap } from "react-icons/fa";
 import { GiTeacher } from "react-icons/gi";
 import { Link } from "react-router-dom";
-import { Invitations_JoinsSchema, SchoolSchema } from "@veschool/types";
+import {
+    Invitations_JoinsSchema,
+    INVITATION_OR_JOIN_ROLE,
+    SchoolSchema,
+} from "@veschool/types";
 import { FiSearch } from "react-icons/fi";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { INVITATION_OR_JOIN_ROLE, JoinBody } from "services/api/titumir";
+import { JoinRequestProperties } from "services/titumir-api/modules/invitation-join";
 import { useQueryClient } from "react-query";
 
 function SchoolJoin() {
@@ -34,14 +38,18 @@ function SchoolJoin() {
         refetch,
         isLoading,
     } = useTitumirQuery<SchoolSchema[]>(QueryContextKey.SCHOOLS, (api) =>
-        api.getOrSearchSchool(query, { noInviteJoin: true }).then(({ json }) => json),
+        api.school.list({ noInviteJoin: true, search: query }).then(({ json }) => json),
     );
 
     const queryClient = useQueryClient();
 
-    const { mutate: joinSchool } = useTitumirMutation<Invitations_JoinsSchema, JoinBody>(
+    const { mutate: joinSchool } = useTitumirMutation<
+        Invitations_JoinsSchema,
+        JoinRequestProperties
+    >(
         MutationContextKey.JOIN_SCHOOL,
-        (api, data) => api.joinSchool(data).then(({ json }) => json),
+        (api, data) =>
+            api.invitationJoin.createJoinRequest(data).then(({ json }) => json),
         {
             onSuccess() {
                 queryClient.refetchQueries(QueryContextKey.SCHOOLS);

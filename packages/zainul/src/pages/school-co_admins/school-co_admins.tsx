@@ -1,14 +1,14 @@
+import React from "react";
 import { List, ListItem, Text } from "@chakra-ui/react";
+import { SchoolSchema, USER_ROLE } from "@veschool/types";
 import { AddUserPopover } from "components/AddUserPopover/AddUserPopover";
 import Paper from "components/Paper/Paper";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
-import React from "react";
 import { useAuthStore } from "state/authorization-store";
-import { SchoolSchema, USER_ROLE } from "@veschool/types";
 import { userToName } from "utils/userToName";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { CoAdminBody } from "services/api/titumir";
+import { AddCoAdminProperties } from "services/titumir-api/modules/school";
 import { usePermissions } from "hooks/usePermissions";
 
 function SchoolCoAdmins() {
@@ -18,7 +18,7 @@ function SchoolCoAdmins() {
         QueryContextKey.SCHOOL,
         async (api) => {
             if (!short_name) return null;
-            const { json } = await api.getSchool(short_name);
+            const { json } = await api.school.get(short_name);
             return json;
         },
     );
@@ -27,12 +27,12 @@ function SchoolCoAdmins() {
 
     const { mutate: assignCoAdmins } = useTitumirMutation<
         SchoolSchema | null,
-        CoAdminBody
+        AddCoAdminProperties
     >(
         MutationContextKey.ASSIGN_CO_ADMINS,
         async (api, data) => {
-            if (!isAllowed || !short_name) return null;
-            const { json } = await api.assignCoAdmins(short_name, data);
+            if (!isAllowed) return null;
+            const { json } = await api.school.addCoAdmin(data);
             return json;
         },
         {

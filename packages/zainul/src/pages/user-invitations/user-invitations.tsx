@@ -5,23 +5,23 @@ import React from "react";
 import { Invitations_JoinsSchema } from "@veschool/types";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import {
-    CompleteInvitationJoinBody,
+    InvitationJoinCompletionProperties,
     INVITATION_OR_JOIN_ACTION,
-} from "services/api/titumir";
+} from "services/titumir-api/modules/invitation-join";
 import TableRowTile from "components/TableRowTile/TableRowTile";
 
 function UserInvitations() {
     const { data: invitations, refetch } = useTitumirQuery<Invitations_JoinsSchema[]>(
         QueryContextKey.INVITATION_RECEIVED,
-        (api) => api.getUserInvitations().then(({ json }) => json),
+        (api) => api.user.listInvitation().then(({ json }) => json),
     );
 
     const { mutate: completeInvitationJoin } = useTitumirMutation<
         { message: string },
-        CompleteInvitationJoinBody
+        InvitationJoinCompletionProperties
     >(
         MutationContextKey.COMPLETE_INVITATION_JOIN,
-        (api, data) => api.completeInvitationJoin(data).then(({ json }) => json),
+        (api, data) => api.invitationJoin.complete(data).then(({ json }) => json),
         {
             onSuccess() {
                 refetch();

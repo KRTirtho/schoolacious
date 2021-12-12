@@ -1,17 +1,18 @@
 import { MutationKey, useQuery, UseQueryOptions } from "react-query";
-import { titumirApi } from "App";
-import Titumir, { TitumirError } from "services/api/titumir";
+import Titumir from "services/titumir-api/index";
 import { TokenStore, useTokenStore } from "state/token-store";
 import { ContextToken } from "state/AuthorizationConfig";
+import { useTitumirApiStore } from "state/titumir-store";
+import { TitumirError } from "services/titumir-api/TitumirError";
 
 export function refreshTokenOnError(
-    titumirApi: Titumir,
+    api: Titumir,
     tokens: ContextToken,
     setTokens: TokenStore["setTokens"],
 ) {
     // unauthorized means the token has expired
     // refreshing the token before the retry
-    titumirApi
+    api.auth
         .refresh(tokens.refreshToken)
         .then(({ tokens: { refreshToken } }) => {
             if (refreshToken)
@@ -29,9 +30,10 @@ function useTitumirQuery<T>(
     hFn: (titumirApi: Titumir) => Promise<T>,
     options?: UseQueryOptions<T, TitumirError>,
 ) {
+    const api = useTitumirApiStore();
     // custom function for passing the titumir api with safe tokens
     function queryFn() {
-        return hFn(titumirApi);
+        return hFn(api);
     }
 
     const refreshToken = useTokenStore((s) => s.refreshToken);
@@ -41,7 +43,7 @@ function useTitumirQuery<T>(
         ...options,
         onError(e) {
             if (e.status === 401 && refreshToken) {
-                refreshTokenOnError(titumirApi, { refreshToken }, setTokens);
+                refreshTokenOnError(api, { refreshToken }, setTokens);
             }
             options?.onError?.(e);
         },

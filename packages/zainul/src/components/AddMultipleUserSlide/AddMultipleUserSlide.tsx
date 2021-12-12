@@ -57,7 +57,7 @@ const AddMultipleUserSlide: FC<AddMultipleUserSlideProps> = ({
         isLoading,
     } = useTitumirQuery<UserSchema[]>(
         QueryContextKey.QUERY_USER,
-        (api) => api.queryUser(query, queryFilters).then(({ json }) => json),
+        (api) => api.user.query(query, queryFilters).then(({ json }) => json),
         {
             enabled: false,
         },

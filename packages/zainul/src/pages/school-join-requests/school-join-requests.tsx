@@ -1,34 +1,31 @@
+import React from "react";
 import { chakra, Table, Thead, Tr, Th, Tbody, useToast } from "@chakra-ui/react";
 import TableRowTile from "components/TableRowTile/TableRowTile";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import useTitumirQuery from "hooks/useTitumirQuery";
-import React from "react";
 import {
-    CompleteInvitationJoinBody,
+    InvitationJoinCompletionProperties,
     INVITATION_OR_JOIN_ACTION,
-} from "services/api/titumir";
+} from "services/titumir-api/modules/invitation-join";
 import { Invitations_JoinsSchema } from "@veschool/types";
-import { useAuthStore } from "state/authorization-store";
 import { userToName } from "utils/userToName";
 
 function SchoolJoinRequests() {
-    const short_name = useAuthStore((s) => s.user?.school?.short_name);
-
-    const { data: invitations, refetch } = useTitumirQuery<
-        Invitations_JoinsSchema[] | null
-    >(QueryContextKey.JOIN_REQUEST_RECEIVED, async (api) => {
-        if (!short_name) return null;
-        const { json } = await api.getSchoolJoinRequests(short_name);
-        return json;
-    });
+    const { data: invitations, refetch } = useTitumirQuery<Invitations_JoinsSchema[]>(
+        QueryContextKey.JOIN_REQUEST_RECEIVED,
+        async (api) => {
+            const { json } = await api.school.listJoinRequests();
+            return json;
+        },
+    );
 
     const { mutate: completeInvitationJoin, error } = useTitumirMutation<
         { message: string },
-        CompleteInvitationJoinBody
+        InvitationJoinCompletionProperties
     >(
         MutationContextKey.COMPLETE_INVITATION_JOIN,
-        (api, data) => api.completeInvitationJoin(data).then(({ json }) => json),
+        (api, data) => api.invitationJoin.complete(data).then(({ json }) => json),
         {
             onSuccess: () => refetch(),
         },

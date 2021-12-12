@@ -1,6 +1,5 @@
 import { NotificationsSchema, NOTIFICATION_STATUS } from "@veschool/types";
-import { TitumirResponse } from "services/api/titumir";
-import { Connector } from "../Connector";
+import { Connector, TitumirResponse } from "../Connector";
 
 interface NotificationUpdateProperties {
     notifications: string[];
@@ -8,8 +7,8 @@ interface NotificationUpdateProperties {
 }
 
 export class TitumirNotificationModule extends Connector {
-    constructor() {
-        super("/notification", TitumirNotificationModule.name);
+    constructor(prefix: string) {
+        super(prefix, "/notification", TitumirNotificationModule.name);
     }
 
     async list(): Promise<TitumirResponse<NotificationsSchema[]>> {

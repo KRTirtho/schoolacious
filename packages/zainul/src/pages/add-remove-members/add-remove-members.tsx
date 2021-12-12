@@ -16,24 +16,19 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import Paper from "components/Paper/Paper";
-import { INVITATION_OR_JOIN_ROLE } from "services/api/titumir";
 import InviteMembersDrawer from "./components/InviteMembersDrawer";
 import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { QueryContextKey } from "configs/enums";
-import { useAuthStore } from "state/authorization-store";
-import { UserSchema } from "@veschool/types";
+import { INVITATION_OR_JOIN_ROLE, UserSchema } from "@veschool/types";
 import { FaEllipsisH, FaSearch } from "react-icons/fa";
 import { userToName } from "utils/userToName";
 
 function AddRemoveMembers() {
-    const short_name = useAuthStore((s) => s.user?.school?.short_name);
-
-    const { data: members } = useTitumirQuery<UserSchema[] | null>(
+    const { data: members } = useTitumirQuery<UserSchema[]>(
         QueryContextKey.SCHOOL_MEMBERS,
         async (api) => {
-            if (!short_name) return null;
-            const { json } = await api.getAllSchoolMembers(short_name);
+            const { json } = await api.school.listMembers();
             return json;
         },
     );

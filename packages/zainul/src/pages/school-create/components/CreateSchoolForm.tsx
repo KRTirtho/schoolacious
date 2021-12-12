@@ -2,11 +2,11 @@ import { Button, Stack } from "@chakra-ui/react";
 import { ActualField as Field, ActualTextarea } from "components/TextField/TextField";
 import { Form, useModel, regex } from "react-binden";
 import React from "react";
-import { CreateSchool } from "services/api/titumir";
 import { SchoolSchema } from "@veschool/types";
 import { INVALID_EMAIL_MSG } from "pages/auth/components/Login";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { MutationContextKey } from "configs/enums";
+import { SchoolProperties } from "services/titumir-api/modules/school";
 
 export const SHORT_NAME_MATCHES_MSG = "only {a-z,-,0-9} is allowed";
 function CreateSchoolForm() {
@@ -18,9 +18,9 @@ function CreateSchoolForm() {
 
     const { mutate: createSchool, isSuccess } = useTitumirMutation<
         SchoolSchema,
-        CreateSchool
+        SchoolProperties
     >(MutationContextKey.CREATE_SCHOOL, (api, payload) =>
-        api.createSchool(payload).then(({ json }) => json),
+        api.school.create(payload).then(({ json }) => json),
     );
 
     return (

@@ -9,7 +9,7 @@ export function useGetSchoolSubjects() {
         QueryContextKey.SCHOOL_SUBJECTS,
         async (api) => {
             if (!short_name) return null;
-            const { json } = await api.getSchoolSubjects(short_name);
+            const { json } = await api.school.listSubjects(short_name);
             return json;
         },
     );

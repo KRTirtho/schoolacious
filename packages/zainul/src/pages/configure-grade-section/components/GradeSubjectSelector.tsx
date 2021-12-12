@@ -27,9 +27,8 @@ import React, { FC, useMemo, useState } from "react";
 import { FiEdit3 } from "react-icons/fi";
 import { useQueryClient } from "react-query";
 import { Link } from "react-router-dom";
-import { AddGradeSubjectsBody } from "services/api/titumir";
+import { AddGradeSubjectsBody } from "services/titumir-api/modules/grade";
 import { useGetSchoolSubjects } from "services/query-hooks/useGetSchoolSubjects";
-import { useAuthStore } from "state/authorization-store";
 
 export interface GradeSubjectEditPopoverProps {
     grade_subjects?: GradeToSubjectSchema[] | null;
@@ -61,18 +60,15 @@ const GradeSubjectSelector: FC<GradeSubjectEditPopoverProps> = ({
         [subjects, gradeSubjectsIds],
     );
 
-    const short_name = useAuthStore((s) => s.user?.school?.short_name);
-
     const queryClient = useQueryClient();
 
     const { mutate: addSubjects, isLoading } = useTitumirMutation<
-        GradeToSubjectSchema[] | null,
+        GradeToSubjectSchema[],
         AddGradeSubjectsBody[]
     >(
         MutationContextKey.ADD_GRADE_SUBJECTS,
         async (api, data) => {
-            if (!short_name) return null;
-            const { json } = await api.addGradeSubjects(short_name, grade, data);
+            const { json } = await api.grade.createSubjects(data, grade);
             return json;
         },
         {

@@ -1,12 +1,18 @@
 import { TitumirError } from "./TitumirError";
 import qs from "query-string";
+import urlJoin from "url-join";
 
 export type TitumirRequestOptions = Omit<RequestInit, "body" | "method">;
 export type TitumirResponse<T> = Omit<Response, "json"> & { json: T };
 export type HTTPMethods = "GET" | "POST" | "PUT" | "DELETE";
 
 export class Connector {
-    constructor(private _baseURL: string, public moduleName: string) {}
+    constructor(
+        private _prefix: string,
+        private _baseURL: string,
+        private moduleName: string,
+    ) {}
+
     async buildRequest<T, D = Record<string | number, any>>(
         path: string,
         method: HTTPMethods = "GET",
@@ -21,7 +27,9 @@ export class Connector {
                 [],
         ).forEach(([key, val]) => headers.append(key, val));
 
-        const res = await fetch(this._baseURL + path, {
+        const url = urlJoin(this._prefix, this._baseURL, path);
+
+        const res = await fetch(url, {
             method,
             body: body ? JSON.stringify(body) : null,
             credentials: "include",
@@ -56,5 +64,13 @@ export class Connector {
 
     public set baseURL(url: string) {
         this._baseURL = url;
+    }
+
+    public get prefix(): string {
+        return this._prefix;
+    }
+
+    public set prefix(prefix: string) {
+        this._prefix = prefix;
     }
 }

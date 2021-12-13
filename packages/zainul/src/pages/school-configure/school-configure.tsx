@@ -5,12 +5,15 @@ import { Sidebar } from "components/Sidebar/Sidebar";
 
 function SchoolConfigure() {
     const links = [
-        { to: "co-admins", title: "Co-admins" },
-        { to: "add-remove-members", title: "Members" },
-        { to: "grade-sections", title: "Grades & Sections", exact: false },
-        { to: "subjects", title: "Subjects" },
-        { to: "invitations", title: "Invitations" },
-        { to: "join-requests", title: "Join Requests" },
+        { to: `co-admins`, title: "Co-admins" },
+        { to: `add-remove-members`, title: "Members" },
+        {
+            to: `grade-sections`,
+            title: "Grades & Sections",
+        },
+        { to: `subjects`, title: "Subjects" },
+        { to: `invitations`, title: "Invitations" },
+        { to: `join-requests`, title: "Join Requests" },
     ];
 
     return (

@@ -17,7 +17,6 @@ export interface SidebarProps {
         to: string;
         title: string | ReactElement;
         icon?: ReactElement;
-        exact?: boolean;
     }[];
 }
 
@@ -29,7 +28,7 @@ export const Sidebar: FC<SidebarProps> = ({ links }) => {
     const screen = useBreakpoint();
 
     useEffect(() => {
-        const currentRoute = links.find((link) => link.to === location.pathname);
+        const currentRoute = links.find((link) => location.pathname.endsWith(link.to));
         if (currentRoute) setSelectedRoute(currentRoute.title);
     }, [location.pathname]);
 
@@ -37,8 +36,8 @@ export const Sidebar: FC<SidebarProps> = ({ links }) => {
 
     return isLargeScreen ? (
         <List display="flex" flexDir="column" m="5" borderRadius="md" flex={1}>
-            {links.map(({ to, title, exact }, i) => (
-                <SidebarItem key={to + i} to={to} exact={exact}>
+            {links.map(({ to, title }, i) => (
+                <SidebarItem key={to + i} to={to}>
                     {title}
                 </SidebarItem>
             ))}

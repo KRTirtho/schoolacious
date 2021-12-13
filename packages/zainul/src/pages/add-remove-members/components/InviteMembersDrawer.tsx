@@ -4,7 +4,7 @@ import { MutationContextKey, QueryContextKey } from "configs/enums";
 import {
     InvitationProperties,
     Invitations_Joins,
-} from "services/titumir-api/modules/invitation-join";
+} from "services/titumir-client/modules/invitation-join";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { useQueryClient } from "react-query";
 import { capitalize } from "lodash-es";

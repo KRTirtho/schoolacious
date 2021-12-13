@@ -6,7 +6,7 @@ import { SchoolSchema } from "@veschool/types";
 import { INVALID_EMAIL_MSG } from "pages/auth/components/Login";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { MutationContextKey } from "configs/enums";
-import { SchoolProperties } from "services/titumir-api/modules/school";
+import { SchoolProperties } from "services/titumir-client/modules/school";
 
 export const SHORT_NAME_MATCHES_MSG = "only {a-z,-,0-9} is allowed";
 function CreateSchoolForm() {

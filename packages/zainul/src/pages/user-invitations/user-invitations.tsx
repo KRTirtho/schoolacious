@@ -7,7 +7,7 @@ import useTitumirMutation from "hooks/useTitumirMutation";
 import {
     InvitationJoinCompletionProperties,
     INVITATION_OR_JOIN_ACTION,
-} from "services/titumir-api/modules/invitation-join";
+} from "services/titumir-client/modules/invitation-join";
 import TableRowTile from "components/TableRowTile/TableRowTile";
 
 function UserInvitations() {

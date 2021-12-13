@@ -5,7 +5,7 @@ import { Invitations_JoinsSchema } from "@veschool/types";
 import { chakra, Table, Thead, Tr, Th, Tbody } from "@chakra-ui/react";
 import TableRowTile from "components/TableRowTile/TableRowTile";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { InvitationJoinCancellationProperties } from "services/titumir-api/modules/invitation-join";
+import { InvitationJoinCancellationProperties } from "services/titumir-client/modules/invitation-join";
 
 function UserJoinRequests() {
     const { data: joinRequests, refetch } = useTitumirQuery<Invitations_JoinsSchema[]>(

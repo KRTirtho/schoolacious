@@ -10,11 +10,11 @@ import { useAuthStore } from "state/authorization-store";
 import { useTokenStore } from "state/token-store";
 import { useModel, Form, regex } from "react-binden";
 import { useTitumirApiStore } from "state/titumir-store";
-import { TitumirResponse } from "services/titumir-api/Connector";
+import { TitumirResponse } from "services/titumir-client/Connector";
 import {
     CONST_REFRESH_TOKEN_KEY,
     LoginProperties,
-} from "services/titumir-api/modules/auth";
+} from "services/titumir-client/modules/auth";
 
 export const MINIMUM_CHAR_MSG = "Minimum 8 chars";
 export const INVALID_EMAIL_MSG = "Invalid email";

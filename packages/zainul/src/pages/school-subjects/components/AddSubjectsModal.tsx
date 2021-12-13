@@ -12,7 +12,7 @@ import {
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import React from "react";
-import { SubjectProperties } from "services/titumir-api/modules/school";
+import { SubjectProperties } from "services/titumir-client/modules/school";
 import { SubjectSchema } from "@veschool/types";
 import { Field, Form, Formik } from "formik";
 import TextField, { TextareaField } from "components/TextField/TextField";

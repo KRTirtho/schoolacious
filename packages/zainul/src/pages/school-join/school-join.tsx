@@ -27,7 +27,7 @@ import {
 } from "@veschool/types";
 import { FiSearch } from "react-icons/fi";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { JoinRequestProperties } from "services/titumir-api/modules/invitation-join";
+import { JoinRequestProperties } from "services/titumir-client/modules/invitation-join";
 import { useQueryClient } from "react-query";
 
 function SchoolJoin() {

@@ -27,7 +27,7 @@ import React, { FC, useMemo, useState } from "react";
 import { FiEdit3 } from "react-icons/fi";
 import { useQueryClient } from "react-query";
 import { Link } from "react-router-dom";
-import { AddGradeSubjectsBody } from "services/titumir-api/modules/grade";
+import { AddGradeSubjectsBody } from "services/titumir-client/modules/grade";
 import { useGetSchoolSubjects } from "services/query-hooks/useGetSchoolSubjects";
 
 export interface GradeSubjectEditPopoverProps {

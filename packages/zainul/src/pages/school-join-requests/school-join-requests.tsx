@@ -7,7 +7,7 @@ import useTitumirQuery from "hooks/useTitumirQuery";
 import {
     InvitationJoinCompletionProperties,
     INVITATION_OR_JOIN_ACTION,
-} from "services/titumir-api/modules/invitation-join";
+} from "services/titumir-client/modules/invitation-join";
 import { Invitations_JoinsSchema } from "@veschool/types";
 import { userToName } from "utils/userToName";
 

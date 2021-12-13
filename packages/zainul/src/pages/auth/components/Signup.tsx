@@ -13,8 +13,8 @@ import { useTitumirApiStore } from "state/titumir-store";
 import {
     CONST_REFRESH_TOKEN_KEY,
     SignupProperties,
-} from "services/titumir-api/modules/auth";
-import { TitumirResponse } from "services/titumir-api/Connector";
+} from "services/titumir-client/modules/auth";
+import { TitumirResponse } from "services/titumir-client/Connector";
 
 export const REQUIRED_MSG = "Required";
 

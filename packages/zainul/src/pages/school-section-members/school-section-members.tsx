@@ -24,7 +24,7 @@ import type {
     SectionStudentsResponseProperties,
     SectionAddTeacherProperties,
     SectionSchemaWithSubject,
-} from "services/titumir-api/modules/section";
+} from "services/titumir-client/modules/section";
 import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
 import { AddUserPopover } from "components/AddUserPopover/AddUserPopover";
 import useTitumirMutation from "hooks/useTitumirMutation";

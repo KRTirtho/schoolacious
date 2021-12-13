@@ -8,7 +8,7 @@ import useTitumirQuery from "hooks/useTitumirQuery";
 import { useAuthStore } from "state/authorization-store";
 import { userToName } from "utils/userToName";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { AddCoAdminProperties } from "services/titumir-api/modules/school";
+import { AddCoAdminProperties } from "services/titumir-client/modules/school";
 import { usePermissions } from "hooks/usePermissions";
 
 function SchoolCoAdmins() {

@@ -13,7 +13,7 @@ import useTitumirQuery from "hooks/useTitumirQuery";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { useAuthStore } from "state/authorization-store";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { ClassProperties } from "services/titumir-api/modules/class";
+import { ClassProperties } from "services/titumir-client/modules/class";
 import { secondsToMinutes, minutesToSeconds, parse } from "date-fns";
 import { useQueryClient } from "react-query";
 

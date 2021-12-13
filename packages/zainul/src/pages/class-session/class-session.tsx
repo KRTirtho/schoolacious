@@ -12,7 +12,7 @@ import {
 import { useParams } from "react-router-dom";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { QueryContextKey } from "configs/enums";
-import { ClassSessionProperties } from "services/titumir-api/modules/class";
+import { ClassSessionProperties } from "services/titumir-client/modules/class";
 import {
     Button,
     chakra,

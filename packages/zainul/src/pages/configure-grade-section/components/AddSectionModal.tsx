@@ -24,7 +24,7 @@ import * as yup from "yup";
 import { SectionSchema } from "@veschool/types";
 import { AddGradeModalProps } from "./AddGradeModal";
 import { FaPlusSquare } from "react-icons/fa";
-import { SectionProperties } from "services/titumir-api/modules/section";
+import { SectionProperties } from "services/titumir-client/modules/section";
 
 export type AddSectionModal = AddGradeModalProps;
 

@@ -1,5 +1,5 @@
 import create from "zustand";
-import TitumirApi from "services/titumir-api";
+import TitumirApi from "services/titumir-client";
 import { useAuthStore } from "./authorization-store";
 
 export const useTitumirApiStore = create<TitumirApi>(() => {

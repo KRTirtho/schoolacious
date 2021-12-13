@@ -1,6 +1,6 @@
 import { MutationKey, useMutation, UseMutationOptions } from "react-query";
-import Titumir from "services/titumir-api/index";
-import { TitumirError } from "services/titumir-api/TitumirError";
+import Titumir from "services/titumir-client/index";
+import { TitumirError } from "services/titumir-client/TitumirError";
 import { useTitumirApiStore } from "state/titumir-store";
 import { useTokenStore } from "state/token-store";
 import { refreshTokenOnError } from "./useTitumirQuery";

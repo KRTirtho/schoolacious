@@ -16,7 +16,7 @@ import React, { FC } from "react";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as yup from "yup";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { GradeProperties } from "services/titumir-api/modules/grade";
+import { GradeProperties } from "services/titumir-client/modules/grade";
 import { GradeSchema } from "@veschool/types";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import { useQueryClient } from "react-query";

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Logger, Put } from "@nestjs/common";
 import { In } from "typeorm";
 import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
-import { UpdateNotificationByIdDto } from "./dto/update-notifications-by-id";
+import { UpdateNotificationByIdDto } from "./dto/update-notifications-by-id.dto";
 import { NotificationService } from "./notification.service";
 
 @Controller("notification")

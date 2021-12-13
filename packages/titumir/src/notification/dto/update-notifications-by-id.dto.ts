@@ -1,9 +1,9 @@
-import { MinLength, IsUUID, IsEnum } from "class-validator";
+import { IsUUID, IsEnum, ArrayNotEmpty } from "class-validator";
 import { NOTIFICATION_STATUS } from "@veschool/types";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class UpdateNotificationByIdDto {
-    @MinLength(1)
+    @ArrayNotEmpty()
     @IsUUID(undefined, { each: true })
     @ApiProperty({ type: [String] })
     notifications!: string[];

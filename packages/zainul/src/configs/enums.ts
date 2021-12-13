@@ -14,6 +14,7 @@ export enum MutationContextKey {
     ADD_SECTION_TEACHER = "mutate-assign-section-teacher",
     ADD_SECTION_STUDENTS = "mutate-assign-section-students",
     CREATE_CLASS = "mutate-create-class",
+    UPDATE_NOTIFICATION_STATUS = "mutation-update-notification-status",
 }
 
 export enum QueryContextKey {

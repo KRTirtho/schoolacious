@@ -1,9 +1,14 @@
 import { NotificationsSchema, NOTIFICATION_STATUS } from "@veschool/types";
 import { Connector, TitumirResponse } from "../Connector";
 
-interface NotificationUpdateProperties {
+export interface NotificationUpdateProperties {
     notifications: string[];
     status: NOTIFICATION_STATUS;
+}
+
+export interface UpdateMultipleProperties {
+    message: string;
+    affected: number;
 }
 
 export class TitumirNotificationModule extends Connector {
@@ -17,9 +22,9 @@ export class TitumirNotificationModule extends Connector {
 
     async updateStatus(
         data: NotificationUpdateProperties,
-    ): Promise<TitumirResponse<{ message: string; affected: number }>> {
+    ): Promise<TitumirResponse<UpdateMultipleProperties>> {
         return await this.buildRequest<
-            { message: string; affected: number },
+            UpdateMultipleProperties,
             NotificationUpdateProperties
         >("status", "PUT", data);
     }

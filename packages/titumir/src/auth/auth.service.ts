@@ -23,6 +23,7 @@ export class AuthService {
             { email },
             {
                 select: ["password"],
+                relations: ["school"],
             },
         );
         if (!user) {

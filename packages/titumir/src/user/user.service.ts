@@ -27,7 +27,7 @@ export class UserService extends BasicEntityService<User, CreateUser> {
     // but with the `password` or any other hidden field defined in it
     private buildRawUser(
         conditions: FindConditions<DeepPartial<SafeUser>>,
-        options?: Pick<FindOneOptions<User>, "order" | "select" | "where">,
+        options?: Pick<FindOneOptions<User>, "order" | "select" | "where" | "relations">,
     ) {
         const naive = this.queryBuilder("user").where(options?.where ?? conditions);
         if (options?.select) {
@@ -47,12 +47,22 @@ export class UserService extends BasicEntityService<User, CreateUser> {
                 naive.addOrderBy(`user.${key}`, value);
             }
         }
+
+        if (options?.relations) {
+            for (const relation of options.relations) {
+                naive.leftJoinAndSelect(
+                    `user.${relation}`,
+                    relation,
+                    `${relation}._id = user.${relation}`,
+                );
+            }
+        }
         return naive;
     }
 
     findOneRaw(
         conditions: FindConditions<DeepPartial<SafeUser>>,
-        options?: Pick<FindOneOptions<User>, "order" | "select" | "where">,
+        options?: Pick<FindOneOptions<User>, "order" | "select" | "where" | "relations">,
     ) {
         return this.buildRawUser(conditions, options).getOne();
     }

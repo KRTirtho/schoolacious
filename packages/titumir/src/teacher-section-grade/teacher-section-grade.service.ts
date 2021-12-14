@@ -4,7 +4,7 @@ import {
     NotAcceptableException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, In, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import Subject from "../database/entity/subjects.entity";
 import BasicEntityService from "../database/abstracts/entity-service.abstract";
 import Grade from "../database/entity/grades.entity";
@@ -15,9 +15,8 @@ import User from "../database/entity/users.entity";
 import { USER_ROLE } from "@veschool/types";
 import { SubjectService } from "../subject/subject.service";
 import { UserService } from "../user/user.service";
-import { SectionService } from "./section.service";
-import groupBy from "lodash/groupBy";
-import { TeacherDTO } from "./dto/teacher-student.dto";
+import { SectionService } from "../section/section.service";
+import { TeacherDTO } from "../section/dto/teacher-student.dto";
 
 @Injectable()
 export class TeacherSectionGradeService extends BasicEntityService<TeachersToSectionsToGrades> {

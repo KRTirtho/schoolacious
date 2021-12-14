@@ -9,8 +9,8 @@ import { VERIFY_GRADE_KEY } from "../../decorator/verify-grade.decorator";
 import { VERIFY_SCHOOL_KEY } from "../../decorator/verify-school.decorator";
 import { VERIFY_SECTION_KEY } from "../../decorator/verify-section.decorator";
 import { GradeService } from "../../grade/grade.service";
-import { StudentSectionGradeService } from "../../section/student-section-grade.service";
-import { TeacherSectionGradeService } from "../../section/teacher-section-grade.service";
+import { StudentSectionGradeService } from "../../student-section-grade/student-section-grade.service";
+import { TeacherSectionGradeService } from "../../teacher-section-grade/teacher-section-grade.service";
 import { UserService } from "../../user/user.service";
 import {
     isAdministrative,

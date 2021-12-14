@@ -33,8 +33,8 @@ import AssignClassTeacherDTO from "./dto/assign-class-teacher.dto";
 import CreateSectionDTO from "./dto/create-section.dto";
 import StudentDTO, { TeacherDTO } from "./dto/teacher-student.dto";
 import { SectionService } from "./section.service";
-import { StudentSectionGradeService } from "./student-section-grade.service";
-import { TeacherSectionGradeService } from "./teacher-section-grade.service";
+import { StudentSectionGradeService } from "../student-section-grade/student-section-grade.service";
+import { TeacherSectionGradeService } from "../teacher-section-grade/teacher-section-grade.service";
 import Subject from "../database/entity/subjects.entity";
 import TeachersToSectionsToGrades from "../database/entity/teachers_sections_grades.entity";
 

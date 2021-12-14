@@ -18,6 +18,8 @@ import { LoggerModule } from "nestjs-pino";
 import { CacheModule } from "./cache/cache.module";
 import { OpenViduModule } from "./open-vidu/open-vidu.module";
 import { OPENVIDU_SECRET, OPENVIDU_SERVER_URL } from "../config";
+import { TeacherSectionGradeModule } from "./teacher-section-grade/teacher-section-grade.module";
+import { StudentSectionGradeModule } from "./student-section-grade/student-section-grade.module";
 
 export const JWT_AUTH_GUARD = "JWT_AUTH_GUARD";
 export const THROTTLER_GUARD = "THROTTLER_GUARD";
@@ -56,6 +58,8 @@ export const THROTTLER_GUARD = "THROTTLER_GUARD";
         ClassesModule,
         NotificationModule,
         OpenViduModule.forRoot({ url: OPENVIDU_SERVER_URL, secret: OPENVIDU_SECRET }),
+        TeacherSectionGradeModule,
+        StudentSectionGradeModule,
     ],
     controllers: [AppController],
     providers: [

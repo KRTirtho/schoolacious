@@ -33,6 +33,7 @@ export enum QueryContextKey {
     CLASS_SESSION = "query-class-session",
     SECTION_TEACHERS = "query-section-teachers",
     NOTIFICATIONS = "query-notifications",
+    UPCOMING_CLASSES = "query-upcoming-classes",
 }
 
 export enum LocalStorageKeys {

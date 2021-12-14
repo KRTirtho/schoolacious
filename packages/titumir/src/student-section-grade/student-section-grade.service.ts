@@ -18,7 +18,7 @@ import { UserService } from "../user/user.service";
 export class StudentSectionGradeService extends BasicEntityService<StudentsToSectionsToGrades> {
     constructor(
         @InjectRepository(StudentsToSectionsToGrades)
-        private readonly ssgRepo: Repository<StudentsToSectionsToGrades>,
+        private ssgRepo: Repository<StudentsToSectionsToGrades>,
         private userService: UserService,
     ) {
         super(ssgRepo);

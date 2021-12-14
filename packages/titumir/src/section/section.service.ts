@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, NotAcceptableException } from "@nestjs/common";
+import {
+    BadRequestException,
+    forwardRef,
+    Inject,
+    Injectable,
+    NotAcceptableException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import BasicEntityService, {
@@ -27,7 +33,7 @@ export class SectionService extends BasicEntityService<Section, CreateSection> {
     constructor(
         @InjectRepository(Section)
         sectionRepo: Repository<Section>,
-        private readonly userService: UserService,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
         private schoolService: SchoolService,
         private gradeService: GradeService,
     ) {

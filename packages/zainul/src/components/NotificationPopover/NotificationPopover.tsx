@@ -82,7 +82,7 @@ function NotificationPopover() {
                     (notification) => notification.status === NOTIFICATION_STATUS.unread,
                 )
                 .map(({ _id }) => _id);
-            if (unreadNotificationIds)
+            if (unreadNotificationIds && unreadNotificationIds.length > 0)
                 updateNotificationStatus({
                     notifications: unreadNotificationIds,
                     status: NOTIFICATION_STATUS.viewed,
@@ -156,12 +156,12 @@ export const NotificationItem: FC<NotificationItemProps> = ({
 
     return (
         <ListItem
-            m="0"
-            borderBottom="1px solid"
-            borderBottomColor="gray.300"
+            m="1"
             px="3"
             py="2"
-            bg={status === NOTIFICATION_STATUS.unread ? bg : ""}
+            bg={status !== NOTIFICATION_STATUS.read ? bg : ""}
+            rounded="md"
+            shadow="md"
         >
             <VStack align="flex-start">
                 <Text fontWeight="semibold">{message}</Text>

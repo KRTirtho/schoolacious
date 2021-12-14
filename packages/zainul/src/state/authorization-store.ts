@@ -1,10 +1,19 @@
 import create, { StateCreator } from "zustand";
 import { devtools } from "zustand/middleware";
-import { UserSchema } from "@veschool/types";
+import {
+    StudentsToSectionsToGradesSchema,
+    TeachersToSectionsToGradesSchema,
+    UserSchema,
+} from "@veschool/types";
+
+export interface UserSchemaWithGradesSections extends UserSchema {
+    ssg?: StudentsToSectionsToGradesSchema;
+    tsg?: TeachersToSectionsToGradesSchema;
+}
 
 export interface AuthorizationStore {
-    user?: UserSchema;
-    setUser(user: UserSchema): void;
+    user?: UserSchemaWithGradesSections;
+    setUser(user: UserSchemaWithGradesSections): void;
 }
 
 const authStore: StateCreator<AuthorizationStore> = (set) => {

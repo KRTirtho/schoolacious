@@ -9,4 +9,5 @@ export interface ClassSchema extends BaseSchema {
     status: CLASS_STATUS;
     duration: number;
     host: TeachersToSectionsToGradesSchema;
+    sessionId?: string;
 }

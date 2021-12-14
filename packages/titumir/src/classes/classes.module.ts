@@ -6,6 +6,8 @@ import { NotificationModule } from "../notification/notification.module";
 import { SectionModule } from "../section/section.module";
 import { ClassesController } from "./classes.controller";
 import { ClassesService } from "./classes.service";
+import { TeacherSectionGradeModule } from "../teacher-section-grade/teacher-section-grade.module";
+import { StudentSectionGradeModule } from "../student-section-grade/student-section-grade.module";
 
 @Module({
     imports: [
@@ -13,6 +15,8 @@ import { ClassesService } from "./classes.service";
         SectionModule,
         NotificationModule,
         SchoolModule,
+        TeacherSectionGradeModule,
+        StudentSectionGradeModule,
     ],
     controllers: [ClassesController],
     providers: [ClassesService],

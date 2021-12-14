@@ -15,6 +15,9 @@ const AuthorizationConfig: FC = ({ children }) => {
     const refreshToken = useTokenStore((s) => s.refreshToken);
     const user = useAuthStore((s) => s.user);
     const schoolId = useAuthStore((s) => s.user?.school?.short_name);
+    const gradeId = useAuthStore((s) => s.user?.ssg?.grade.standard);
+    const sectionId = useAuthStore((s) => s.user?.ssg?.section.name);
+
     const loggedIn = useLoggedIn();
 
     const api = useTitumirApiStore();
@@ -36,8 +39,10 @@ const AuthorizationConfig: FC = ({ children }) => {
     }, [loggedIn, user?.school]);
 
     useEffect(() => {
-        if (schoolId) api.setSchoolId(schoolId);
-    }, [schoolId]);
+        if (!api.schoolId && schoolId) api.setSchoolId(schoolId);
+        if (!api.gradeId && gradeId) api.setGradeId(gradeId);
+        if (!api.sectionId && sectionId) api.setSectionId(sectionId);
+    }, [schoolId, gradeId, sectionId]);
 
     return <>{children}</>;
 };

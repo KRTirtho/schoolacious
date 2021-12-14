@@ -1,4 +1,5 @@
 import { UserSchema, USER_ROLE, Invitations_JoinsSchema } from "@veschool/types";
+import { UserSchemaWithGradesSections } from "state/authorization-store";
 import { Connector, TitumirResponse } from "../Connector";
 
 export class TitumirUserModule extends Connector {
@@ -6,8 +7,8 @@ export class TitumirUserModule extends Connector {
         super(prefix, "/user", TitumirUserModule.name);
     }
 
-    async me(): Promise<TitumirResponse<UserSchema>> {
-        return await this.buildRequest<UserSchema>("me");
+    async me(): Promise<TitumirResponse<UserSchemaWithGradesSections>> {
+        return await this.buildRequest<UserSchemaWithGradesSections>("me");
     }
 
     async query(

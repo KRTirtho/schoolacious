@@ -4,7 +4,6 @@ import {
     DATABASE_PASSWORD,
     DATABASE_PORT,
     DATABASE_USERNAME,
-    NODE_ENV,
 } from "./config";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 import Class from "./src/database/entity/classes.entity";
@@ -27,7 +26,7 @@ const ormconfig: PostgresConnectionOptions = {
     port: DATABASE_PORT,
     password: DATABASE_PASSWORD,
     uuidExtension: "uuid-ossp",
-    logging: NODE_ENV !== "test",
+    logging: ["error", "warn", "migration"],
     migrations: ["./dist/src/database/migrations/*.js"],
     cli: {
         migrationsDir: "./src/database/migrations",

@@ -110,7 +110,7 @@ export class UserService extends BasicEntityService<User, CreateUser> {
                     time: Between(from, to),
                     host: { section, grade },
                 },
-                { relations },
+                { relations: [...relations, "host.user"] },
             );
         }
         return await this.classService.find(

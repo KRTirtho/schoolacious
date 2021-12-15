@@ -118,7 +118,7 @@ function NotificationPopover() {
                     <Heading size="md">Notifications</Heading>
                 </PopoverHeader>
                 <PopoverBody p="unset">
-                    <List>
+                    <List overflowY="auto" maxH="50vh">
                         {notifications?.map(
                             ({ _id, message, src, created_at, status }, i) => (
                                 <NotificationItem

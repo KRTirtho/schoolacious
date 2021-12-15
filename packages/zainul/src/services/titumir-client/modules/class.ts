@@ -1,5 +1,4 @@
 import { ClassSchema } from "@veschool/types";
-import { StringifiableRecord } from "query-string";
 import { Connector, TitumirResponse } from "../Connector";
 import { SectionPrefixIds } from "./section";
 
@@ -18,12 +17,6 @@ export interface ClassSessionProperties {
 
 export interface ClassPrefixIds extends SectionPrefixIds {
     section: string;
-}
-
-export interface ClassUpcomingOptions {
-    diff?: number;
-    day?: number;
-    "current-time"?: string;
 }
 
 export class TitumirClassModule extends Connector {
@@ -48,16 +41,6 @@ export class TitumirClassModule extends Connector {
 
     async create(data: ClassProperties): Promise<TitumirResponse<ClassSchema>> {
         return await this.buildRequest<ClassSchema, ClassProperties>("/", "POST", data);
-    }
-
-    async listUpcoming(
-        opts: ClassUpcomingOptions = {},
-    ): Promise<TitumirResponse<ClassSchema[]>> {
-        const url = this.stringifyUrl({
-            url: "upcoming",
-            query: opts as StringifiableRecord,
-        });
-        return await this.buildRequest<ClassSchema[]>(url);
     }
 
     async getSession(

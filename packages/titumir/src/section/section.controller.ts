@@ -266,9 +266,8 @@ export class SectionController {
     ): Promise<Omit<TeachersToSectionsToGrades, "section" | "grade">[]> {
         try {
             const teachers = await this.teacherSGService.find(
-                {},
+                { grade: { standard }, section: { name } },
                 {
-                    where: { grade: { standard }, section: { name } },
                     relations: ["grade", "section", "user", "subject"],
                 },
             );

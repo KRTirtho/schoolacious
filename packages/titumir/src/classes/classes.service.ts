@@ -51,9 +51,8 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
         // host will have classes on other sections/grade-sections. Thus
         // ensuring host gets a break after every class
         const hostClasses = await this.find(
-            {},
+            { host: { user: { _id: host } }, day },
             {
-                where: { host: { user: { _id: host } }, day },
                 relations: ["host", "host.user"],
             },
         );
@@ -66,8 +65,8 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
         current: CurrentClassTimeMeta,
     ) {
         const studentClasses = await this.find(
-            {},
-            { where: { host: { section }, day }, relations: ["host", "host.section"] },
+            { host: { section }, day },
+            { relations: ["host", "host.section"] },
         );
         return this.validateClasses(studentClasses, current);
     }
@@ -110,21 +109,14 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
         // checking for todays valid cronjob
         const today = getDay(new Date());
         const classes = await this.find(
-            {},
+            { day: today, host: { grade: { school: school_id } } },
             {
-                where: {
-                    day: today,
-                    host: { grade: { school: school_id } },
-                },
                 relations: ["host", "host.section", "host.grade"],
             },
         );
         const studentsOfGrades = await this.ssgService.find(
-            {},
+            { section: In(classes.map((c) => c.host.section._id)) },
             {
-                where: {
-                    section: In(classes.map((c) => c.host.section._id)),
-                },
                 relations: ["user"],
             },
         );

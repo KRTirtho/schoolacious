@@ -41,8 +41,12 @@ export default abstract class BasicEntityService<
         return this.repo.findOneOrFail(criteria, options);
     }
 
-    find(conditions?: FindConditions<Entity>, options?: FindManyOptions<Entity>) {
-        return this.repo.find({ ...conditions, ...options });
+    find(
+        conditions?: FindManyOptions<Entity>["where"],
+        options: Omit<FindManyOptions<Entity>, "where"> = {},
+    ) {
+        conditions && Object.assign(options, { where: conditions });
+        return this.repo.find(options);
     }
 
     findOneUnsafe(criteria: FindConditions<Entity>, options?: FindOneOptions<Entity>) {

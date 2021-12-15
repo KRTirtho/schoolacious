@@ -1,5 +1,7 @@
 import {
     BadRequestException,
+    forwardRef,
+    Inject,
     Injectable,
     InternalServerErrorException,
 } from "@nestjs/common";
@@ -19,7 +21,7 @@ export class StudentSectionGradeService extends BasicEntityService<StudentsToSec
     constructor(
         @InjectRepository(StudentsToSectionsToGrades)
         private ssgRepo: Repository<StudentsToSectionsToGrades>,
-        private userService: UserService,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
     ) {
         super(ssgRepo);
     }
@@ -31,8 +33,8 @@ export class StudentSectionGradeService extends BasicEntityService<StudentsToSec
         section: Section,
     ) {
         const users = await this.userService.find(
-            {},
-            { relations: ["school"], where: { _id: In(user_ids) } },
+            { _id: In(user_ids) },
+            { relations: ["school"] },
         );
 
         const invalidUsers = [];

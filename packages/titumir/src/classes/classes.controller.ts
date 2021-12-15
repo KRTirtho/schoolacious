@@ -10,9 +10,8 @@ import {
     Logger,
     ForbiddenException,
     NotFoundException,
-    Query,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiParam, ApiQuery } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiParam } from "@nestjs/swagger";
 import ScheduleClassDTO from "./dto/schedule-class.dto";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
@@ -30,8 +29,6 @@ import { OpenViduRole } from "openvidu-node-client";
 import { localDateToDayTime } from "../utils/local-date-to-day-time.utils";
 import { TeacherSectionGradeService } from "../teacher-section-grade/teacher-section-grade.service";
 import { StudentSectionGradeService } from "../student-section-grade/student-section-grade.service";
-import { addMinutes, lightFormat, parse } from "date-fns";
-import { Between } from "typeorm";
 
 @Controller("/school/:school/grade/:grade/section/:section/class")
 @ApiBearerAuth()
@@ -79,14 +76,13 @@ export class ClassesController implements OnApplicationBootstrap {
     ) {
         try {
             const classes = await this.classesService.find(
-                {},
                 {
-                    where: {
-                        host: {
-                            section: { name: sectionName },
-                            grade: { standard },
-                        },
+                    host: {
+                        section: { name: sectionName },
+                        grade: { standard },
                     },
+                },
+                {
                     relations: [
                         "host",
                         "host.section",
@@ -167,48 +163,6 @@ export class ClassesController implements OnApplicationBootstrap {
                 this.createSchoolClassJob(user.school._id);
             await this.classesService.createClassCronJob(user.school._id);
             return scheduledClass;
-        } catch (error) {
-            this.logger.error(error);
-            throw error;
-        }
-    }
-
-    @Get("upcoming")
-    @ApiParam({ name: "school" })
-    @ApiQuery({ required: false, name: "diff" })
-    @ApiQuery({ required: false, name: "day" })
-    @ApiQuery({ required: false, name: "current-time" })
-    async getUpcomingClasses(
-        @Param("section") section: string,
-        @Param("grade") standard: number,
-        @Query("diff") diff = 120, //2hours
-        @Query("current-time") from?: string,
-        @Query("day") day?: number,
-    ) {
-        try {
-            const date = new Date();
-            const parsedFrom = from && parse(from, "HH:mm:ss", date);
-            const currentTime = lightFormat(parsedFrom || date, "HH:mm:ss");
-            const time = lightFormat(addMinutes(date, diff), "HH:mm:ss");
-            const classes = await this.classesService.find(
-                {},
-                {
-                    where: {
-                        day: day ?? date.getDay(),
-                        time: Between(currentTime, time),
-                        host: { section: { name: section }, grade: { standard } },
-                    },
-                    relations: [
-                        "host",
-                        "host.section",
-                        "host.grade",
-                        "host.subject",
-                        "host.user",
-                    ],
-                },
-            );
-
-            return classes;
         } catch (error) {
             this.logger.error(error);
             throw error;

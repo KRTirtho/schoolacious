@@ -10,6 +10,8 @@ import { StudentSectionGradeService } from "../student-section-grade/student-sec
 import { TeacherSectionGradeService } from "../teacher-section-grade/teacher-section-grade.service";
 import StudentsToSectionsToGrades from "../database/entity/students_sections_grades.entity";
 import TeachersToSectionsToGrades from "../database/entity/teachers_sections_grades.entity";
+import { lightFormat, addMinutes, parse } from "date-fns";
+import Class from "../database/entity/classes.entity";
 
 interface GetUserResponse extends User {
     ssg?: Pick<StudentsToSectionsToGrades, "grade" | "section">;
@@ -133,6 +135,34 @@ export class UserController {
                 type: INVITATION_OR_JOIN_TYPE.join,
             });
         } catch (error: any) {
+            this.logger.error(error);
+            throw error;
+        }
+    }
+
+    @Get("upcoming-classes")
+    @ApiQuery({ required: false, name: "diff" })
+    @ApiQuery({ required: false, name: "day" })
+    @ApiQuery({ required: false, name: "current-time" })
+    async listUpcomingClasses(
+        @CurrentUser() user: User,
+        @Query("diff") diff = 120, //2hours
+        @Query("current-time") from?: string,
+        @Query("day") day?: number,
+    ): Promise<Class[]> {
+        try {
+            const date = new Date();
+            const parsedFrom = from && parse(from, "HH:mm:ss", date);
+            const currentTime = lightFormat(parsedFrom || date, "HH:mm:ss");
+            const time = lightFormat(addMinutes(date, diff), "HH:mm:ss");
+            const classes = await this.userService.getUpcomingClasses(
+                user,
+                day ?? date.getDay(),
+                currentTime,
+                time,
+            );
+            return classes;
+        } catch (error) {
             this.logger.error(error);
             throw error;
         }

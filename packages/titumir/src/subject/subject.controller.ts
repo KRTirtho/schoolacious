@@ -30,9 +30,8 @@ export class SubjectController {
     async getAlSubject(@CurrentUser() user: VerifiedSchoolUser) {
         try {
             return await this.subjectService.find(
-                {},
+                { school: user.school },
                 {
-                    where: { school: user.school },
                     relations: ["grades_subjects", "grades_subjects.grade"],
                 },
             );

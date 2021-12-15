@@ -159,7 +159,7 @@ export class SchoolController {
     @ApiParam({ name: "school" })
     async getAllMembers(@CurrentUser() user: User) {
         try {
-            return await this.userService.find({}, { where: { school: user.school } });
+            return await this.userService.find({ school: user.school });
         } catch (error: any) {
             this.logger.log(error);
             throw error;

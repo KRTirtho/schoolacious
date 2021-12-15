@@ -75,9 +75,8 @@ export class GradeController {
             );
 
             const grades = await this.gradeService.find(
-                {},
+                { school: user.school },
                 {
-                    where: { school: user.school },
                     relations:
                         extendedRelationArr && isValidExtendedRelation
                             ? extendedRelationArr

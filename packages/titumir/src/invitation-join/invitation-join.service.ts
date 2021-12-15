@@ -97,11 +97,8 @@ export class InvitationJoinService extends BasicEntityService<
     ): Promise<Invitations_Joins[]> {
         const users = (
             await this.userService.find(
-                {},
+                { _id: In(payload.map(({ user_id }) => user_id)) },
                 {
-                    where: {
-                        _id: In(payload.map(({ user_id }) => user_id)),
-                    },
                     relations: ["school"],
                 },
             )
@@ -213,13 +210,13 @@ export class InvitationJoinService extends BasicEntityService<
         _id,
         type,
     }: GetInvitationJoin): Promise<Invitations_Joins[]> {
-        return this.find({}, { where: { user: { _id }, type }, relations: ["school"] });
+        return this.find({ user: { _id }, type }, { relations: ["school"] });
     }
 
     getSchoolInvitationJoin({
         _id,
         type,
     }: GetInvitationJoin): Promise<Invitations_Joins[]> {
-        return this.find({}, { where: { type, school: { _id } }, relations: ["user"] });
+        return this.find({ type, school: { _id } }, { relations: ["user"] });
     }
 }

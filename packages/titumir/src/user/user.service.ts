@@ -1,11 +1,20 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, BadRequestException, Inject, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import User from "../database/entity/users.entity";
-import { DeepPartial, FindConditions, FindOneOptions, Repository } from "typeorm";
+import {
+    Between,
+    DeepPartial,
+    FindConditions,
+    FindOneOptions,
+    Repository,
+} from "typeorm";
 import bcrypt from "bcrypt";
 import BasicEntityService, {
     PartialKey,
 } from "../database/abstracts/entity-service.abstract";
+import { ClassesService } from "../classes/classes.service";
+import { USER_ROLE } from "@veschool/types";
+import { StudentSectionGradeService } from "../student-section-grade/student-section-grade.service";
 
 type SafeUser = Omit<User, "password">;
 
@@ -13,7 +22,12 @@ type CreateUser = PartialKey<User, "_id" | "joined_on">;
 
 @Injectable()
 export class UserService extends BasicEntityService<User, CreateUser> {
-    constructor(@InjectRepository(User) private userRepo: Repository<User>) {
+    constructor(
+        @InjectRepository(User) private userRepo: Repository<User>,
+        @Inject(forwardRef(() => StudentSectionGradeService))
+        private readonly ssgService: StudentSectionGradeService,
+        private readonly classService: ClassesService,
+    ) {
         super(userRepo);
     }
 
@@ -79,5 +93,33 @@ export class UserService extends BasicEntityService<User, CreateUser> {
         }
         user.password = await bcrypt.hash(newPassword, 12);
         return this.userRepo.save(user);
+    }
+
+    async getUpcomingClasses(user: User, day: number, from: string, to: string) {
+        const relations = ["host", "host.grade", "host.subject", "host.section"];
+        if (user.role === USER_ROLE.student) {
+            const { section, grade } = await this.ssgService.findOne(
+                { user },
+                {
+                    relations: ["grade", "section"],
+                },
+            );
+            return await this.classService.find(
+                {
+                    day,
+                    time: Between(from, to),
+                    host: { section, grade },
+                },
+                { relations },
+            );
+        }
+        return await this.classService.find(
+            {
+                day,
+                host: { user },
+                time: Between(from, to),
+            },
+            { relations },
+        );
     }
 }

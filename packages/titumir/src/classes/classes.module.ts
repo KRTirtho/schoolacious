@@ -20,5 +20,6 @@ import { StudentSectionGradeModule } from "../student-section-grade/student-sect
     ],
     controllers: [ClassesController],
     providers: [ClassesService],
+    exports: [ClassesService],
 })
 export class ClassesModule {}

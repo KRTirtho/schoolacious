@@ -6,6 +6,7 @@ import { UserController } from "./user.controller";
 import { InvitationJoinModule } from "../invitation-join/invitation-join.module";
 import { TeacherSectionGradeModule } from "../teacher-section-grade/teacher-section-grade.module";
 import { StudentSectionGradeModule } from "../student-section-grade/student-section-grade.module";
+import { ClassesModule } from "../classes/classes.module";
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { StudentSectionGradeModule } from "../student-section-grade/student-sect
         forwardRef(() => InvitationJoinModule),
         forwardRef(() => TeacherSectionGradeModule),
         forwardRef(() => StudentSectionGradeModule),
+        ClassesModule,
     ],
     providers: [UserService],
     controllers: [UserController],

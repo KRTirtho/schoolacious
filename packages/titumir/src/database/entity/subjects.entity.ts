@@ -7,7 +7,7 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from "typeorm";
-import { SubjectSchema } from "@veschool/types";
+import { SubjectSchema } from "@schoolacious/types";
 import GradeToSubject from "./grade_subject.entity";
 import School from "./schools.entity";
 import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";

@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiParam } from "@nestjs/swagger";
 import ScheduleClassDTO from "./dto/schedule-class.dto";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
-import { USER_ROLE, CLASS_STATUS } from "@veschool/types";
+import { USER_ROLE, CLASS_STATUS } from "@schoolacious/types";
 import { ClassesService } from "./classes.service";
 import { VerifiedGradeUser } from "../grade/grade.controller";
 import { CurrentUser } from "../decorator/current-user.decorator";

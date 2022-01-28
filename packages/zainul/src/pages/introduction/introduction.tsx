@@ -20,7 +20,7 @@ export default function Introduction() {
                 </Button>
             </Box>
             <Heading as="h1" size="3xl" color="white">
-                VESchool
+                Schoolacious
             </Heading>
             <Box maxW="50%">
                 <Heading as="h5" size="md" textAlign="center" color="white">

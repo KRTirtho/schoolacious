@@ -1,4 +1,4 @@
-import { CLASS_STATUS } from "@veschool/types";
+import { CLASS_STATUS } from "@schoolacious/types";
 import { define } from "typeorm-seeding";
 import Class from "../entity/classes.entity";
 

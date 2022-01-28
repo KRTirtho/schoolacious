@@ -6,7 +6,7 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn,
 } from "typeorm";
-import { NotificationsSchema, NOTIFICATION_STATUS } from "@veschool/types";
+import { NotificationsSchema, NOTIFICATION_STATUS } from "@schoolacious/types";
 import User from "./users.entity";
 
 @Entity("notifications")

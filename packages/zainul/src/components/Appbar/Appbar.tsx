@@ -57,7 +57,7 @@ function Appbar() {
             zIndex="1"
         >
             <Heading onClick={() => navigate("/")} cursor="pointer" as="h5" size="lg">
-                VESchool
+                Schoolacious
             </Heading>
             {/* Action Button */}
             <Flex>

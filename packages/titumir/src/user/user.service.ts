@@ -13,7 +13,7 @@ import BasicEntityService, {
     PartialKey,
 } from "../database/abstracts/entity-service.abstract";
 import { ClassesService } from "../classes/classes.service";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { StudentSectionGradeService } from "../student-section-grade/student-section-grade.service";
 
 type SafeUser = Omit<User, "password">;

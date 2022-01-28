@@ -1,4 +1,4 @@
-import { SchoolSchema, SubjectSchema, UserSchema } from "@veschool/types";
+import { SchoolSchema, SubjectSchema, UserSchema } from "@schoolacious/types";
 import { Connector, TitumirResponse } from "../Connector";
 import { Invitations_Joins } from "./invitation-join";
 

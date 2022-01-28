@@ -1,13 +1,13 @@
 {
-    "name": "@veschool/types",
+    "name": "@schoolacious/types",
     "version": "0.1.0",
     "description": "common type declaration package for both client & server for keeping sync between types",
     "keywords": [
-        "veschool",
+        "schoolacious",
         "typescript"
     ],
     "author": "KR Tirtho <krtirtho@gmail.com>",
-    "homepage": "https://github.com/KRTirtho/veschool/tree/master/packages/types#readme",
+    "homepage": "https://github.com/KRTirtho/schoolacious/tree/master/packages/types#readme",
     "files": [
         "dist"
     ],
@@ -16,13 +16,13 @@
     "module": "dist/esm/index",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/KRTirtho/veschool.git"
+        "url": "git+https://github.com/KRTirtho/schoolacious.git"
     },
     "scripts": {
         "build": "tsc && tsc --outDir ./dist/esm --module ESNext"
     },
     "bugs": {
-        "url": "https://github.com/KRTirtho/veschool/issues"
+        "url": "https://github.com/KRTirtho/schoolacious/issues"
     },
     "devDependencies": {
         "typescript": "^4.3.4"

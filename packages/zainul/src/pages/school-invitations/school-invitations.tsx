@@ -3,7 +3,7 @@ import useTitumirMutation from "hooks/useTitumirMutation";
 import React from "react";
 import { useQueryClient } from "react-query";
 import { InvitationJoinCancellationProperties } from "services/titumir-client/modules/invitation-join";
-import { Invitations_JoinsSchema } from "@veschool/types";
+import { Invitations_JoinsSchema } from "@schoolacious/types";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { useAuthStore } from "state/authorization-store";

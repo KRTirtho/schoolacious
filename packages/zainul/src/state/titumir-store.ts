@@ -1,7 +1,7 @@
 import create from "zustand";
 import TitumirApi, { Options } from "services/titumir-client";
 import { useAuthStore } from "./authorization-store";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 
 export const useTitumirApiStore = create<TitumirApi>(() => {
     const user = useAuthStore.getState().user;

@@ -1,7 +1,7 @@
 import { QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React from "react";
-import { ClassSchema } from "@veschool/types";
+import { ClassSchema } from "@schoolacious/types";
 import { chakra, Heading, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
 import Paper from "components/Paper/Paper";
 import { userToName } from "utils/userToName";

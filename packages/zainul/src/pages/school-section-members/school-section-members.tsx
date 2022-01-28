@@ -28,7 +28,7 @@ import type {
 import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
 import { AddUserPopover } from "components/AddUserPopover/AddUserPopover";
 import useTitumirMutation from "hooks/useTitumirMutation";
-import { TeachersToSectionsToGradesSchema, USER_ROLE } from "@veschool/types";
+import { TeachersToSectionsToGradesSchema, USER_ROLE } from "@schoolacious/types";
 import AddMultipleUserSlide from "components/AddMultipleUserSlide/AddMultipleUserSlide";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
 

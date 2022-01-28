@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import MaskedPasswordField from "components/MaskedPasswordField/MaskedPasswordField";
 import { ActualField } from "components/TextField/TextField";
 import { MutationContextKey } from "configs/enums";
-import { UserSchema } from "@veschool/types";
+import { UserSchema } from "@schoolacious/types";
 import { useAuthStore } from "state/authorization-store";
 import { useTokenStore } from "state/token-store";
 import { useModel, Form, regex } from "react-binden";

@@ -1,6 +1,6 @@
 import useLoggedIn from "hooks/useLoggedIn";
 import React, { FC } from "react";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import NotFound404 from "./404";
 import { usePermissions } from "hooks/usePermissions";
 

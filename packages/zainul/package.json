@@ -1,5 +1,5 @@
 {
-    "name": "@veschool/zainul",
+    "name": "@schoolacious/zainul",
     "version": "0.1.0",
     "author": {
         "email": "krtirhto@gmail.com",
@@ -17,7 +17,7 @@
         "@chakra-ui/react": "^1.7.1",
         "@emotion/react": "^11.4.0",
         "@emotion/styled": "^11.3.0",
-        "@veschool/types": "^0.1.0",
+        "@schoolacious/types": "^0.1.0",
         "date-fns": "^2.22.1",
         "downshift": "^6.1.7",
         "formik": "^2.2.6",

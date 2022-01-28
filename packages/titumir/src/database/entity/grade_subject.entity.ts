@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
-import { GradeToSubjectSchema } from "@veschool/types";
+import { GradeToSubjectSchema } from "@schoolacious/types";
 import Grade from "./grades.entity";
 import Subject from "./subjects.entity";
 

@@ -19,7 +19,7 @@ import {
     Link as CLink,
     Tooltip,
 } from "@chakra-ui/react";
-import { GradeToSubjectSchema } from "@veschool/types";
+import { GradeToSubjectSchema } from "@schoolacious/types";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { uniqueId } from "lodash";

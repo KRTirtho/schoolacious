@@ -4,7 +4,7 @@ import {
     StudentsToSectionsToGradesSchema,
     TeachersToSectionsToGradesSchema,
     UserSchema,
-} from "@veschool/types";
+} from "@schoolacious/types";
 
 export interface UserSchemaWithGradesSections extends UserSchema {
     ssg?: StudentsToSectionsToGradesSchema;

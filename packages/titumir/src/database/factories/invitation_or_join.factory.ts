@@ -1,4 +1,4 @@
-import { INVITATION_OR_JOIN_ROLE } from "@veschool/types";
+import { INVITATION_OR_JOIN_ROLE } from "@schoolacious/types";
 import { define } from "typeorm-seeding";
 import InvitationJoin from "../entity/invitations_or_joins.entity";
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { UserSchema, USER_ROLE } from "@veschool/types";
+import { UserSchema, USER_ROLE } from "@schoolacious/types";
 import { QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { TextFieldProps } from "components/TextField/TextField";

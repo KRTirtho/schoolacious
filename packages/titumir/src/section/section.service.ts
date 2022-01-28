@@ -14,7 +14,7 @@ import Grade from "../database/entity/grades.entity";
 import School from "../database/entity/schools.entity";
 import Section from "../database/entity/sections.entity";
 import User from "../database/entity/users.entity";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { GradeService } from "../grade/grade.service";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";

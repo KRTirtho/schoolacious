@@ -3,7 +3,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { NOT_A_SECRET } from "../../config";
 import { generateMockUser } from "../../test/e2e-test.util";
 import User from "../database/entity/users.entity";
-import { USER_STATUS } from "@veschool/types";
+import { USER_STATUS } from "@schoolacious/types";
 import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
 import JwtStrategy from "./strategies/jwt.strategy";

@@ -20,4 +20,4 @@ build-prod:
 			docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
 exec: 
-			docker exec -it veschool_titumir_1 $(con) sh -c "$(cmd)"
+			docker exec -it schoolacious_titumir_1 $(con) sh -c "$(cmd)"

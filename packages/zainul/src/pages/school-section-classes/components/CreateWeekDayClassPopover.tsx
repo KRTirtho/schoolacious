@@ -20,7 +20,7 @@ import React, { FC } from "react";
 import { FiCheck, FiPlus } from "react-icons/fi";
 import { TiTimes } from "react-icons/ti";
 import * as yup from "yup";
-import { TeachersToSectionsToGradesSchema } from "@veschool/types";
+import { TeachersToSectionsToGradesSchema } from "@schoolacious/types";
 import { userToName } from "utils/userToName";
 import { Link } from "react-router-dom";
 import { SelectField } from "components/SelectField/SelectField";

@@ -3,7 +3,7 @@ import React from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { MutationContextKey } from "configs/enums";
-import { UserSchema } from "@veschool/types";
+import { UserSchema } from "@schoolacious/types";
 import { ActualField as Field } from "components/TextField/TextField";
 import MaskedPasswordField from "components/MaskedPasswordField/MaskedPasswordField";
 import { useAuthStore } from "state/authorization-store";

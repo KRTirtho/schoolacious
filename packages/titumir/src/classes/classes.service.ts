@@ -22,7 +22,7 @@ import { CronJob } from "cron";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { NotificationService } from "../notification/notification.service";
 import { StudentSectionGradeService } from "../student-section-grade/student-section-grade.service";
-import { NOTIFICATION_STATUS } from "@veschool/types";
+import { NOTIFICATION_STATUS } from "@schoolacious/types";
 import { OpenViduService } from "../open-vidu/open-vidu.service";
 
 export type CreateClassPayload = PartialKey<Class, "_id" | "created_at" | "sessionId">;

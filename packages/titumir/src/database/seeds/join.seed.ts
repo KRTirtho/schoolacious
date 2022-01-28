@@ -1,6 +1,6 @@
 import { Connection } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
-import { INVITATION_OR_JOIN_TYPE } from "@veschool/types";
+import { INVITATION_OR_JOIN_TYPE } from "@schoolacious/types";
 import Invitations_Joins from "../entity/invitations_or_joins.entity";
 import School from "../entity/schools.entity";
 import User from "../entity/users.entity";

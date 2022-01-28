@@ -11,7 +11,7 @@ import {
     Logger,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiNotFoundResponse, ApiParam, ApiQuery } from "@nestjs/swagger";
-import { USER_ROLE, INVITATION_OR_JOIN_TYPE } from "@veschool/types";
+import { USER_ROLE, INVITATION_OR_JOIN_TYPE } from "@schoolacious/types";
 import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";

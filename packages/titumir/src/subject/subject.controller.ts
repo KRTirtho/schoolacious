@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Logger, Post } from "@nestjs/common";
 import { ApiBearerAuth, ApiParam } from "@nestjs/swagger";
 import User from "../database/entity/users.entity";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifySchool } from "../decorator/verify-school.decorator";

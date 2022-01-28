@@ -24,7 +24,7 @@ import {
     Invitations_JoinsSchema,
     INVITATION_OR_JOIN_ROLE,
     SchoolSchema,
-} from "@veschool/types";
+} from "@schoolacious/types";
 import { FiSearch } from "react-icons/fi";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { JoinRequestProperties } from "services/titumir-client/modules/invitation-join";

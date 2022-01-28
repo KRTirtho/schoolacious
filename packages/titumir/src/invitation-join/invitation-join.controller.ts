@@ -14,7 +14,7 @@ import {
     ApiNotAcceptableResponse,
     ApiOperation,
 } from "@nestjs/swagger";
-import { INVITATION_OR_JOIN_TYPE, USER_ROLE } from "@veschool/types";
+import { INVITATION_OR_JOIN_TYPE, USER_ROLE } from "@schoolacious/types";
 import Invitations_Joins from "../database/entity/invitations_or_joins.entity";
 import School from "../database/entity/schools.entity";
 import User from "../database/entity/users.entity";

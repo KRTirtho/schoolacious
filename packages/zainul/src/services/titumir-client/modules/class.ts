@@ -1,4 +1,4 @@
-import { ClassSchema } from "@veschool/types";
+import { ClassSchema } from "@schoolacious/types";
 import { Connector, TitumirResponse } from "../Connector";
 import { SectionPrefixIds } from "./section";
 

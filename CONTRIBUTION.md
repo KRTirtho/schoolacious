@@ -1,8 +1,8 @@
-# Contributing to VESchool
+# Contributing to Schoolacious
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
-The following is a set of guidelines for contributing to VESchool and its parts & components. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to Schoolacious and its parts & components. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
 #### Table Of Contents
 
@@ -10,9 +10,9 @@ The following is a set of guidelines for contributing to VESchool and its parts 
 
 [What should I know before I get started?](#what-should-i-know-before-i-get-started)
 
--   [Languages/Runtimes/Test Environment used in entire VESchool project](#languagesruntimestest-environment)
--   [Tools & libraries used for VESchool Frontend](#frontend)
--   [Backend technologies & architecture of VESchool](#backend)
+-   [Languages/Runtimes/Test Environment used in entire Schoolacious project](#languagesruntimestest-environment)
+-   [Tools & libraries used for Schoolacious Frontend](#frontend)
+-   [Backend technologies & architecture of Schoolacious](#backend)
 
 [Places/Parts where you can't contribute](#placesparts-where-you-cant-contribute)
 
@@ -36,7 +36,7 @@ The following is a set of guidelines for contributing to VESchool and its parts 
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [VESchool's Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [krtirtho@gmail.com](mailto:krtirtho@gmail.com)
+This project and everyone participating in it is governed by the [Schoolacious's Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [krtirtho@gmail.com](mailto:krtirtho@gmail.com)
 
 ## What should I know before I get started?
 
@@ -47,42 +47,42 @@ This part lets you know about what tools & framework you should know or be famil
 To contribute to any part of the project you must know following tools & technologies or be familiar with
 
 -   **Nodejs**:
-    Nodejs always had an good reputation for being fast & simple in for such application that was previously impossible for other server-side technologies. It's event based architecture enables it to be faster & the superior event loop makes it possible to run concurrently. VESchool uses Nodejs because of it use case for huge I/O related operations. Almost 90% of the application is based on data retrieval or data pushing. Thus it makes sense to use an server-side framework that is well reputed for being fast for I/O operations. Knowing nodejs lts (currently version **14.x**) is important & core tools supporting this version of node might also help
+    Nodejs always had an good reputation for being fast & simple in for such application that was previously impossible for other server-side technologies. It's event based architecture enables it to be faster & the superior event loop makes it possible to run concurrently. Schoolacious uses Nodejs because of it use case for huge I/O related operations. Almost 90% of the application is based on data retrieval or data pushing. Thus it makes sense to use an server-side framework that is well reputed for being fast for I/O operations. Knowing nodejs lts (currently version **14.x**) is important & core tools supporting this version of node might also help
 
--   **Typescript**: Typescript is the typed superset of JavaScript. It removes or at least tries to mitigate the legacy problems of JavaScript. VESchool uses typescript for the entire project instead of javascript because typescript ensures type safety & filters out common patterns of mistake. Its strongly typed system make the debugging easier & Dev Experience better than ever before
+-   **Typescript**: Typescript is the typed superset of JavaScript. It removes or at least tries to mitigate the legacy problems of JavaScript. Schoolacious uses typescript for the entire project instead of javascript because typescript ensures type safety & filters out common patterns of mistake. Its strongly typed system make the debugging easier & Dev Experience better than ever before
 
-    > **Info**: Typescript **decorators** are the core foundation of VESchool's backend [Nestjs](https://nestjs.com) & database driver [TypeORM](https://typeorm.io)
+    > **Info**: Typescript **decorators** are the core foundation of Schoolacious's backend [Nestjs](https://nestjs.com) & database driver [TypeORM](https://typeorm.io)
 
--   **Jest**: VESchool runs all of its testing with jest. Jest is fast & modern. It has all the necessary testing tools built into it. Thus using jest as the testing framework makes sense these days. For upgrading any testing facility or any test please use jest & always create test that are valid for this project
--   **Rust**: Rust is a super fast, lightweight, memory safe compiled system level programming language by mozilla.org. VESchool uses it for higher & complex computational task. Its a replacement for C++ but with better memory safety. For current project state, it doesn't have any application. Thus knowing or not knowing it doesn't matter. But there's a bigger chance that it will be used
+-   **Jest**: Schoolacious runs all of its testing with jest. Jest is fast & modern. It has all the necessary testing tools built into it. Thus using jest as the testing framework makes sense these days. For upgrading any testing facility or any test please use jest & always create test that are valid for this project
+-   **Rust**: Rust is a super fast, lightweight, memory safe compiled system level programming language by mozilla.org. Schoolacious uses it for higher & complex computational task. Its a replacement for C++ but with better memory safety. For current project state, it doesn't have any application. Thus knowing or not knowing it doesn't matter. But there's a bigger chance that it will be used
 
 ## Frontend
 
-Knowledge & familiarity with following packages/libraries is required to contribute to the frontend part of the VESchool project
+Knowledge & familiarity with following packages/libraries is required to contribute to the frontend part of the Schoolacious project
 
--   **React**: We use Facebook's open source frontend UI library [React](https://reactjs.org/). React is awesome & has huge community support. Has so many packages to work with. Also modern react features enables project to be more fancy & gives a unbelievable developer experience. Learn & contribute to frontend of VESchool by following the [DESIGN_GUIDELINES](DESIGN_GUIDELINES.md)
+-   **React**: We use Facebook's open source frontend UI library [React](https://reactjs.org/). React is awesome & has huge community support. Has so many packages to work with. Also modern react features enables project to be more fancy & gives a unbelievable developer experience. Learn & contribute to frontend of Schoolacious by following the [DESIGN_GUIDELINES](DESIGN_GUIDELINES.md)
 
--   **Chakra-UI**: Chakra-UI is the design & component toolkit that VESchool going to use. It has beautiful design principals with minimal & attractive designs. Has react support & uses @emotion/react to design. It follows the CSS in JS convention. Learn more from chakra-ui.com
+-   **Chakra-UI**: Chakra-UI is the design & component toolkit that Schoolacious going to use. It has beautiful design principals with minimal & attractive designs. Has react support & uses @emotion/react to design. It follows the CSS in JS convention. Learn more from chakra-ui.com
 
--   **React-Query**: react-query is the caching, prefetching & auto query base of VESchool's frontend. Its rich interface of caching & easy access to query-client gives the developer a breeze of happiness. Using it for querying & caching make the application faster & reduces api load of backend. Perfectly knowing this library is really important. Any kind of API call should be done using react-query features. Learn more about this package in react-query.tanstack.com
+-   **React-Query**: react-query is the caching, prefetching & auto query base of Schoolacious's frontend. Its rich interface of caching & easy access to query-client gives the developer a breeze of happiness. Using it for querying & caching make the application faster & reduces api load of backend. Perfectly knowing this library is really important. Any kind of API call should be done using react-query features. Learn more about this package in react-query.tanstack.com
 
--   **formik & yup**: Easy tools for form validation & handling. Knowing this is pretty important. Since the frontend of VESchool is really input heavy
+-   **formik & yup**: Easy tools for form validation & handling. Knowing this is pretty important. Since the frontend of Schoolacious is really input heavy
 
--   **zustand**: A minimal, lightweight & simple client-side state manager. VESchool uses it to avoid the complexity of other flux based state managers & tries to keep the logic as simple as React-Context but not React-Context
+-   **zustand**: A minimal, lightweight & simple client-side state manager. Schoolacious uses it to avoid the complexity of other flux based state managers & tries to keep the logic as simple as React-Context but not React-Context
 
 ## Backend
 
-Nodejs based backend requires following packages to be familiar with to contribute to VESchool backend part
+Nodejs based backend requires following packages to be familiar with to contribute to Schoolacious backend part
 
 -   **express**: Express is a fast & minimal http library for Nodejs. Its not that important to know but the framework Nestjs using it under the hood but quite of its API is exposed to the developer & it is important for some use cases too
 
--   **NestJS**: Nest (NestJS) is a framework for building efficient, scalable Node.js server-side applications. It encourages the developer to follow certain guidelines to keep the project steady even in large scale. NestJS is the only framework in NodeJS that enables building web servers & APIs with meta programming. Most of the time big enterprise level server-side application uses meta decorators or derive statements to create routes. NestJS respects that pattern of meta programming & mixes the good part of meta programming with OOP. Also it gives the developer hint for every wrong this. VESchool decided to use NestJS as the server-side framework because it has strong design & structural principal inspired by Angular but not Angular. It has the right tools built into it to do all the stuff alone. Has GraphQL/WebSocket/Authentication etc built right into it keeping the developer experience a breeze
+-   **NestJS**: Nest (NestJS) is a framework for building efficient, scalable Node.js server-side applications. It encourages the developer to follow certain guidelines to keep the project steady even in large scale. NestJS is the only framework in NodeJS that enables building web servers & APIs with meta programming. Most of the time big enterprise level server-side application uses meta decorators or derive statements to create routes. NestJS respects that pattern of meta programming & mixes the good part of meta programming with OOP. Also it gives the developer hint for every wrong this. Schoolacious decided to use NestJS as the server-side framework because it has strong design & structural principal inspired by Angular but not Angular. It has the right tools built into it to do all the stuff alone. Has GraphQL/WebSocket/Authentication etc built right into it keeping the developer experience a breeze
 
--   **TypeORM**: TypeORM is a database driver for sql/no-sql databases. It supports all the major databases currently available in this world. VESchool uses it because it has the same design & code principal of NestJS with Typescript Decorators & fits well with the architecture of NestJS. NestJS also has an official support for this package. TypeORM is one the most recommended nodejs database driver after mongoose-orm. Its the only database driver that VESchool will only use
+-   **TypeORM**: TypeORM is a database driver for sql/no-sql databases. It supports all the major databases currently available in this world. Schoolacious uses it because it has the same design & code principal of NestJS with Typescript Decorators & fits well with the architecture of NestJS. NestJS also has an official support for this package. TypeORM is one the most recommended nodejs database driver after mongoose-orm. Its the only database driver that Schoolacious will only use
 
--   **PostgreSQL**: PostgreSQL (in short psql) is an OSDS (Open Source Database Software). It has minimal licensing with freedom to use it anywhere even for commercial use. Its faster & reliable & has rich extension support. VESchool will use database as the primary database as most of the data of VESchool is relational (many-to-many)
+-   **PostgreSQL**: PostgreSQL (in short psql) is an OSDS (Open Source Database Software). It has minimal licensing with freedom to use it anywhere even for commercial use. Its faster & reliable & has rich extension support. Schoolacious will use database as the primary database as most of the data of Schoolacious is relational (many-to-many)
 
--   **MongoDB**: Mongodb is the no-sql database that is free to use & doesn't require licensing for commercial usa cases. Its the secondary database software of VESchool. Many of the non-relational & unstructured data will be stored in this. **Currently, there is no part for its use case in the project. It will be used in future if needed**
+-   **MongoDB**: Mongodb is the no-sql database that is free to use & doesn't require licensing for commercial usa cases. Its the secondary database software of Schoolacious. Many of the non-relational & unstructured data will be stored in this. **Currently, there is no part for its use case in the project. It will be used in future if needed**
 
 > **Note**: If you don't know any of the language/library/framework its not a shame, don't hesitate to learn. As learning is the best thing you can do in you're life. Use the [Learning Materials](#learning-materials) that was provided for the tools that were used in this project. After all you don't need to know each of the technology **just knowing the part that you're intending to contribute is enough**
 
@@ -101,18 +101,18 @@ Most of the contribution by any contributor is accepted but for some special cas
 
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for VESchool. Following these guidelines helps maintainers and the community understand your report :pencil:, reproduce the behavior :computer: :computer:, and find related reports :mag_right:.
+This section guides you through submitting a bug report for Schoolacious. Following these guidelines helps maintainers and the community understand your report :pencil:, reproduce the behavior :computer: :computer:, and find related reports :mag_right:.
 
-Before creating bug reports, please check [this list](#before-submitting-a-bug-report) as you might find out that you don't need to create one. When you are creating a bug report, please [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](https://github.com/veschool/.github/blob/master/.github/ISSUE_TEMPLATE/bug_report.md), the information it asks for helps us resolve issues faster.
+Before creating bug reports, please check [this list](#before-submitting-a-bug-report) as you might find out that you don't need to create one. When you are creating a bug report, please [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](https://github.com/schoolacious/.github/blob/master/.github/ISSUE_TEMPLATE/bug_report.md), the information it asks for helps us resolve issues faster.
 
 > **Note:** If you find a **Closed** issue that seems like it is the same thing that you're experiencing, open a new issue and include a link to the original issue in the body of your new one.
 
 #### Before Submitting A Bug Report
 
--   **Check the [debugging guide (currently N/A, WIP)]().** You might be able to find the cause of the problem and fix things yourself. Most importantly, check if you can reproduce the problem in the latest release of VESchool
+-   **Check the [debugging guide (currently N/A, WIP)]().** You might be able to find the cause of the problem and fix things yourself. Most importantly, check if you can reproduce the problem in the latest release of Schoolacious
 -   **Check the [FAQs](FAQs.md)** for a list of common questions and problems.
--   **Determine which [part of the project](https://github.com/KRTirtho/veschool#structure)** the issue belongs to
--   **Perform a [cursory search](https://github.com/search?q=+is%3Aissue+user%3Aveschool)** to see if the problem has already been reported. If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one.
+-   **Determine which [part of the project](https://github.com/KRTirtho/schoolacious#structure)** the issue belongs to
+-   **Perform a [cursory search](https://github.com/search?q=+is%3Aissue+user%3Aschoolacious)** to see if the problem has already been reported. If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one.
 
 #### How Do I Submit A (Good) Bug Report?
 
@@ -126,7 +126,7 @@ Explain the problem and include additional details to help maintainers reproduce
 -   **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
 -   **Explain which behavior you expected to see instead and why.**
 -   **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem
--   **If the problem is related to performance or memory**, include a [CPU profile capture](https://flight-manual.veschool.io/hacking-veschool/sections/debugging/#diagnose-runtime-performance) with your report.
+-   **If the problem is related to performance or memory**, include a [CPU profile capture](https://flight-manual.schoolacious.io/hacking-schoolacious/sections/debugging/#diagnose-runtime-performance) with your report.
 -   **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened and share more information using the guidelines below.
 
 Provide more context by answering these questions **(might need a local-testing/git-clone)**:
@@ -145,26 +145,26 @@ Include details about your configuration and environment:
 
 ### Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for VESchool, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion :pencil: and find related suggestions :mag_right:.
+This section guides you through submitting an enhancement suggestion for Schoolacious, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion :pencil: and find related suggestions :mag_right:.
 
-Before creating enhancement suggestions, please check [this list](#before-submitting-an-enhancement-suggestion) as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). Fill in [the template](https://github.com/veschool/.github/blob/master/.github/ISSUE_TEMPLATE/feature_request.md), including the steps that you imagine you would take if the feature you're requesting existed.
+Before creating enhancement suggestions, please check [this list](#before-submitting-an-enhancement-suggestion) as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). Fill in [the template](https://github.com/schoolacious/.github/blob/master/.github/ISSUE_TEMPLATE/feature_request.md), including the steps that you imagine you would take if the feature you're requesting existed.
 
 #### Before Submitting An Enhancement Suggestion
 
--   **Check the [specific project board](https://github.com/KRTirtho/veschool/projects)** — you might discover that the enhancement is already available or queued for future
+-   **Check the [specific project board](https://github.com/KRTirtho/schoolacious/projects)** — you might discover that the enhancement is already available or queued for future
 -   **Determine which part of the project ([zainul-frontend][zainul]/[titumir-backend][titumir]) the enhancement should be suggested in**
--   **Perform a [cursory search](https://github.com/search?q=+is%3Aissue+user%3Aveschool)** to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
+-   **Perform a [cursory search](https://github.com/search?q=+is%3Aissue+user%3Aschoolacious)** to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
 
 #### How Do I Submit A (Good) Enhancement Suggestion?
 
-Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined [which part of the project](https://github.com/KRTirtho/veschool#frameworkpackagestools) your enhancement suggestion is related to, create an issue with that **label(s)** and provide the following information:
+Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined [which part of the project](https://github.com/KRTirtho/schoolacious#frameworkpackagestools) your enhancement suggestion is related to, create an issue with that **label(s)** and provide the following information:
 
 -   **Use a clear and descriptive title** for the issue to identify the suggestion.
 -   **Provide a step-by-step description of the suggested enhancement** in as many details as possible.
 -   **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets which you use in those examples, as [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
 -   **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
--   **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of VESchool which the suggestion is related to. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
--   **Explain why this enhancement would be useful** to most VESchool users
+-   **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of Schoolacious which the suggestion is related to. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
+-   **Explain why this enhancement would be useful** to most Schoolacious users
 -   **List some other services/websites/application where this enhancement exists.**
 -   **Which Browser are you using?** You can get the exact version by navigating to `chrome://version` in **Chrome/chromium** based browsers or `About Firefox` option in options menu in **Firefox**
 -   **Specify the name and version of the OS you're using.**
@@ -172,7 +172,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com
 
 ### Your First Code Contribution
 
-Unsure where to begin contributing to VESchool? You can start by looking through these `beginner` and `help-wanted` issues:
+Unsure where to begin contributing to Schoolacious? You can start by looking through these `beginner` and `help-wanted` issues:
 
 -   [Beginner issues][beginner] - issues which should only require a few lines of code, and a test or two.
 -   [Help wanted issues][help-wanted] - issues which should be a bit more involved than `beginner` issues.
@@ -181,18 +181,18 @@ Both issue lists are sorted by total number of comments. While not perfect, numb
 
 #### Local development
 
-VESchool's both [frontend][zainul] & [backend][titumir] can be developed locally
+Schoolacious's both [frontend][zainul] & [backend][titumir] can be developed locally
 
--   [Source code](https://github.com/KRTirtho/veschool/archive/refs/tags/vx.x.x.zip) of latest release
+-   [Source code](https://github.com/KRTirtho/schoolacious/archive/refs/tags/vx.x.x.zip) of latest release
 
 ### Pull Requests
 
 The process described here has several goals:
 
--   Maintain VESchool's quality & coding/design conventions
+-   Maintain Schoolacious's quality & coding/design conventions
 -   Fix problems that are important to users
--   Engage the community in working toward the best possible of VESchool
--   Enable a sustainable system for VESchool's maintainers to review contributions
+-   Engage the community in working toward the best possible of Schoolacious
+-   Enable a sustainable system for Schoolacious's maintainers to review contributions
 
 Please follow these steps to have your contribution considered by the maintainers:
 
@@ -299,44 +299,44 @@ describe("Test the root path", () => {
 
 This section lists the **labels** we use to help us track and manage issues and pull requests, use these labels to describe which part of the project the issue is related to
 
-[GitHub search](https://help.github.com/articles/searching-issues/) makes it easy to use labels for finding groups of issues or pull requests you're interested in. For example, you might be interested in [open issues across `KRTirtho/veschool` which are labeled as bugs, but still need to be reliably reproduced](https://github.com/search?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3Aveschool+label%3Abug+label%3Aneeds-reproduction) or perhaps [open pull requests in `KRTirtho/veschool` which haven't been reviewed yet](https://github.com/search?utf8=%E2%9C%93&q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fveschool+comments%3A0). To help you find issues and pull requests, each label is listed with search links for finding open items with that label in `KRTirtho/veschool`. We encourage you to read about [other search filters](https://help.github.com/articles/searching-issues/) which will help you write more focused queries.
+[GitHub search](https://help.github.com/articles/searching-issues/) makes it easy to use labels for finding groups of issues or pull requests you're interested in. For example, you might be interested in [open issues across `KRTirtho/schoolacious` which are labeled as bugs, but still need to be reliably reproduced](https://github.com/search?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+user%3Aschoolacious+label%3Abug+label%3Aneeds-reproduction) or perhaps [open pull requests in `KRTirtho/schoolacious` which haven't been reviewed yet](https://github.com/search?utf8=%E2%9C%93&q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fschoolacious+comments%3A0). To help you find issues and pull requests, each label is listed with search links for finding open items with that label in `KRTirtho/schoolacious`. We encourage you to read about [other search filters](https://help.github.com/articles/searching-issues/) which will help you write more focused queries.
 
 The labels are loosely grouped by their purpose, but it's not required that every issue has a label from every group or that an issue can't have more than one label from the same group.
 
-Please open an issue on `KRTirtho/veschool` if you have suggestions for new labels, and if you notice some labels are missing on some repositories, then please open an issue on that repository.
+Please open an issue on `KRTirtho/schoolacious` if you have suggestions for new labels, and if you notice some labels are missing on some repositories, then please open an issue on that repository.
 
 #### Type of Issue and Issue State
 
-| Label name                     | `KRTirtho/veschool` :mag_right:                              | Description                                                                                                                              |
+| Label name                     | `KRTirtho/schoolacious` :mag_right:                              | Description                                                                                                                              |
 | ------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `zainul` (frontend) (required) | [search][search-veschool-repo-label-zainul]                  | Related to visual design.                                                                                                                |
-| `titumir` (backend) (required) | [search][search-veschool-repo-label-titumir]                 | Related to VESchool's public APIs.                                                                                                       |
-| `enhancement`                  | [search][search-veschool-repo-label-enhancement]             | Feature requests.                                                                                                                        |
-| `bug`                          | [search][search-veschool-repo-label-bug]                     | Confirmed bugs or reports that are very likely to be bugs.                                                                               |
-| `question`                     | [search][search-veschool-repo-label-question]                | Questions more than bug reports or feature requests (e.g. how do I do X).                                                                |
-| `feedback`                     | [search][search-veschool-repo-label-feedback]                | General feedback more than bug reports or feature requests.                                                                              |
-| `help-wanted`                  | [search][search-veschool-repo-label-help-wanted]             | The VESchool core team would appreciate help from the community in resolving these issues.                                               |
-| `beginner`                     | [search][search-veschool-repo-label-beginner]                | Less complex issues which would be good first issues to work on for users who want to contribute to VESchool.                            |
-| `more-information-needed`      | [search][search-veschool-repo-label-more-information-needed] | More information needs to be collected about these problems or feature requests (e.g. steps to reproduce).                               |
-| `needs-reproduction`           | [search][search-veschool-repo-label-needs-reproduction]      | Likely bugs, but haven't been reliably reproduced.                                                                                       |
-| `blocked`                      | [search][search-veschool-repo-label-blocked]                 | Issues blocked on other issues.                                                                                                          |
-| `duplicate`                    | [search][search-veschool-repo-label-duplicate]               | Issues which are duplicates of other issues, i.e. they have been reported before.                                                        |
-| `wontfix`                      | [search][search-veschool-repo-label-wontfix]                 | The VESchool core team has decided not to fix these issues for now, either because they're working as intended or for some other reason. |
-| `invalid`                      | [search][search-veschool-repo-label-invalid]                 | Issues which aren't valid (e.g. user errors).                                                                                            |
-| `documentation`                | [search][search-veschool-repo-label-documentation]           | Related to any type of documentation                                                                                                     |
-| `performance`                  | [search][search-veschool-repo-label-performance]             | Related to performance.                                                                                                                  |
-| `security`                     | [search][search-veschool-repo-label-security]                | Related to security.                                                                                                                     |
-| `git`                          | [search][search-veschool-repo-label-git]                     | Related to Git functionality (e.g. problems with gitignore files or with showing the correct file status).                               |
+| `zainul` (frontend) (required) | [search][search-schoolacious-repo-label-zainul]                  | Related to visual design.                                                                                                                |
+| `titumir` (backend) (required) | [search][search-schoolacious-repo-label-titumir]                 | Related to Schoolacious's public APIs.                                                                                                       |
+| `enhancement`                  | [search][search-schoolacious-repo-label-enhancement]             | Feature requests.                                                                                                                        |
+| `bug`                          | [search][search-schoolacious-repo-label-bug]                     | Confirmed bugs or reports that are very likely to be bugs.                                                                               |
+| `question`                     | [search][search-schoolacious-repo-label-question]                | Questions more than bug reports or feature requests (e.g. how do I do X).                                                                |
+| `feedback`                     | [search][search-schoolacious-repo-label-feedback]                | General feedback more than bug reports or feature requests.                                                                              |
+| `help-wanted`                  | [search][search-schoolacious-repo-label-help-wanted]             | The Schoolacious core team would appreciate help from the community in resolving these issues.                                               |
+| `beginner`                     | [search][search-schoolacious-repo-label-beginner]                | Less complex issues which would be good first issues to work on for users who want to contribute to Schoolacious.                            |
+| `more-information-needed`      | [search][search-schoolacious-repo-label-more-information-needed] | More information needs to be collected about these problems or feature requests (e.g. steps to reproduce).                               |
+| `needs-reproduction`           | [search][search-schoolacious-repo-label-needs-reproduction]      | Likely bugs, but haven't been reliably reproduced.                                                                                       |
+| `blocked`                      | [search][search-schoolacious-repo-label-blocked]                 | Issues blocked on other issues.                                                                                                          |
+| `duplicate`                    | [search][search-schoolacious-repo-label-duplicate]               | Issues which are duplicates of other issues, i.e. they have been reported before.                                                        |
+| `wontfix`                      | [search][search-schoolacious-repo-label-wontfix]                 | The Schoolacious core team has decided not to fix these issues for now, either because they're working as intended or for some other reason. |
+| `invalid`                      | [search][search-schoolacious-repo-label-invalid]                 | Issues which aren't valid (e.g. user errors).                                                                                            |
+| `documentation`                | [search][search-schoolacious-repo-label-documentation]           | Related to any type of documentation                                                                                                     |
+| `performance`                  | [search][search-schoolacious-repo-label-performance]             | Related to performance.                                                                                                                  |
+| `security`                     | [search][search-schoolacious-repo-label-security]                | Related to security.                                                                                                                     |
+| `git`                          | [search][search-schoolacious-repo-label-git]                     | Related to Git functionality (e.g. problems with gitignore files or with showing the correct file status).                               |
 
 #### Pull Request Labels
 
-| Label name         | `KRTirtho/veschool` :mag_right:                       | Description                                                                                |
+| Label name         | `KRTirtho/schoolacious` :mag_right:                       | Description                                                                                |
 | ------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `work-in-progress` | [search][search-veschool-repo-label-work-in-progress] | Pull requests which are still being worked on, more changes will follow.                   |
-| `needs-review`     | [search][search-veschool-repo-label-needs-review]     | Pull requests which need code review, and approval from maintainers or VESchool core team. |
-| `under-review`     | [search][search-veschool-repo-label-under-review]     | Pull requests being reviewed by maintainers or VESchool core team.                         |
-| `requires-changes` | [search][search-veschool-repo-label-requires-changes] | Pull requests which need to be updated based on review comments and then reviewed again.   |
-| `needs-testing`    | [search][search-veschool-repo-label-needs-testing]    | Pull requests which need manual testing.                                                   |
+| `work-in-progress` | [search][search-schoolacious-repo-label-work-in-progress] | Pull requests which are still being worked on, more changes will follow.                   |
+| `needs-review`     | [search][search-schoolacious-repo-label-needs-review]     | Pull requests which need code review, and approval from maintainers or Schoolacious core team. |
+| `under-review`     | [search][search-schoolacious-repo-label-under-review]     | Pull requests being reviewed by maintainers or Schoolacious core team.                         |
+| `requires-changes` | [search][search-schoolacious-repo-label-requires-changes] | Pull requests which need to be updated based on review comments and then reviewed again.   |
+| `needs-testing`    | [search][search-schoolacious-repo-label-needs-testing]    | Pull requests which need manual testing.                                                   |
 
 > **Final Note**: Before creating PR/Issue check which **part of the project that belongs** & assign label **zainul (frontend) or titumir (backend)** accordingly
 
@@ -361,30 +361,30 @@ There is no shame for not knowing something. You can always learn the things tha
 | PostgreSQL      | https://www.postgresql.org/docs/current/                                       | N/A                                                                                               | [**FreeCodeCamp** PostgreSQL full 4hrs](https://www.youtube.com/watch?v=qw--VYLpxG4)                                        |
 | MongoDB         | https://docs.mongodb.com/manual/                                               | [**Traversy Media** MongoDB 36min](https://www.youtube.com/watch?v=-56x56UppqQ)                   | N/A                                                                                                                         |
 
-[search-veschool-repo-label-enhancement]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Aenhancement
-[search-veschool-repo-label-bug]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Abug
-[search-veschool-repo-label-question]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Aquestion
-[search-veschool-repo-label-feedback]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Afeedback
-[search-veschool-repo-label-help-wanted]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Ahelp-wanted
-[search-veschool-repo-label-beginner]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Abeginner
-[search-veschool-repo-label-more-information-needed]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Amore-information-needed
-[search-veschool-repo-label-needs-reproduction]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Aneeds-reproduction
-[search-veschool-repo-label-documentation]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Adocumentation
-[search-veschool-repo-label-performance]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Aperformance
-[search-veschool-repo-label-security]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Asecurity
-[search-veschool-repo-label-zainul]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Azainul
-[search-veschool-repo-label-titumir]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Atitumir
-[search-veschool-repo-label-git]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Agit
-[search-veschool-repo-label-blocked]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Ablocked
-[search-veschool-repo-label-duplicate]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Aduplicate
-[search-veschool-repo-label-wontfix]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Awontfix
-[search-veschool-repo-label-invalid]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fveschool+label%3Ainvalid
-[search-veschool-repo-label-work-in-progress]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fveschool+label%3Awork-in-progress
-[search-veschool-repo-label-needs-review]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fveschool+label%3Aneeds-review
-[search-veschool-repo-label-under-review]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fveschool+label%3Aunder-review
-[search-veschool-repo-label-requires-changes]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fveschool+label%3Arequires-changes
-[search-veschool-repo-label-needs-testing]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fveschool+label%3Aneeds-testing
-[beginner]: https://github.com/search?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+label%3Abeginner+label%3Ahelp-wanted+repo%3AKRTirtho%2Fveschool+sort%3Acomments-desc
-[help-wanted]: https://github.com/search?q=is%3Aopen+is%3Aissue+label%3Ahelp-wanted+repo%3AKRTirtho%2Fveschool+sort%3Acomments-desc+-label%3Abeginner
-[zainul]: https://github.com/KRTirtho/veschool/tree/master/zainul
-[titumir]: https://github.com/KRTirtho/veschool/tree/master/titumir
+[search-schoolacious-repo-label-enhancement]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Aenhancement
+[search-schoolacious-repo-label-bug]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Abug
+[search-schoolacious-repo-label-question]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Aquestion
+[search-schoolacious-repo-label-feedback]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Afeedback
+[search-schoolacious-repo-label-help-wanted]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Ahelp-wanted
+[search-schoolacious-repo-label-beginner]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Abeginner
+[search-schoolacious-repo-label-more-information-needed]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Amore-information-needed
+[search-schoolacious-repo-label-needs-reproduction]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Aneeds-reproduction
+[search-schoolacious-repo-label-documentation]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Adocumentation
+[search-schoolacious-repo-label-performance]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Aperformance
+[search-schoolacious-repo-label-security]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Asecurity
+[search-schoolacious-repo-label-zainul]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Azainul
+[search-schoolacious-repo-label-titumir]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Atitumir
+[search-schoolacious-repo-label-git]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Agit
+[search-schoolacious-repo-label-blocked]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Ablocked
+[search-schoolacious-repo-label-duplicate]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Aduplicate
+[search-schoolacious-repo-label-wontfix]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Awontfix
+[search-schoolacious-repo-label-invalid]: https://github.com/search?q=is%3Aopen+is%3Aissue+repo%3AKRTirtho%2Fschoolacious+label%3Ainvalid
+[search-schoolacious-repo-label-work-in-progress]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fschoolacious+label%3Awork-in-progress
+[search-schoolacious-repo-label-needs-review]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fschoolacious+label%3Aneeds-review
+[search-schoolacious-repo-label-under-review]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fschoolacious+label%3Aunder-review
+[search-schoolacious-repo-label-requires-changes]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fschoolacious+label%3Arequires-changes
+[search-schoolacious-repo-label-needs-testing]: https://github.com/search?q=is%3Aopen+is%3Apr+repo%3AKRTirtho%2Fschoolacious+label%3Aneeds-testing
+[beginner]: https://github.com/search?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+label%3Abeginner+label%3Ahelp-wanted+repo%3AKRTirtho%2Fschoolacious+sort%3Acomments-desc
+[help-wanted]: https://github.com/search?q=is%3Aopen+is%3Aissue+label%3Ahelp-wanted+repo%3AKRTirtho%2Fschoolacious+sort%3Acomments-desc+-label%3Abeginner
+[zainul]: https://github.com/KRTirtho/schoolacious/tree/master/zainul
+[titumir]: https://github.com/KRTirtho/schoolacious/tree/master/titumir

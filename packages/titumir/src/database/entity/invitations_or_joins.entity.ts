@@ -11,7 +11,7 @@ import {
     Invitations_JoinsSchema,
     INVITATION_OR_JOIN_ROLE,
     INVITATION_OR_JOIN_TYPE,
-} from "@veschool/types";
+} from "@schoolacious/types";
 import School from "./schools.entity";
 import User from "./users.entity";
 

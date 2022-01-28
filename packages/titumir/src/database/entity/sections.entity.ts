@@ -8,7 +8,7 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from "typeorm";
-import { SectionSchema } from "@veschool/types";
+import { SectionSchema } from "@schoolacious/types";
 import Grade from "./grades.entity";
 import StudentsToSectionsToGrades from "./students_sections_grades.entity";
 import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";

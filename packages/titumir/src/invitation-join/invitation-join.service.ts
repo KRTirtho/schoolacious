@@ -16,7 +16,7 @@ import {
     USER_ROLE,
     INVITATION_OR_JOIN_ROLE,
     INVITATION_OR_JOIN_TYPE,
-} from "@veschool/types";
+} from "@schoolacious/types";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
 import { isAdministrative } from "../utils/helper-functions.util";

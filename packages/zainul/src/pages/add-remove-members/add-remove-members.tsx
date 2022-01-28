@@ -20,7 +20,7 @@ import InviteMembersDrawer from "./components/InviteMembersDrawer";
 import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { QueryContextKey } from "configs/enums";
-import { INVITATION_OR_JOIN_ROLE, UserSchema } from "@veschool/types";
+import { INVITATION_OR_JOIN_ROLE, UserSchema } from "@schoolacious/types";
 import { FaEllipsisH, FaSearch } from "react-icons/fa";
 import { userToName } from "utils/userToName";
 

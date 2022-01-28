@@ -1,4 +1,4 @@
-import { GradeSchema, GradeToSubjectSchema } from "@veschool/types";
+import { GradeSchema, GradeToSubjectSchema } from "@schoolacious/types";
 import { Connector, TitumirResponse } from "../Connector";
 
 export interface GradeProperties {

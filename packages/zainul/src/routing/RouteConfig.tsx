@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import Introduction from "pages/introduction/introduction";
 import Auth from "pages/auth/auth";
 import Start from "pages/start/start";

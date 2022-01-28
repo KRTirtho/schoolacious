@@ -6,7 +6,7 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn,
 } from "typeorm";
-import { ClassSchema, CLASS_STATUS } from "@veschool/types";
+import { ClassSchema, CLASS_STATUS } from "@schoolacious/types";
 import TeachersToSectionsToGrades from "./teachers_sections_grades.entity";
 
 @Entity("classes")

@@ -12,7 +12,7 @@ import School from "../database/entity/schools.entity";
 import Section from "../database/entity/sections.entity";
 import TeachersToSectionsToGrades from "../database/entity/teachers_sections_grades.entity";
 import User from "../database/entity/users.entity";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { SubjectService } from "../subject/subject.service";
 import { UserService } from "../user/user.service";
 import { SectionService } from "../section/section.service";

@@ -14,7 +14,7 @@ import {
     bootstrapApp,
 } from "../e2e-test.util";
 import InvitationJoinDTO from "../../src/invitation-join/dto/invitation-join.dto";
-import { INVITATION_OR_JOIN_ROLE, INVITATION_OR_JOIN_TYPE } from "@veschool/types";
+import { INVITATION_OR_JOIN_ROLE, INVITATION_OR_JOIN_TYPE } from "@schoolacious/types";
 
 import { AppModule } from "../../src/app.module";
 import { INVITATION_OR_JOIN_ACTION } from "../../src/invitation-join/invitation-join.service";

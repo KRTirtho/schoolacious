@@ -2,7 +2,7 @@ import { CACHE_MANAGER, Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { WebSocketServer } from "@nestjs/websockets";
 import { Repository } from "typeorm";
-import { WS_SERVER_EVENTS } from "@veschool/types";
+import { WS_SERVER_EVENTS } from "@schoolacious/types";
 import BasicEntityService from "../database/abstracts/entity-service.abstract";
 import Notifications from "../database/entity/notifications.entity";
 import { Server as WsServer } from "socket.io";

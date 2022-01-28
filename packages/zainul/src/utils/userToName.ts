@@ -1,4 +1,4 @@
-import { UserSchema } from "@veschool/types";
+import { UserSchema } from "@schoolacious/types";
 
 export function userToName(
     user?:

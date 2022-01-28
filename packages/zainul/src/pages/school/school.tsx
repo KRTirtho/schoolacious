@@ -14,7 +14,7 @@ import React from "react";
 import { IoIosSettings } from "react-icons/io";
 import { Navigate, Link } from "react-router-dom";
 import { useAuthStore } from "state/authorization-store";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 
 function School() {
     const school = useAuthStore((s) => s.user?.school);

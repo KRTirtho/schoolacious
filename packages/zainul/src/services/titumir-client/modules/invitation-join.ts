@@ -4,7 +4,7 @@ import {
     INVITATION_OR_JOIN_TYPE,
     SchoolSchema,
     UserSchema,
-} from "@veschool/types";
+} from "@schoolacious/types";
 import { Connector, TitumirResponse } from "../Connector";
 
 export enum INVITATION_OR_JOIN_ACTION {

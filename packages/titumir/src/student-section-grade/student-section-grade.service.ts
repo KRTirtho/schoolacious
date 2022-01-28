@@ -13,7 +13,7 @@ import School from "../database/entity/schools.entity";
 import Section from "../database/entity/sections.entity";
 import StudentsToSectionsToGrades from "../database/entity/students_sections_grades.entity";
 import User from "../database/entity/users.entity";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { UserService } from "../user/user.service";
 
 @Injectable()

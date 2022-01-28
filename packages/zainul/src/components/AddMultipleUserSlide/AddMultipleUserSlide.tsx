@@ -21,7 +21,7 @@ import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
 import { TiCancel } from "react-icons/ti";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { QueryContextKey } from "configs/enums";
-import { UserSchema } from "@veschool/types";
+import { UserSchema } from "@schoolacious/types";
 import { userToName } from "utils/userToName";
 
 export interface OptionType extends OptionTypeBase {

@@ -6,7 +6,7 @@ import {
 } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import User from "../database/entity/users.entity";
-import { USER_STATUS } from "@veschool/types";
+import { USER_STATUS } from "@schoolacious/types";
 import { CACHE_MANAGER, Inject, Logger } from "@nestjs/common";
 import { Cache } from "cache-manager";
 import { IncomingMessage } from "http";

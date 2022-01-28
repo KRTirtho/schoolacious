@@ -1,7 +1,7 @@
 import { Accordion, HStack, VStack } from "@chakra-ui/react";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React, { useMemo } from "react";
-import { GradeSchema } from "@veschool/types";
+import { GradeSchema } from "@schoolacious/types";
 import AddGradeModal from "./components/AddGradeModal";
 import { QueryContextKey } from "configs/enums";
 import AddSectionModal from "./components/AddSectionModal";

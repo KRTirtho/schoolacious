@@ -3,7 +3,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
 import { Server } from "http";
 import CreateSchoolDTO from "../../src/school/dto/create-school.dto";
-import { USER_ROLE, USER_STATUS } from "@veschool/types";
+import { USER_ROLE, USER_STATUS } from "@schoolacious/types";
 import { AppModule } from "../../src/app.module";
 import SignupDTO from "../../src/auth/dto/signup.dto";
 import {

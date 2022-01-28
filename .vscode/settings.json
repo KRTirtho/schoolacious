@@ -5,8 +5,8 @@
       "server": "localhost",
       "port": 5432,
       "driver": "PostgreSQL",
-      "name": "VESchool",
-      "database": "veschool",
+      "name": "Schoolacious",
+      "database": "schoolacious",
       "username": "krtirtho",
       "password": "encrypt"
     },
@@ -15,8 +15,8 @@
       "server": "localhost",
       "port": 5432,
       "driver": "PostgreSQL",
-      "name": "VESchool Test",
-      "database": "veschool-test",
+      "name": "Schoolacious Test",
+      "database": "schoolacious-test",
       "username": "krtirtho",
       "password": "encrypt"
     },
@@ -26,7 +26,7 @@
       "port": 5432,
       "driver": "PostgreSQL",
       "name": "PostgreSQL docker",
-      "database": "veschool",
+      "database": "schoolacious",
       "username": "postgres",
       "password": "simple"
     }
@@ -43,6 +43,8 @@
     "source.sortImports": false
   },
   "cSpell.words": [
-    "mediasoup"
+    "mediasoup",
+    "Schoolacious",
+    "schoolacious"
   ]
 }

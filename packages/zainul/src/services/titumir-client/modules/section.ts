@@ -4,7 +4,7 @@ import {
     SubjectSchema,
     TeachersToSectionsToGradesSchema,
     UserSchema,
-} from "@veschool/types";
+} from "@schoolacious/types";
 import { Connector, TitumirResponse } from "../Connector";
 
 export interface SectionStudentsResponseProperties {

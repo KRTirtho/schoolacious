@@ -1,4 +1,4 @@
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { Connection } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import Grade from "../entity/grades.entity";

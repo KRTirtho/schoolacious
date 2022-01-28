@@ -1,4 +1,4 @@
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 
 export function isAdministrative(role?: USER_ROLE | null): boolean {
     if (!role) return false;

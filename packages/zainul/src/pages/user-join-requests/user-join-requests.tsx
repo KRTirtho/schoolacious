@@ -1,7 +1,7 @@
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React from "react";
-import { Invitations_JoinsSchema } from "@veschool/types";
+import { Invitations_JoinsSchema } from "@schoolacious/types";
 import { chakra, Table, Thead, Tr, Th, Tbody } from "@chakra-ui/react";
 import TableRowTile from "components/TableRowTile/TableRowTile";
 import useTitumirMutation from "hooks/useTitumirMutation";

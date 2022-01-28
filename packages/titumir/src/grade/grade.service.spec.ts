@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import User from "../database/entity/users.entity";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
 import { GradeService } from "./grade.service";

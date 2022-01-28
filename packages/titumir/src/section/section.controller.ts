@@ -23,7 +23,7 @@ import {
 import { FindConditions } from "typeorm";
 import Section from "../database/entity/sections.entity";
 import User from "../database/entity/users.entity";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";

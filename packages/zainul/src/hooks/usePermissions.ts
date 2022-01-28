@@ -1,4 +1,4 @@
-import { UserSchema, USER_ROLE } from "@veschool/types";
+import { UserSchema, USER_ROLE } from "@schoolacious/types";
 import { useAuthStore } from "state/authorization-store";
 
 export function usePermissions(allowed: USER_ROLE[], user?: UserSchema): boolean {

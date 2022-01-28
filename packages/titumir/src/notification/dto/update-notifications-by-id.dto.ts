@@ -1,5 +1,5 @@
 import { IsUUID, IsEnum, ArrayNotEmpty } from "class-validator";
-import { NOTIFICATION_STATUS } from "@veschool/types";
+import { NOTIFICATION_STATUS } from "@schoolacious/types";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class UpdateNotificationByIdDto {

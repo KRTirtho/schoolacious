@@ -1,6 +1,6 @@
 import { useColorModeValue, chakra, Heading, Icon, VStack, Text } from "@chakra-ui/react";
 import React, { FC } from "react";
-import { ClassSchema, TeachersToSectionsToGradesSchema } from "@veschool/types";
+import { ClassSchema, TeachersToSectionsToGradesSchema } from "@schoolacious/types";
 import Paper from "components/Paper/Paper";
 import { FiClock } from "react-icons/fi";
 import { GiDuration } from "react-icons/gi";

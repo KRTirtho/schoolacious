@@ -2,7 +2,7 @@ import { Button, Stack } from "@chakra-ui/react";
 import { ActualField as Field, ActualTextarea } from "components/TextField/TextField";
 import { Form, useModel, regex } from "react-binden";
 import React from "react";
-import { SchoolSchema } from "@veschool/types";
+import { SchoolSchema } from "@schoolacious/types";
 import { INVALID_EMAIL_MSG } from "pages/auth/components/Login";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import { MutationContextKey } from "configs/enums";

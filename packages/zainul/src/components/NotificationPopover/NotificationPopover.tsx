@@ -23,7 +23,7 @@ import {
     NotificationsSchema,
     NOTIFICATION_STATUS,
     WS_SERVER_EVENTS,
-} from "@veschool/types";
+} from "@schoolacious/types";
 import { useSocket } from "services/ws/socket";
 import { useQueryClient } from "react-query";
 import useTitumirMutation from "hooks/useTitumirMutation";

@@ -1,4 +1,4 @@
-import { NotificationsSchema, NOTIFICATION_STATUS } from "@veschool/types";
+import { NotificationsSchema, NOTIFICATION_STATUS } from "@schoolacious/types";
 import { Connector, TitumirResponse } from "../Connector";
 
 export interface NotificationUpdateProperties {

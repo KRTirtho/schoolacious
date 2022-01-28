@@ -1,6 +1,6 @@
 import React from "react";
 import { List, ListItem, Text } from "@chakra-ui/react";
-import { SchoolSchema, USER_ROLE } from "@veschool/types";
+import { SchoolSchema, USER_ROLE } from "@schoolacious/types";
 import { AddUserPopover } from "components/AddUserPopover/AddUserPopover";
 import Paper from "components/Paper/Paper";
 import { MutationContextKey, QueryContextKey } from "configs/enums";

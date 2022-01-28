@@ -1,4 +1,4 @@
-import { SubjectSchema } from "@veschool/types";
+import { SubjectSchema } from "@schoolacious/types";
 import { QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { useAuthStore } from "state/authorization-store";

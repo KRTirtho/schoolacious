@@ -1,4 +1,4 @@
-import { USER_ROLE, USER_STATUS } from "@veschool/types";
+import { USER_ROLE, USER_STATUS } from "@schoolacious/types";
 import { define } from "typeorm-seeding";
 import User from "../entity/users.entity";
 

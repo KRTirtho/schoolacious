@@ -24,8 +24,8 @@ async function bootstrap() {
 
     // swagger stuff
     const options = new DocumentBuilder()
-        .setTitle("Titumir - veschool backend")
-        .setDescription("mainstream backend of VESchool")
+        .setTitle("Titumir - schoolacious backend")
+        .setDescription("mainstream backend of Schoolacious")
         .setVersion("0.1.0")
         .addCookieAuth(CONST_JWT_ACCESS_TOKEN_COOKIE, { type: "http" })
         .build();

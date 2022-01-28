@@ -3,7 +3,7 @@ import useTitumirQuery from "hooks/useTitumirQuery";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
 import React, { FC } from "react";
 import { useParams } from "react-router-dom";
-import { ClassSchema } from "@veschool/types";
+import { ClassSchema } from "@schoolacious/types";
 import { QueryContextKey } from "configs/enums";
 import { uniqueId } from "lodash-es";
 import { WeekDayClassCard } from "./components/WeekDayClassCard";

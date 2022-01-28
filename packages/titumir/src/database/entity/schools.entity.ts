@@ -11,7 +11,7 @@ import Subject from "./subjects.entity";
 import Grade from "./grades.entity";
 import Invitations_Joins from "./invitations_or_joins.entity";
 import User from "./users.entity";
-import { SchoolSchema } from "@veschool/types";
+import { SchoolSchema } from "@schoolacious/types";
 
 @Entity("schools")
 export default class School implements SchoolSchema {

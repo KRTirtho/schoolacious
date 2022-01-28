@@ -1,6 +1,6 @@
 import { Controller, Get, Logger, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiQuery, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { INVITATION_OR_JOIN_TYPE, USER_ROLE } from "@veschool/types";
+import { INVITATION_OR_JOIN_TYPE, USER_ROLE } from "@schoolacious/types";
 import User from "../database/entity/users.entity";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { InvitationJoinService } from "../invitation-join/invitation-join.service";

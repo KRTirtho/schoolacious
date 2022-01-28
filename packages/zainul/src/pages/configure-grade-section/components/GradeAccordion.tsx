@@ -11,7 +11,7 @@ import {
     theme,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { GradeSchema } from "@veschool/types";
+import { GradeSchema } from "@schoolacious/types";
 import Paper from "components/Paper/Paper";
 import React, { FC } from "react";
 import { FaUsersCog } from "react-icons/fa";

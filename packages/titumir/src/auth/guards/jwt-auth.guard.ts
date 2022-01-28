@@ -3,7 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
 import User from "../../database/entity/users.entity";
-import { USER_ROLE } from "@veschool/types";
+import { USER_ROLE } from "@schoolacious/types";
 import { EXTEND_USER_RELATION_KEY } from "../../decorator/extend-user-relation.decorator";
 import { VERIFY_GRADE_KEY } from "../../decorator/verify-grade.decorator";
 import { VERIFY_SCHOOL_KEY } from "../../decorator/verify-school.decorator";

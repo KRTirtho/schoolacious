@@ -1,4 +1,4 @@
-import { UserSchema } from "@veschool/types";
+import { UserSchema } from "@schoolacious/types";
 import { Connector, TitumirResponse } from "../Connector";
 
 export const CONST_REFRESH_TOKEN_KEY = "x-refresh-token";

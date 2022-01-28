@@ -1,5 +1,5 @@
 {
-    "name": "veschool",
+    "name": "schoolacious",
     "private": true,
     "workspaces":[
       "packages/*"

@@ -1,5 +1,5 @@
 {
-    "name": "@veschool/titumir",
+    "name": "@schoolacious/titumir",
     "version": "0.1.0",
     "description": "",
     "author": "KR Tirtho",
@@ -45,7 +45,7 @@
         "@nestjs/throttler": "^2.0.0",
         "@nestjs/typeorm": "^8.0.2",
         "@nestjs/websockets": "^8.2.3",
-        "@veschool/types": "^0.1.0",
+        "@schoolacious/types": "^0.1.0",
         "bcrypt": "^5.0.1",
         "cache-manager": "^3.4.4",
         "cache-manager-redis-store": "^2.0.0",

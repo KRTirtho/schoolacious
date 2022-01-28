@@ -9,7 +9,7 @@ import useTitumirMutation from "hooks/useTitumirMutation";
 import { useQueryClient } from "react-query";
 import { capitalize } from "lodash-es";
 import AddMultipleUserSlide from "components/AddMultipleUserSlide/AddMultipleUserSlide";
-import { INVITATION_OR_JOIN_ROLE } from "@veschool/types";
+import { INVITATION_OR_JOIN_ROLE } from "@schoolacious/types";
 
 export interface OptionType extends OptionTypeBase {
     label: React.ReactElement;

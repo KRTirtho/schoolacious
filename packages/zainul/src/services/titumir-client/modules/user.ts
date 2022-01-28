@@ -3,7 +3,7 @@ import {
     USER_ROLE,
     Invitations_JoinsSchema,
     ClassSchema,
-} from "@veschool/types";
+} from "@schoolacious/types";
 import { StringifiableRecord } from "query-string";
 import { UserSchemaWithGradesSections } from "state/authorization-store";
 import { Connector, TitumirResponse } from "../Connector";

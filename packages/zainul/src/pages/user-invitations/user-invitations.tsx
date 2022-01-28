@@ -2,7 +2,7 @@ import { Table, Thead, Tr, Th, Tbody, chakra } from "@chakra-ui/react";
 import { MutationContextKey, QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import React from "react";
-import { Invitations_JoinsSchema } from "@veschool/types";
+import { Invitations_JoinsSchema } from "@schoolacious/types";
 import useTitumirMutation from "hooks/useTitumirMutation";
 import {
     InvitationJoinCompletionProperties,

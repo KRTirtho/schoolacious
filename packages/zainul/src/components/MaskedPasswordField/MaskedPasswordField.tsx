@@ -1,26 +1,17 @@
-import React, { ComponentPropsWithRef, ComponentType, useState } from "react";
+import React, { useState } from "react";
 import {
     FormControl,
     FormLabel,
-    Input as ChakraInput,
+    Input,
     FormErrorMessage,
     InputGroup,
     InputRightElement,
 } from "@chakra-ui/react";
 import { v4 as uuid } from "uuid";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
-import { ActualFieldProps } from "../TextField/TextField";
-import { Input } from "react-binden";
+import { TextFieldProps } from "../TextField/TextField";
 
-function MaskedPasswordField({
-    required,
-    pattern,
-    max,
-    maxLength,
-    min,
-    minLength,
-    ...props
-}: ActualFieldProps) {
+function MaskedPasswordField({ field, form, ...props }: TextFieldProps) {
     const [showPassword, setShowPassword] = useState(false);
 
     function showHidePassword() {
@@ -30,22 +21,20 @@ function MaskedPasswordField({
     const id = props.id ?? uuid();
 
     return (
-        <FormControl isInvalid={!!(props.model.error && props.model.touched)}>
+        <FormControl isInvalid={!!(form.errors.name && form.touched.name)}>
             <FormLabel htmlFor={id}>{props?.label}</FormLabel>
             <InputGroup>
                 <Input
                     type={showPassword ? "text" : "password"}
+                    {...field}
                     id={id}
                     {...props}
-                    required={required}
-                    {...{ pattern, max, maxLength, min, minLength }}
-                    as={ChakraInput as ComponentType<ComponentPropsWithRef<"input">>}
                 />
                 <InputRightElement onClick={showHidePassword} {...props}>
                     {showPassword ? <IoIosEyeOff /> : <IoIosEye />}
                 </InputRightElement>
             </InputGroup>
-            <FormErrorMessage>{props.model.error}</FormErrorMessage>
+            <FormErrorMessage>{form.errors.name}</FormErrorMessage>
         </FormControl>
     );
 }

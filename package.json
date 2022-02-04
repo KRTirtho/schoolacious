@@ -1,8 +1,8 @@
 {
     "name": "schoolacious",
     "private": true,
-    "workspaces":[
-      "packages/*"
+    "workspaces": [
+        "packages/*"
     ],
     "scripts": {
         "bootstrap": "cross-env FORCE_COLOR=1 lerna bootstrap",

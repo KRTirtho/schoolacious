@@ -4,27 +4,43 @@ import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { MutationContextKey } from "configs/enums";
 import { UserSchema } from "@schoolacious/types";
-import { ActualField as Field } from "components/TextField/TextField";
 import MaskedPasswordField from "components/MaskedPasswordField/MaskedPasswordField";
 import { useAuthStore } from "state/authorization-store";
 import { useTokenStore } from "state/token-store";
-import { Form, regex, useModel } from "react-binden";
 import { useTitumirApiStore } from "state/titumir-store";
 import {
     CONST_REFRESH_TOKEN_KEY,
     SignupProperties,
 } from "services/titumir-client/modules/auth";
 import { TitumirResponse } from "services/titumir-client/Connector";
+import * as yup from "yup";
+import TextField from "components/TextField/TextField";
+import { Formik, Form, Field } from "formik";
+import { MINIMUM_CHAR_MSG } from "./Login";
 
 export const REQUIRED_MSG = "Required";
 
+interface SignupInitValues {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
 function Signup() {
     const navigate = useNavigate();
-    const first_name = useModel("");
-    const last_name = useModel("");
-    const email = useModel("");
-    const password = useModel("");
-    const confirmPassword = useModel("");
+    const SignupSchema = yup.object().shape({
+        first_name: yup.string().required(REQUIRED_MSG),
+        last_name: yup.string().required(REQUIRED_MSG),
+        email: yup.string().email("Invalid email").required(REQUIRED_MSG),
+        password: yup.string().min(8, MINIMUM_CHAR_MSG).required(REQUIRED_MSG),
+        confirmPassword: yup
+            .string()
+            .oneOf([yup.ref("password")], "Passwords must match")
+            .min(8, MINIMUM_CHAR_MSG)
+            .required(REQUIRED_MSG),
+    });
 
     const setTokens = useTokenStore((s) => s.setTokens);
     const setUser = useAuthStore((s) => s.setUser);
@@ -52,48 +68,62 @@ function Signup() {
                 Create an account
             </Heading>
 
-            <Form
-                onSubmit={(_, __, { resetForm, setSubmitting }) => {
-                    signup({
-                        email: email.value,
-                        password: password.value,
-                        first_name: first_name.value,
-                        last_name: last_name.value,
-                    });
+            <Formik
+                initialValues={
+                    {
+                        first_name: "",
+                        last_name: "",
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                    } as SignupInitValues
+                }
+                onSubmit={(values, { resetForm, setSubmitting }) => {
+                    signup(values);
                     if (isSuccess) resetForm();
-                    setSubmitting(false);
+                    else setSubmitting(false);
                 }}
+                validationSchema={SignupSchema}
             >
-                <Stack direction="column" spacing="2">
-                    <Stack direction={{ base: "column", md: "row" }} spacing="2">
-                        <Field model={first_name} label="First Name" required />
-                        <Field model={last_name} label="Last Name" required />
+                <Form>
+                    <Stack direction="column" spacing="2">
+                        <Stack direction={{ base: "column", md: "row" }} spacing="2">
+                            <Field
+                                component={TextField}
+                                name="first_name"
+                                label="First Name"
+                                required
+                            />
+                            <Field
+                                component={TextField}
+                                name="last_name"
+                                label="Last Name"
+                                required
+                            />
+                        </Stack>
+                        <Field
+                            component={TextField}
+                            name="email"
+                            type="email"
+                            label="Email"
+                            required
+                        />
+                        <Field
+                            component={MaskedPasswordField}
+                            name="password"
+                            label="Password"
+                            required
+                        />
+                        <Field
+                            component={MaskedPasswordField}
+                            name="confirmPassword"
+                            label="Confirm Password"
+                            required
+                        />
+                        <Button type="submit">Signup</Button>
                     </Stack>
-                    <Field
-                        model={email}
-                        type="email"
-                        label="Email"
-                        pattern={[regex.email, "Type a valid email"]}
-                        required
-                    />
-                    <MaskedPasswordField
-                        model={password}
-                        label="Password"
-                        pattern={[
-                            regex.moderatePassword,
-                            "Password should contain one of a-z, A-Z, 0-9 and symbols (@,#,^ etc)",
-                        ]}
-                        required
-                    />
-                    <MaskedPasswordField
-                        model={confirmPassword}
-                        imprint-model={password}
-                        label="Confirm Password"
-                        required
-                    />
-                    <Button type="submit">Signup</Button>
-                </Stack>
-            </Form>
+                </Form>
+            </Formik>
         </>
     );
 }

@@ -21,7 +21,7 @@ import ListAvatarTile from "components/ListAvatarTile/ListAvatarTile";
 import { TiCancel } from "react-icons/ti";
 import useTitumirQuery from "hooks/useTitumirQuery";
 import { QueryContextKey } from "configs/enums";
-import { UserSchema } from "@schoolacious/types";
+import { UserSchema, USER_ROLE } from "@schoolacious/types";
 import { userToName } from "utils/userToName";
 
 export interface OptionType extends OptionTypeBase {
@@ -36,7 +36,7 @@ export interface AddMultipleUserSlideProps {
     onSubmit(selectedItem: OptionsType<OptionType>, onClose: () => void): void;
     placeholder?: string;
     submitTitle?: string;
-    "query-filters"?: { school_id?: string; role?: string };
+    "query-filters"?: { school_id?: string; roles?: USER_ROLE[] };
     "filter-users"?: (user: UserSchema) => boolean;
 }
 

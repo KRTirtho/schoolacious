@@ -50,7 +50,7 @@ export class SchoolController {
                 .offset(0);
             if (query)
                 selected.andWhere("school.query_common @@ to_tsquery(:query)", {
-                    query: `${query}:*`,
+                    query: `'${query}':*`,
                 });
             if (noInvitationJoin)
                 selected

@@ -96,7 +96,9 @@ export class UserController {
             const users = await this.userService
                 .queryBuilder("user")
                 .select()
-                .where("user.query_common @@ to_tsquery(:query)", { query: `${query}:*` })
+                .where("user.query_common @@ to_tsquery(:query)", {
+                    query: `'${query}':*`,
+                })
                 .andWhere(
                     school_id ? "user.school = :school_id" : "user.school IS NULL",
                     school_id ? { school_id: school_id } : undefined,

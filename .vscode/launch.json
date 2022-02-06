@@ -9,7 +9,7 @@
       "localRoot": "${workspaceFolder}",
       "name": "Titumir: Docker attach",
       "port": 9229,
-      "remoteRoot": "/app",
+      "remoteRoot": "/home/node/app",
       "request": "attach",
       "skipFiles": [
         "<node_internals>/**"

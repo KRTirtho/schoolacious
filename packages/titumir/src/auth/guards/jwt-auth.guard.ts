@@ -102,12 +102,18 @@ export default class JwtAuthGuard extends AuthGuard("jwt") {
         }
     }
 
-    async verifyGrade(request: RequestWithParams, user: User, roles: USER_ROLE[]) {
+    async verifyGrade(
+        request: RequestWithParams,
+        user: User,
+        roles: USER_ROLE[],
+    ): Promise<boolean> {
+        if (!(request.user as User)?.school) return false;
         const leaderField =
             user.role === USER_ROLE.gradeExaminer ? "examiner" : "moderator";
         const grade = await this.gradeService.findOne(
             {
                 standard: request.params.grade,
+                school: (request.user as User).school ?? undefined,
             },
             { relations: [leaderField] },
         );

@@ -66,7 +66,7 @@ function SchoolSectionMembers() {
     };
 
     // creating section teacher for each section subject
-    const { mutate: assignSectionTeacher } = useTitumirMutation<
+    const { mutate: addSectionTeacher } = useTitumirMutation<
         TeachersToSectionsToGradesSchema | null,
         SectionAddTeacherProperties
     >(
@@ -141,7 +141,7 @@ function SchoolSectionMembers() {
                                                 { setSubmitting, resetForm },
                                                 onClose,
                                             ) => {
-                                                assignSectionTeacher(
+                                                addSectionTeacher(
                                                     {
                                                         email: values.teacher as string,
                                                         subject_id: subject._id,
@@ -191,7 +191,7 @@ function SchoolSectionMembers() {
                     triggerTitle="Add Students"
                     heading="Add Students"
                     placeholder="Search Students..."
-                    query-filters={{ role: USER_ROLE.student, school_id: school?._id }}
+                    query-filters={{ roles: [USER_ROLE.student], school_id: school?._id }}
                     filter-users={(user) => !studentIds?.includes(user._id) ?? true}
                 />
             </chakra.div>

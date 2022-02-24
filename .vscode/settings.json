@@ -3,48 +3,12 @@
     {
       "previewLimit": 50,
       "server": "localhost",
-      "port": 5432,
+      "port": 54322,
       "driver": "PostgreSQL",
-      "name": "Schoolacious",
-      "database": "schoolacious",
-      "username": "krtirtho",
-      "password": "encrypt"
-    },
-    {
-      "previewLimit": 50,
-      "server": "localhost",
-      "port": 5432,
-      "driver": "PostgreSQL",
-      "name": "Schoolacious Test",
-      "database": "schoolacious-test",
-      "username": "krtirtho",
-      "password": "encrypt"
-    },
-    {
-      "previewLimit": 50,
-      "server": "localhost",
-      "port": 5432,
-      "driver": "PostgreSQL",
-      "name": "PostgreSQL docker",
-      "database": "schoolacious",
+      "name": "supabase-titumir-local",
+      "database": "postgres",
       "username": "postgres",
-      "password": "simple"
+      "password": "postgres"
     }
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "files.watcherExclude": {
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/node_modules/**": true,
-    "**/.hg/store/**": true
-  },
-  "typescript.disableAutomaticTypeAcquisition": true,
-  "editor.codeActionsOnSave": {
-    "source.sortImports": false
-  },
-  "cSpell.words": [
-    "mediasoup",
-    "Schoolacious",
-    "schoolacious"
   ]
 }

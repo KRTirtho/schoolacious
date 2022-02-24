@@ -1,79 +1,34 @@
-<h1><p align="center">Schoolacious</p></h1>
-<p align="center">Bringing back the favorite teachers of the child</p>
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-<hr>
+## Getting Started
 
-Schoolacious is a platform which intends to bring back the old & gold **education, fun & amusement of Schools** which was a normal thing back before The Pandemic. Schoolacious gives the total power to each individual school & only holds the back/management
+First, run the development server:
 
-This platform promises to allow children to learn even in the current serious condition of COVID-19 without even going out of their respective safe houses
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-## Project
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Top Level Overview Framework/Packages/Tools:
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
--   Frontend
-    -   **React.js** (for web)
-    -   **Flutter** (for mobile & desktop) [Vision]
--   Backend
-    -   express
-    -   **Nest.js** (layer over express)
-    -   **TypeORM** (database driver)
--   DBMS
-    -   **PostgreSQL** (for relational)
-    -   MongoDB (non-structured)
--   Automation/CI-CD
-    -   Github Actions (might change)
--   Other
-    -   Dependobot (Github's official auto dependency bump)
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-See [CONTRIBUTION.md](/CONTRIBUTION.md#what-should-i-know-before-i-get-started) to learn more
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-### Structure
+## Learn More
 
-| Code Cluster                                                                                                                     | Purpose                           |
-| -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| [titumir](https://github.com/KRTirtho/schoolacious/tree/master/packages/titumir) ([wiki](https://en.wikipedia.org/wiki/Titumir))     | Web Frontend with ReactTS         |
-| [zainul](https://github.com/KRTirtho/schoolacious/tree/master/packages/zainul) ([wiki](https://en.wikipedia.org/wiki/Zainul_Abedin)) | Nodejs Backend with NestTS        |
-| [types](https://github.com/KRTirtho/schoolacious/tree/master/packages/types)                                                         | Shared Typescript type definition |
+To learn more about Next.js, take a look at the following resources:
 
-## What it offers - Features
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
--   Soon to be biggest open-source project😉
--   All schools are individual. Have the 100% control over their management system. Schoolacious will only manage the computation & processing
--   Grades, section, exam & class management
--   Routine Live classes with absent record
--   Notifies student/teachers for classes
--   Exam Guard, a system which ensures 100% no cheating during the exam (currently, Plan only)
--   Live classes with low latency which allows high amount of members, up to 70 per class
--   Exam mark/result management
--   Automatic pass/fail validation & standard-up for each student (WIP)
--   Chat rooms for every level including sections, grades, individual students & teachers & for teachers-to-teachers/students-to-students only which is completely encrypted
--   Completely **free & open-source**. Anyone can contribute. But **offers income through Ads for school & it's teachers**
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Contribution
+## Deploy on Vercel
 
-Any kind of **Valid** Contributions are more than welcomed
-Help making the world a better & stable place like before by letting the current generation learn new things regardless of any serious pandemic or disaster
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Learn more from [CONTRIBUTION.md](/CONTRIBUTION.md/)
-
-## Contribution Needed For | TODO
-
--   [x] Frontend Setup (React)
--   [x] Unit Tests for Backend (NestJS)
--   [ ] WebRTC API implementation
--   [x] API Client (Browser)
--   [ ] Backend Security
--   [x] Docker integration
--   [ ] CI/CD integration (Github Actions)
-
-For knowing more tasks, go to repo's [projects](https://github.com/KRTirtho/schoolacious/projects)
-
-## Discussions
-
-Discuss about any topic related to this repo & project in github [schoolacious/discussion](https://github.com/KRTirtho/schoolacious/discussions)
-
-<hr>
-
-<p align="center">Measure schoolacious's progress by following us on <a href='https://twitter.com/KrTirtho'>twitter</a></p>
-<pre align="center">&copy Schoolacious 2021. All rights reserved</pre>
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

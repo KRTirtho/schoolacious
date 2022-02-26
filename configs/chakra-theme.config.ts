@@ -3,7 +3,7 @@ import {
   withDefaultColorScheme,
   theme as base,
   ChakraTheme,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 
 const theme = extendTheme(
   {
@@ -12,7 +12,10 @@ const theme = extendTheme(
       textPrimary: '#272727',
       textSecondary: '#777777',
     },
+    components: {
+      Link: { baseStyle: { color: 'green.500' } },
+    },
   } as Partial<ChakraTheme>,
   withDefaultColorScheme({ colorScheme: 'primary' })
-)
-export default theme
+);
+export default theme;

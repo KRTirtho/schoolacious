@@ -107,9 +107,9 @@ function Signup() {
               <Button type="submit">Signup</Button>
               <p>
                 Already have an account?{' '}
-                <CUILink mt="2" as={Link} href="/auth/login">
-                  Login
-                </CUILink>
+                <Link href="/auth/login" passHref>
+                  <CUILink mt="2">Login</CUILink>
+                </Link>
               </p>
             </Stack>
           </chakra.form>

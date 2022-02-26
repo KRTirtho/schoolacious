@@ -19,6 +19,7 @@ export enum MutationContextKey {
 
 export enum QueryContextKey {
   QUERY_USER = 'query-user',
+  QUERY_USER_META = 'query-user-meta',
   INVITATION_SENT = 'query-invitation-sent',
   INVITATION_RECEIVED = 'query-invitation-received',
   JOIN_REQUEST_SENT = 'query-join-request-sent',

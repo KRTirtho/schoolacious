@@ -5,6 +5,7 @@ import { UserProvider } from '@supabase/supabase-auth-helpers/react';
 import zainulTheme from 'configs/chakra-theme.config';
 import { titumir } from 'services/titumir';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Appbar from 'components/shared/Appbar/Appbar';
 
 const queryClient = new QueryClient();
 
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ChakraProvider theme={zainulTheme}>
       <UserProvider supabaseClient={titumir.supabase}>
         <QueryClientProvider client={queryClient}>
+          <Appbar />
           <Component {...pageProps} />
         </QueryClientProvider>
       </UserProvider>

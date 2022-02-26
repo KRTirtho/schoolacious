@@ -43,7 +43,7 @@ export interface FiltersObject<T> {
 
 export interface BaseControllerGetOrListOptions<TSchema>
   extends FiltersObject<TSchema> {
-  columns?: Array<keyof TSchema>;
+  columns?: Array<keyof TSchema | string> | string;
 }
 
 export interface BaseControllerUpdateOrDeleteOptions<
@@ -167,7 +167,11 @@ export default abstract class BaseController<
   ): Promise<PostgrestMaybeSingleResponse<T>> {
     let builder = this.supabase
       .from<T>(this.tableName)
-      .select(options?.columns?.join(','))
+      .select(
+        Array.isArray(options?.columns)
+          ? options?.columns?.join(',')
+          : options?.columns
+      )
       .eq('id', id as T[keyof T]);
     if (options) builder = this.interpretFilters(builder, options);
     return await builder.maybeSingle();
@@ -178,7 +182,11 @@ export default abstract class BaseController<
   ): Promise<PostgrestResponse<T>> {
     let builder = this.supabase
       .from<T>(this.tableName)
-      .select(options?.columns?.join(','));
+      .select(
+        Array.isArray(options?.columns)
+          ? options?.columns?.join(',')
+          : options?.columns
+      );
     if (options) builder = this.interpretFilters(builder, options);
     return await builder;
   }

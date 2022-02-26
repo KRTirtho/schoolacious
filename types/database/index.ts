@@ -556,6 +556,8 @@ export interface paths {
           firstname?: parameters["rowFilter.user.firstname"];
           lastname?: parameters["rowFilter.user.lastname"];
           role_id?: parameters["rowFilter.user.role_id"];
+          /** The instituion the user currently in */
+          school_id?: parameters["rowFilter.user.school_id"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -611,6 +613,8 @@ export interface paths {
           firstname?: parameters["rowFilter.user.firstname"];
           lastname?: parameters["rowFilter.user.lastname"];
           role_id?: parameters["rowFilter.user.role_id"];
+          /** The instituion the user currently in */
+          school_id?: parameters["rowFilter.user.school_id"];
         };
         header: {
           /** Preference */
@@ -630,6 +634,8 @@ export interface paths {
           firstname?: parameters["rowFilter.user.firstname"];
           lastname?: parameters["rowFilter.user.lastname"];
           role_id?: parameters["rowFilter.user.role_id"];
+          /** The instituion the user currently in */
+          school_id?: parameters["rowFilter.user.school_id"];
         };
         body: {
           /** user */
@@ -945,6 +951,14 @@ export interface definitions {
      * This is a Foreign Key to `roles.id`.<fk table='roles' column='id'/>
      */
     role_id?: string;
+    /**
+     * Format: uuid
+     * @description The instituion the user currently in
+     *
+     * Note:
+     * This is a Foreign Key to `school.id`.<fk table='school' column='id'/>
+     */
+    school_id?: string;
   };
   /** @description Stores outsider sent join request(s) to various schools */
   weld: {
@@ -1111,6 +1125,11 @@ export interface parameters {
   "rowFilter.user.lastname": string;
   /** Format: uuid */
   "rowFilter.user.role_id": string;
+  /**
+   * Format: uuid
+   * @description The instituion the user currently in
+   */
+  "rowFilter.user.school_id": string;
   /** @description weld */
   "body.weld": definitions["weld"];
   /** Format: uuid */

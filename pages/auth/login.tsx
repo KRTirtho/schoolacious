@@ -94,14 +94,14 @@ function Login() {
             </Flex>
           </chakra.form>
         </Formik>
-        <CUILink as={Link} href="/auth/reset-password">
-          Forgot password?
-        </CUILink>
+        <Link href="/auth/reset-password" passHref>
+          <CUILink>Forgot password?</CUILink>
+        </Link>
         <p>
           Don&apos;t have an account?{' '}
-          <CUILink mt="2" as={Link} href="/auth/signup">
-            Create one
-          </CUILink>
+          <Link href="/auth/signup" passHref>
+            <CUILink mt="2">Create one</CUILink>
+          </Link>
         </p>
       </Paper>
     </VStack>

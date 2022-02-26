@@ -1,30 +1,19 @@
 import type { NextPage } from 'next';
 import { useUser } from '@supabase/supabase-auth-helpers/react';
-import { Button, useDisclosure } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { titumir, UserSchema } from 'services/titumir';
-import { useQuery } from 'react-query';
 import MetadataModal from 'components/pages/index/MetadataModal';
 import queryString from 'query-string';
+import NoSchool from 'components/pages/index/NoSchool';
+import { useUserMeta } from 'services/titumir-hooks/useUserMeta';
 
 const Home: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false });
 
-  const { user, isLoading, error } = useUser();
   const router = useRouter();
-  const {
-    data: userMeta,
-    refetch,
-    isLoading: isMetaLoading,
-  } = useQuery<UserSchema | null | undefined>(
-    'user-metadata',
-    () => titumir.user.me(user).then((s) => s?.data),
-    // Don't want to run the query before the user fetch is done
-    // useUser can return null/undefined initially sometimes even though
-    // correct credentials are available & there's an user
-    { enabled: !!user }
-  );
+  const { user, isLoading, error } = useUser();
+  const { data: userMeta, refetch, isLoading: isMetaLoading } = useUserMeta();
 
   useEffect(() => {
     const query = queryString.parse(window.location.hash) ?? {};
@@ -48,16 +37,7 @@ const Home: NextPage = () => {
   return (
     <>
       <MetadataModal isOpen={isOpen} onClose={onClose} />
-      <Button
-        colorScheme="red"
-        onClick={() =>
-          titumir.supabase.auth.signOut().then(() => router.push('/auth/login'))
-        }
-      >
-        Sign out
-      </Button>
-      <p>user:</p>
-      <pre>{JSON.stringify(user, null, 2)}</pre>
+      <NoSchool />
     </>
   );
 };

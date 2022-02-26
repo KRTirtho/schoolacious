@@ -4,8 +4,12 @@ import {
   SupabaseClient,
   User,
 } from '@supabase/supabase-js';
-import { UserSchema } from '..';
+import { SchoolSchema, UserSchema } from '..';
 import BaseController from './base';
+
+export type SchoolAssociatedUserSchema = Omit<UserSchema, 'school_id'> & {
+  school?: SchoolSchema | null;
+};
 
 export class TitumirUserController extends BaseController<UserSchema> {
   constructor(public supabase: SupabaseClient = supabaseClient) {
@@ -14,9 +18,12 @@ export class TitumirUserController extends BaseController<UserSchema> {
 
   async me(
     user?: User | null
-  ): Promise<PostgrestMaybeSingleResponse<UserSchema> | null> {
+  ): Promise<PostgrestMaybeSingleResponse<SchoolAssociatedUserSchema> | null> {
     user ??= this.supabase.auth.user();
-    if (user) return await this.get(user.id);
+    if (user)
+      return await this.get(user.id, {
+        columns: '*, school(*)',
+      });
     return null;
   }
 }

@@ -20,10 +20,13 @@ export class TitumirUserController extends BaseController<UserSchema> {
     user?: User | null
   ): Promise<PostgrestMaybeSingleResponse<SchoolAssociatedUserSchema> | null> {
     user ??= this.supabase.auth.user();
-    if (user)
-      return await this.get(user.id, {
+    if (user) {
+      const response = await this.get(user.id, {
         columns: '*, school(*)',
       });
-    return null;
+      if (response.error) throw response;
+      return response;
+    }
+    return Promise.reject(null);
   }
 }

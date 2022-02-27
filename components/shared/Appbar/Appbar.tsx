@@ -47,6 +47,7 @@ const Appbar: FC = () => {
   return (
     <Flex
       bg={bg}
+      mb="3"
       direction="row"
       justify="space-between"
       align="center"
@@ -56,7 +57,7 @@ const Appbar: FC = () => {
       zIndex="1"
     >
       <Link href="/" passHref>
-        <Heading cursor="pointer" as="h5" size="lg">
+        <Heading cursor="pointer" size="md">
           Schoolacious
         </Heading>
       </Link>

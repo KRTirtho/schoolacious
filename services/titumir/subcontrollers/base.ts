@@ -119,6 +119,7 @@ export default abstract class BaseController<
     for (const opKey in objectLikeOp) {
       if (Object.prototype.hasOwnProperty.call(objectLikeOp, opKey)) {
         const op = objectLikeOp[opKey as keyof typeof objectLikeOp] ?? {};
+        console.log({ op, opKey, objectLikeOp });
         builder = this.addObjectLikeOp(
           builder,
           op,
@@ -136,12 +137,25 @@ export default abstract class BaseController<
   }
 
   async create(
+    data: PartialKey<T, 'id' | 'created_at' | 'updated_at'>,
+    options?: ControllerCreateOptions
+  ): Promise<PostgrestSingleResponse<T>>;
+  async create(
+    data: PartialKey<T, 'id' | 'created_at' | 'updated_at'>[],
+    options?: ControllerCreateOptions
+  ): Promise<PostgrestResponse<T>>;
+  async create(
     data:
       | PartialKey<T, 'id' | 'created_at' | 'updated_at'>
       | PartialKey<T, 'id' | 'created_at' | 'updated_at'>[],
     options?: ControllerCreateOptions
-  ): Promise<PostgrestResponse<T>> {
-    return await this.supabase.from<T>(this.tableName).insert(data, options);
+  ): Promise<PostgrestResponse<T> | PostgrestSingleResponse<T>> {
+    const builder = this.supabase.from<T>(this.tableName).insert(data, options);
+    const response = Array.isArray(data)
+      ? await builder
+      : await builder.single();
+    if (response.error) throw response;
+    else return response;
   }
 
   delete(
@@ -158,37 +172,36 @@ export default abstract class BaseController<
   > {
     let builder = this.supabase.from<T>(this.tableName).delete();
     if (options) builder = this.interpretFilters(builder, options);
-    return await (single ? builder.single() : builder);
+    const response = await (single ? builder.single() : builder);
+    if (response.error) throw response;
+    return response;
   }
 
   async get(
     id: string,
-    options?: BaseControllerGetOrListOptions<T>
+    { columns, ...options }: BaseControllerGetOrListOptions<T> = {}
   ): Promise<PostgrestMaybeSingleResponse<T>> {
     let builder = this.supabase
       .from<T>(this.tableName)
-      .select(
-        Array.isArray(options?.columns)
-          ? options?.columns?.join(',')
-          : options?.columns
-      )
+      .select(Array.isArray(columns) ? columns?.join(',') : columns)
       .eq('id', id as T[keyof T]);
     if (options) builder = this.interpretFilters(builder, options);
-    return await builder.maybeSingle();
+    const response = await builder.maybeSingle();
+    if (response.error) throw response;
+    return response;
   }
 
-  async list(
-    options?: BaseControllerGetOrListOptions<T>
-  ): Promise<PostgrestResponse<T>> {
+  async list({
+    columns,
+    ...options
+  }: BaseControllerGetOrListOptions<T> = {}): Promise<PostgrestResponse<T>> {
     let builder = this.supabase
       .from<T>(this.tableName)
-      .select(
-        Array.isArray(options?.columns)
-          ? options?.columns?.join(',')
-          : options?.columns
-      );
+      .select(Array.isArray(columns) ? columns?.join(',') : columns);
     if (options) builder = this.interpretFilters(builder, options);
-    return await builder;
+    const response = await builder;
+    if (response.error) throw response;
+    return response;
   }
 
   update(
@@ -201,10 +214,12 @@ export default abstract class BaseController<
   ): Promise<PostgrestResponse<T>>;
   async update(
     data: Partial<T>,
-    options?: BaseControllerUpdateOrDeleteOptions<T, boolean>
+    { single, ...options }: BaseControllerUpdateOrDeleteOptions<T, boolean> = {}
   ): Promise<PostgrestSingleResponse<T> | PostgrestResponse<T>> {
     let builder = this.supabase.from<T>(this.tableName).update(data);
     if (options) builder = this.interpretFilters(builder, options);
-    return await (options?.single ? builder.single() : builder);
+    const response = await (single ? builder.single() : builder);
+    if (response.error) throw response;
+    return response;
   }
 }

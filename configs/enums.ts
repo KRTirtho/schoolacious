@@ -40,3 +40,8 @@ export enum QueryContextKey {
 export enum LocalStorageKeys {
   refreshToken = 'refresh-token',
 }
+
+export enum CLASS_STATUS {
+  scheduled,
+  ongoing,
+}

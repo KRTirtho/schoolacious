@@ -37,7 +37,7 @@ const Home: NextPage = () => {
   return (
     <>
       <MetadataModal isOpen={isOpen} onClose={onClose} />
-      <NoSchool />
+      {userMeta?.school ? <></> : <NoSchool />}
     </>
   );
 };

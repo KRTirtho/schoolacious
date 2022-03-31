@@ -119,7 +119,6 @@ export default abstract class BaseController<
     for (const opKey in objectLikeOp) {
       if (Object.prototype.hasOwnProperty.call(objectLikeOp, opKey)) {
         const op = objectLikeOp[opKey as keyof typeof objectLikeOp] ?? {};
-        console.log({ op, opKey, objectLikeOp });
         builder = this.addObjectLikeOp(
           builder,
           op,

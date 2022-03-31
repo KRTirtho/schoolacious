@@ -22,6 +22,7 @@ import { useRouter } from 'next/router';
 import { titumir } from 'services/titumir';
 import Link from 'next/link';
 import { useUserMeta } from 'services/titumir-hooks/useUserMeta';
+import useMounted from 'hooks/useMounted';
 
 const Appbar: FC = () => {
   const router = useRouter();
@@ -42,12 +43,13 @@ const Appbar: FC = () => {
     router.push('/');
   };
 
-  if (!loggedIn) return <></>;
+  const mounted = useMounted();
+
+  if (!loggedIn || !mounted) return <></>;
 
   return (
     <Flex
       bg={bg}
-      mb="3"
       direction="row"
       justify="space-between"
       align="center"

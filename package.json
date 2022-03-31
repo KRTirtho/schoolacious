@@ -27,6 +27,7 @@
     "react-icons": "^4.3.1",
     "react-query": "^3.34.15",
     "react-select": "^5.2.2",
+    "react-use": "^17.3.2",
     "react-waypoint": "^10.1.0",
     "url-join": "^4.0.1",
     "uuid": "^8.3.2",

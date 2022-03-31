@@ -1,0 +1,14 @@
+version: "3"
+services:
+  nginx:
+    ports:
+      - 80:80
+  postgres:
+    env_file: ./.env
+  titumir:
+    build:
+      context: ./
+      args: 
+        NODE_ENV: production
+    env_file: ./.env
+    command: node packages/titumir/dist/src/main.js

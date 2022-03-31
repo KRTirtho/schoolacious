@@ -1,0 +1,44 @@
+version: "3"
+services:
+    postgres:
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_PASSWORD=simple
+            - POSTGRES_DB=schoolacious
+    titumir:
+        ports:
+            - 9229:9229
+        build:
+            context: ./
+            args:
+                NODE_ENV: development
+        volumes:
+            - ./:/home/node/app
+            - /home/node/app/node_modules
+            - /home/node/app/packages/zainul
+            - /home/node/app/packages/titumir/node_modules
+            - /home/node/app/packages/titumir/dist
+            - /home/node/app/packages/types/node_modules
+        environment:
+            - POSTGRES_PASSWORD=simple
+            - POSTGRES_DB=schoolacious
+            - NODE_ENV=development
+            - DATABASE_USERNAME=postgres
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+            - NOT_A_SECRET=secretxxxxxsecret
+            - COOKIE_SIGNATURE=super-diasdi903u4j9124u90
+            - OPENVIDU_SERVER_URL=https://openvidu:4443
+            - OPENVIDU_SECRET=toomuchhardtocracjsecret69420
+            - NODE_TLS_REJECT_UNAUTHORIZED=0
+            - PORT=4000
+        # for using the container as a separate OS like
+        command: sleep 50505050505
+    openvidu:
+        image: openvidu/openvidu-server-kms:2.20.0
+        ports:
+            - 4443:4443
+        environment:
+            - OPENVIDU_SECRET=toomuchhardtocracjsecret69420
+            - NODE_TLS_REJECT_UNAUTHORIZED=0

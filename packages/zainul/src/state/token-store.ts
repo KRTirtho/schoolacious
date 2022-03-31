@@ -32,6 +32,6 @@ const tokenStore: StateCreator<TokenStore> = (set, get) => {
 export const useTokenStore = create(
     persist(tokenStore, {
         name: AUTH_CONTEXT_LOCALSTORAGE_KEY,
-        whitelist: ["refreshToken"],
+        partialize: ({ refreshToken }) => ({ refreshToken }),
     }),
 );

@@ -34,7 +34,7 @@ export default abstract class BasicEntityService<
         options?: SaveOptions,
     ): Promise<Entity | Entity[]> {
         const entity = this.repo.create(payload as any);
-        return this.save(entity, options);
+        return this.save(entity as unknown as DeepPartial<Entity>[], options);
     }
 
     findOne(criteria: FindConditions<Entity>, options?: FindOneOptions<Entity>) {
@@ -60,7 +60,7 @@ export default abstract class BasicEntityService<
     ) {
         const entity = await this.findOne(criteria, options);
         Object.assign(entity, payload);
-        return await this.save(entity, options);
+        return await this.save(entity as unknown as DeepPartial<Entity>, options);
     }
 
     update(
@@ -70,10 +70,16 @@ export default abstract class BasicEntityService<
         return this.repo.update(criteria, partialEntity);
     }
 
-    save(entities: Entity | Entity, options?: SaveOptions): Promise<Entity>;
-    save(entities: Entity[] | Entity, options?: SaveOptions): Promise<Entity[]>;
+    save(
+        entities: DeepPartial<Entity> | DeepPartial<Entity>,
+        options?: SaveOptions,
+    ): Promise<DeepPartial<Entity> & Entity>;
+    save(
+        entities: DeepPartial<Entity>[] | DeepPartial<Entity>,
+        options?: SaveOptions,
+    ): Promise<(DeepPartial<Entity> & Entity)[]>;
 
-    save(entities: Entity[] | Entity, options?: SaveOptions) {
+    save(entities: DeepPartial<Entity>[] | DeepPartial<Entity>, options?: SaveOptions) {
         if (Array.isArray(entities)) {
             return this.repo.save(entities, options);
         }

@@ -43,13 +43,23 @@ async function bootstrap() {
     // app.use(csurf({ cookie: true }));
     app.enableCors({
         origin: /http:\/\/localhost:?[\d]+/,
-        exposedHeaders: [CONST_REFRESH_TOKEN_HEADER],
+        exposedHeaders: [
+            CONST_REFRESH_TOKEN_HEADER,
+            "Accept-Version",
+            "Authorization",
+            "Credentials",
+            "Content-Type",
+        ],
         credentials: true,
+        methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
     });
     app.useGlobalFilters(new QueryFailedFilter(), new EntityNotFoundFilter());
     app.useGlobalPipes(new ValidationPipe());
     app.useGlobalGuards(throttlerGuard, jwtAuthGuard, roleAuthGuard);
     app.useWebSocketAdapter(new AuthenticatedSocketIoAdapter(app));
     await app.listen(PORT);
+    process.on("exit", app.close);
+    process.on("uncaughtException", app.close);
+    process.on("SIGTERM", app.close);
 }
 bootstrap();

@@ -64,7 +64,7 @@ function Signup() {
 
     return (
         <>
-            <Heading align="center" mb="2" variant="h4">
+            <Heading textAlign="center" mb="2" variant="h4">
                 Create an account
             </Heading>
 

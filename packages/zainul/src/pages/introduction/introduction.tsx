@@ -36,7 +36,7 @@ export default function Introduction() {
                 wrap="nowrap"
                 direction="row"
             >
-                <Button component={Link} to="/auth">
+                <Button as={Link} to="/auth">
                     Get Started
                 </Button>
             </Flex>

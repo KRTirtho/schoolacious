@@ -73,9 +73,9 @@ export function useTitumirQuery<T extends any[]>(
         };
 
         return query;
-    }) as [...QueriesOptions<T>];
+    });
 
-    const results = useQueries<T>(queries);
+    const results = useQueries<T>(queries as any);
 
     return results;
 }

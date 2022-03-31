@@ -21,24 +21,18 @@ function Auth() {
                 <Flex p="3" direction="column" alignItems="stretch">
                     <ButtonGroup isAttached>
                         <Button
-                            onClick={() => navigate(location.pathname)}
+                            onClick={() => navigate("/auth")}
                             variant={
-                                new RegExp(`${location.pathname}[/]?$`, "g").exec(
-                                    window.location.pathname,
-                                )
-                                    ? "solid"
-                                    : "outline"
+                                window.location.pathname === "/auth" ? "solid" : "outline"
                             }
                             isFullWidth
                         >
                             Login
                         </Button>
                         <Button
-                            onClick={() => navigate(`${location.pathname}/signup`)}
+                            onClick={() => navigate(`/auth/signup`)}
                             variant={
-                                location.pathname === `${location.pathname}/signup`
-                                    ? "solid"
-                                    : "outline"
+                                location.pathname === "/auth/signup" ? "solid" : "outline"
                             }
                             isFullWidth
                         >

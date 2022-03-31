@@ -82,7 +82,7 @@ function Login() {
                 </Form>
             </Formik>
 
-            <MuiLink style={{ marginTop: 10 }} component={Link} to="/reset?password=yes">
+            <MuiLink style={{ marginTop: 10 }} as={Link} to="/reset?password=yes">
                 Forgot password?
             </MuiLink>
         </>

@@ -27,6 +27,8 @@ services:
             - DATABASE_USERNAME=postgres
             - DATABASE_HOST=postgres
             - DATABASE_PORT=5432
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
             - NOT_A_SECRET=secretxxxxxsecret
             - COOKIE_SIGNATURE=super-diasdi903u4j9124u90
             - OPENVIDU_SERVER_URL=https://openvidu:4443

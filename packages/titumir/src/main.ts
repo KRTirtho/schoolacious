@@ -10,6 +10,8 @@ import {
     CONST_JWT_ACCESS_TOKEN_COOKIE,
     CONST_REFRESH_TOKEN_HEADER,
     COOKIE_SIGNATURE,
+    CORS_ALLOW_ORIGIN,
+    NODE_ENV,
     PORT,
 } from "../config";
 import { AuthenticatedSocketIoAdapter } from "./auth/adapters/auth.adapter";
@@ -40,9 +42,11 @@ async function bootstrap() {
     app.use(helmet());
     app.use(cookieParser(COOKIE_SIGNATURE));
     app.useLogger(app.get(Logger));
-    // app.use(csurf({ cookie: true }));
+    if (NODE_ENV === "production") {
+        app.use(csurf({ cookie: true }));
+    }
     app.enableCors({
-        origin: /http:\/\/localhost:?[\d]+/,
+        origin: [/http:\/\/localhost:?[\d]+/, ...(CORS_ALLOW_ORIGIN ?? "").split(",")],
         exposedHeaders: [
             CONST_REFRESH_TOKEN_HEADER,
             "Accept-Version",

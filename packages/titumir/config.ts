@@ -16,6 +16,8 @@ export const OPENVIDU_SECRET = process.env.OPENVIDU_SECRET as string;
 export const PORT = process.env.PORT ?? 4000;
 export const REDIS_HOST = process.env.REDIS_HOST;
 export const REDIS_PORT = process.env.REDIS_PORT;
+export const CORS_ALLOW_ORIGIN = process.env.CORS_ALLOW_ORIGIN;
+
 // constants
 export const CONST_JWT_ACCESS_EXPIRATION_DURATION = "3600s";
 export const CONST_ACCESS_TOKEN_EXPIRATION = 3600000;

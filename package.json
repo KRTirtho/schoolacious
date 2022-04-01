@@ -7,7 +7,7 @@
     "scripts": {
         "bootstrap": "cross-env FORCE_COLOR=1 lerna bootstrap",
         "dev": "cross-env FORCE_COLOR=1 lerna run dev --parallel",
-        "build": "cross-env FORCE_COLOR=1 lerna run build --parallel",
+        "build": "cross-env FORCE_COLOR=1 npm run types build && lerna run build --parallel --ignore @schoolacious/types",
         "lint": "cross-env FORCE_COLOR=1 lerna run lint --parallel",
         "titumir": "npm run -w packages/titumir --",
         "zainul": "npm run -w packages/zainul --",

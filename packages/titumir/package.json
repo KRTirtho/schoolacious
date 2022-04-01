@@ -33,6 +33,7 @@
         "typeorm": "ts-node -r tsconfig-paths/register ../../node_modules/typeorm/cli.js --config ./ormconfig.ts"
     },
     "dependencies": {
+        "@nestjs/cli": "^8.1.1",
         "@nestjs/common": "^8.2.3",
         "@nestjs/core": "^8.2.3",
         "@nestjs/jwt": "^8.0.0",
@@ -75,7 +76,6 @@
     },
     "devDependencies": {
         "@anatine/esbuild-decorators": "^0.2.11",
-        "@nestjs/cli": "^8.1.1",
         "@nestjs/schematics": "^8.0.3",
         "@nestjs/testing": "^8.0.6",
         "@types/bcrypt": "^3.0.1",

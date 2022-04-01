@@ -6,7 +6,7 @@
     ],
     "scripts": {
         "bootstrap": "cross-env FORCE_COLOR=1 lerna bootstrap",
-        "start": "npx cross-env FORCE_COLOR=1 lerna run start",
+        "start": "npx cross-env FORCE_COLOR=1 npx lerna run start",
         "dev": "cross-env FORCE_COLOR=1 lerna run dev --parallel",
         "build": "cross-env FORCE_COLOR=1 npm run types build && lerna run build --parallel --ignore @schoolacious/types",
         "lint": "cross-env FORCE_COLOR=1 lerna run lint --parallel",

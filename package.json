@@ -6,7 +6,7 @@
     ],
     "scripts": {
         "bootstrap": "cross-env FORCE_COLOR=1 lerna bootstrap",
-        "start": "npx cross-env FORCE_COLOR=1 npx lerna run start",
+        "start": "cross-env FORCE_COLOR=1 lerna run start",
         "dev": "cross-env FORCE_COLOR=1 lerna run dev --parallel",
         "build": "cross-env FORCE_COLOR=1 npm run types build && lerna run build --parallel --ignore @schoolacious/types",
         "lint": "cross-env FORCE_COLOR=1 lerna run lint --parallel",
@@ -14,18 +14,20 @@
         "zainul": "npm run -w packages/zainul --",
         "types": "npm run -w packages/types --"
     },
+    "dependencies": {
+        "cross-env": "^7.0.3",
+        "lerna": "^4.0.0",
+        "concurrently": "^6 .2.0",
+        "nodemon": "^2.0.7"
+    },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.28.0",
         "@typescript-eslint/parser": "^4.28.0",
-        "concurrently": "^6.2.0",
-        "cross-env": "^7.0.3",
         "eslint": "^7.29.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-import": "^2.23.2",
         "eslint-plugin-jest": "^24.3.6",
         "eslint-plugin-prettier": "^3.4.0",
-        "lerna": "^4.0.0",
-        "nodemon": "^2.0.7",
         "prettier": "^2.3.1",
         "typescript": "^4.3.4"
     }

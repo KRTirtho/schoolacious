@@ -21,6 +21,7 @@ services:
             - /home/node/app/packages/titumir/dist
             - /home/node/app/packages/types/node_modules
         environment:
+            # - REDIS_PASSWORD=6379
             - POSTGRES_PASSWORD=simple
             - POSTGRES_DB=schoolacious
             - NODE_ENV=development

@@ -1,14 +1,16 @@
+import { ClientOpts } from "redis";
 import { CacheModule as NestCacheModule, Global, Module } from "@nestjs/common";
 import * as RedisStore from "cache-manager-redis-store";
-import { REDIS_HOST, REDIS_PORT } from "../../config";
+import { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT } from "../../config";
 
 @Global()
 @Module({
     imports: [
-        NestCacheModule.register({
+        NestCacheModule.register<ClientOpts>({
             store: RedisStore,
             host: REDIS_HOST,
-            port: REDIS_PORT,
+            port: parseInt(REDIS_PORT ?? ""),
+            auth_pass: REDIS_PASSWORD,
         }),
     ],
     exports: [NestCacheModule],

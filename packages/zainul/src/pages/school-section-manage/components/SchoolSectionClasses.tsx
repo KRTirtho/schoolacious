@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { ClassSchema } from "@schoolacious/types";
 import { QueryContextKey } from "configs/enums";
 import { uniqueId } from "lodash-es";
-import { WeekDayClassCard } from "./components/WeekDayClassCard";
+import { WeekDayClassCard } from "./WeekDayClassCard";
 
 const SchoolSectionClasses: FC = () => {
     const params = useParams<keyof SchoolSectionMembersParams>();

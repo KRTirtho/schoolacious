@@ -18,7 +18,7 @@ export interface SectionAddTeacherProperties {
     subject_id: string;
 }
 export interface SectionProperties {
-    section: string;
+    name: string;
     class_teacher: string;
 }
 

@@ -32,7 +32,7 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
     const { isOpen, onClose, onToggle } = useDisclosure();
 
     const SectionBodySchema = yup.object().shape({
-        section: yup.string().max(50).min(1).required(),
+        name: yup.string().max(50).min(1).required(),
         class_teacher: yup.string().email().required(),
         grade: yup.number().required(),
     });
@@ -75,7 +75,7 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
                     {grades && grades.length > 0 ? (
                         <Formik
                             initialValues={{
-                                section: "",
+                                name: "",
                                 class_teacher: "",
                                 grade: "",
                             }}
@@ -101,7 +101,7 @@ const AddSectionModal: FC<AddGradeModalProps> = ({ grades }) => {
                                     >
                                         <Field
                                             component={TextField}
-                                            name="section"
+                                            name="name"
                                             placeholder="Section's Name"
                                             max={50}
                                             min={1}

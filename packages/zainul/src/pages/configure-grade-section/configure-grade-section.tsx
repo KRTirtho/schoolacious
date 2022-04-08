@@ -6,10 +6,9 @@ import AddGradeModal from "./components/AddGradeModal";
 import { QueryContextKey } from "configs/enums";
 import AddSectionModal from "./components/AddSectionModal";
 import { Route, Routes } from "react-router-dom";
-import SchoolSectionMembers from "pages/school-section-members/school-section-members";
-import SchoolSectionClasses from "pages/school-section-classes/school-section-classes";
 import GradeAccordion from "./components/GradeAccordion";
 import NotFound404 from "routing/404";
+import SchoolSectionManage from "pages/school-section-manage/school-section-manage";
 
 function ConfigureGradeSection() {
     const { data: grades } = useTitumirQuery<GradeSchema[]>(
@@ -51,8 +50,7 @@ function ConfigureGradeSection() {
                     </>
                 }
             />
-            <Route path=":grade/:section/members" element={<SchoolSectionMembers />} />
-            <Route path=":grade/:section/classes" element={<SchoolSectionClasses />} />
+            <Route path=":grade/:section" element={<SchoolSectionManage />} />
             <Route path="*" element={<NotFound404 />} />
         </Routes>
     );

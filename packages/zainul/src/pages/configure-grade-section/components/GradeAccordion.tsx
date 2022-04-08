@@ -4,18 +4,18 @@ import {
     AccordionItem,
     AccordionPanel,
     HStack,
-    IconButton,
     Text,
     chakra,
     useColorModeValue,
     theme,
+    Icon,
+    VStack,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { GradeSchema } from "@schoolacious/types";
 import Paper from "components/Paper/Paper";
 import React, { FC } from "react";
-import { FaUsersCog } from "react-icons/fa";
-import { SiGoogleclassroom } from "react-icons/si";
+import { FaAngleRight } from "react-icons/fa";
 import { userToName } from "utils/userToName";
 import GradeSubjectSelector from "./GradeSubjectSelector";
 
@@ -28,6 +28,8 @@ const GradeAccordion: FC<GradeAccordionProps> = ({ grade }) => {
         { gradeColor: theme.colors.blue[600], sectionColor: theme.colors.cyan[800] },
         { gradeColor: theme.colors.blue[400], sectionColor: theme.colors.cyan[500] },
     );
+
+    const navigate = useNavigate();
 
     return (
         <AccordionItem w={["95%", "80%", "55%"]} border="none">
@@ -65,36 +67,30 @@ const GradeAccordion: FC<GradeAccordionProps> = ({ grade }) => {
             <AccordionPanel>
                 {grade.sections?.map((section) => (
                     <Paper
+                        _hover={{ filter: "brightness(0.95)" }}
                         _first={{ roundedTop: 5 }}
                         _last={{ roundedBottom: 5, pb: 2 }}
                         rounded={0}
                         colorScheme="tinted"
                         key={section._id}
                         pt="2"
+                        cursor="pointer"
+                        onClick={() => navigate(`${grade.standard}/${section.name}`)}
                     >
-                        <Text>
-                            <chakra.b color={sectionColor}>Section: </chakra.b>
-                            {section.name}
-                        </Text>
-                        <Text>
-                            <chakra.b color={sectionColor}>CT: </chakra.b>
-                            {userToName(section.class_teacher)}
-                        </Text>
-                        <HStack spacing="2">
-                            <IconButton
-                                as={Link}
-                                colorScheme="gray"
-                                aria-label="Configure section members"
-                                icon={<FaUsersCog />}
-                                to={`${grade.standard}/${section.name}/members`}
-                            />
-                            <IconButton
-                                as={Link}
-                                colorScheme="gray"
-                                aria-label="Configure section classes"
-                                icon={<SiGoogleclassroom />}
-                                to={`${grade.standard}/${section.name}/classes`}
-                            />
+                        <HStack justify="space-between">
+                            <VStack align="flex-start">
+                                <Text>
+                                    <chakra.b color={sectionColor}>Section: </chakra.b>
+                                    {section.name}
+                                </Text>
+                                <Text>
+                                    <chakra.b color={sectionColor}>CT: </chakra.b>
+                                    {userToName(section.class_teacher)}
+                                </Text>
+                            </VStack>
+                            <Icon>
+                                <FaAngleRight />
+                            </Icon>
                         </HStack>
                     </Paper>
                 ))}

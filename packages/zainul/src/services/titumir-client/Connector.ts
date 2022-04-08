@@ -1,17 +1,25 @@
 import { TitumirError } from "./TitumirError";
 import qs from "query-string";
 import urlJoin from "url-join";
+// import { getCookie } from "utils/getCookie";
 
 export type TitumirRequestOptions = Omit<RequestInit, "body" | "method">;
 export type TitumirResponse<T> = Omit<Response, "json"> & { json: T };
 export type HTTPMethods = "GET" | "POST" | "PUT" | "DELETE";
 
+// const csrf: string | void = getCookie("_csrf");
+
 export class Connector {
+    csrf!: string;
     constructor(
         private _prefix: string,
         private _baseURL: string,
         private moduleName: string,
     ) {}
+
+    async getCSRFToken(): Promise<string> {
+        return fetch(urlJoin(this._prefix, "csrf")).then((s) => s.text());
+    }
 
     async buildRequest<T, D = Record<string | number, any>>(
         path: string,
@@ -21,6 +29,7 @@ export class Connector {
     ): Promise<TitumirResponse<T>> {
         const headers = new Headers();
         headers.set("Content-Type", "application/json");
+        // if (method != "GET") headers.set("CSRF-TOKEN", csrf ?? "");
 
         Array.from(
             (options?.headers?.entries as () => IterableIterator<[string, string]>)?.() ??
@@ -28,6 +37,8 @@ export class Connector {
         ).forEach(([key, val]) => headers.append(key, val));
 
         const url = urlJoin(this._prefix, this._baseURL, path);
+        // if (method != "GET")
+        //     url = this.qs.stringifyUrl({ url, query: { _csrf: csrf ?? "" } });
 
         const res = await fetch(url, {
             method,

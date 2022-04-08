@@ -33,9 +33,7 @@ export class AuthController {
     constructor(
         private readonly authService: AuthService,
         private readonly userService: UserService,
-    ) {
-        
-    }
+    ) {}
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post("login")

@@ -11,7 +11,7 @@
     "files": [
         "dist"
     ],
-    "license": "MIT",
+    "license": "BSD-4-Clause",
     "main": "dist/index",
     "module": "dist/esm/index",
     "repository": {

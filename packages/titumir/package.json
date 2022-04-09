@@ -4,7 +4,7 @@
     "description": "",
     "author": "KR Tirtho",
     "private": true,
-    "license": "MIT",
+    "license": "BSD-4-Clause",
     "scripts": {
         "build": "nest build",
         "build:fast": "node esbuild.config.js",

@@ -55,6 +55,6 @@
         "vite-plugin-checker": "^0.3.4",
         "vite-tsconfig-paths": "^3.3.13"
     },
-    "license": "MIT",
+    "license": "BSD-4-Clause",
     "proxy": "http://localhost:4000/"
 }

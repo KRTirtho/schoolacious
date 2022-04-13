@@ -1,6 +1,6 @@
-FROM node:lts
+FROM node:15
 
-RUN apt-get update && apt-get upgrade && apt-get install curl bash build-essential -y
+RUN apt-get update && apt-get upgrade -y && apt-get install curl bash build-essential -y
 USER node
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=$PATH:/home/node/.npm-global/bin
@@ -16,7 +16,7 @@ USER root
 RUN chown -R node:node /home/node
 USER node
 
-RUN npm install
+RUN npm i -g npm@latest && npm config delete proxy && npm config delete https-proxy && npm install
 
 ARG NODE_ENV
 RUN if [ "$NODE_ENV" = "production" ]; \

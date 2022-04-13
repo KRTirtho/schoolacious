@@ -14,12 +14,12 @@ services:
             args:
                 NODE_ENV: development
         volumes:
-            - ./:/home/node/app
             - /home/node/app/node_modules
             - /home/node/app/packages/zainul
             - /home/node/app/packages/titumir/node_modules
             - /home/node/app/packages/titumir/dist
             - /home/node/app/packages/types/node_modules
+            - ./:/home/node/app
         environment:
             # - REDIS_PASSWORD=6379
             - POSTGRES_PASSWORD=simple

@@ -68,7 +68,7 @@ export default class User implements UserSchema {
     })
     invitations_joins?: Invitations_Joins[] | null;
 
-    @OneToMany(() => Notifications, (notifications) => notifications.user, {
+    @OneToMany(() => Notifications, (notifications) => notifications.receiver, {
         nullable: true,
     })
     notifications?: Notifications[] | null;

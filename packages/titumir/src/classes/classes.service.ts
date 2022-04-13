@@ -22,7 +22,7 @@ import { CronJob } from "cron";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { NotificationService } from "../notification/notification.service";
 import { StudentSectionGradeService } from "../student-section-grade/student-section-grade.service";
-import { NOTIFICATION_STATUS } from "@schoolacious/types";
+import { NOTIFICATION_INDICATOR_ICON } from "@schoolacious/types";
 import { OpenViduService } from "../open-vidu/open-vidu.service";
 
 export type CreateClassPayload = PartialKey<Class, "_id" | "created_at" | "sessionId">;
@@ -121,7 +121,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
             },
         );
 
-        for (const { _id, time, day } of classes) {
+        for (const { _id, time, day, host } of classes) {
             const [hour, minute, second] = time.split(":");
             const expression = cronFromObj({
                 day,
@@ -142,19 +142,23 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
 
                     // TODO: Store the notification for valid students of grade's
                     const notificationsPayload = studentsOfGrades.map(({ user }) => ({
-                        user,
-                        message: `Class is about to start in ${twentyFourHr}`,
-                        src: "class",
-                        status: NOTIFICATION_STATUS.unread,
+                        owner_id: _id,
+                        receiver: user,
+                        title: "Scheduled Class started",
+                        description: `Class by ${host.user.first_name} ${host.user.last_name} has started from ${twentyFourHr}`,
+                        open_link: `/class/${host.grade.standard}/${host.section.name}/${session.sessionId}`,
+                        type_indicator_icon: NOTIFICATION_INDICATOR_ICON.classStarted,
+                        avatar_url:
+                            "N/A will be available when cloud storage will be added",
                     }));
                     const createdNotifications = await this.notificationService.create(
                         notificationsPayload,
                     );
 
                     await Promise.all(
-                        createdNotifications.map(({ user, ...notification }) =>
+                        createdNotifications.map((notification) =>
                             this.notificationService.sendNotification(
-                                user._id,
+                                notification.receiver._id,
                                 notification,
                             ),
                         ),

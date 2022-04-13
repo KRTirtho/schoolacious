@@ -31,6 +31,7 @@ import {
     NotificationUpdateProperties,
     UpdateMultipleProperties,
 } from "services/titumir-client/modules/notification";
+import { useNavigate } from "react-router-dom";
 
 function NotificationPopover() {
     const socket = useSocket();
@@ -120,13 +121,24 @@ function NotificationPopover() {
                 <PopoverBody p="unset">
                     <List overflowY="auto" maxH="50vh">
                         {notifications?.map(
-                            ({ _id, message, src, created_at, status }, i) => (
+                            (
+                                {
+                                    _id,
+                                    open_link,
+                                    description,
+                                    title,
+                                    created_at,
+                                    status,
+                                },
+                                i,
+                            ) => (
                                 <NotificationItem
                                     key={_id + i}
-                                    message={message}
-                                    src={src}
+                                    title={title}
+                                    description={description}
                                     date={new Date(created_at)}
                                     status={status}
+                                    to={open_link}
                                 />
                             ),
                         )}
@@ -140,19 +152,22 @@ function NotificationPopover() {
 export default NotificationPopover;
 
 interface NotificationItemProps {
-    src: string;
-    message: string;
+    title: string;
+    description: string;
     date: Date;
     status: NOTIFICATION_STATUS;
+    to: string;
 }
 
 export const NotificationItem: FC<NotificationItemProps> = ({
     date,
-    message,
-    src,
+    description,
+    title,
     status,
+    to,
 }) => {
     const bg = useColorModeValue("primary.50", "primary.900");
+    const navigate = useNavigate();
 
     return (
         <ListItem
@@ -162,12 +177,12 @@ export const NotificationItem: FC<NotificationItemProps> = ({
             bg={status !== NOTIFICATION_STATUS.read ? bg : ""}
             rounded="md"
             shadow="md"
+            onClick={() => navigate(to)}
         >
             <VStack align="flex-start">
-                <Text fontWeight="semibold">{message}</Text>
-                <Text fontSize="sm">
-                    Source: {src} | {date.toUTCString()}
-                </Text>
+                <Heading size="xl">{title}</Heading>
+                <Text fontWeight="semibold">{description}</Text>
+                <Text fontSize="sm">{date.toUTCString()}</Text>
             </VStack>
         </ListItem>
     );

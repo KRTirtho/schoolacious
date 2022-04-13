@@ -40,3 +40,16 @@ export enum WS_SERVER_EVENTS {
 }
 
 export enum WS_CLIENT_EVENT {}
+
+/**
+ * Different types of icons, used for different kinds of notifications
+ * More types will be added
+ */
+export enum NOTIFICATION_INDICATOR_ICON {
+    schoolJoinAccepted = "school-join-accepted",
+    schoolJoinRejected = "school-join-rejected",
+    addedToSection = "added-to-section",
+    classStartWarning = "class-start-warning",
+    classStarted = "class-started",
+    classEnded = "class-ended",
+}

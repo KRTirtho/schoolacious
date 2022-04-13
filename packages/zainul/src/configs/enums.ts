@@ -24,6 +24,7 @@ export enum QueryContextKey {
     JOIN_REQUEST_SENT = "query-join-request-sent",
     JOIN_REQUEST_RECEIVED = "query-join-request-received",
     GRADES = "query-grades",
+    GRADE = "query-grade",
     SCHOOL = "query-school",
     SCHOOLS = "query-schools",
     SCHOOL_MEMBERS = "query-school-members",

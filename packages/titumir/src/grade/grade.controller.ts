@@ -110,11 +110,7 @@ export class GradeController {
                     ],
                 },
             );
-            return {
-                ...grade,
-                grades_subjects: undefined,
-                subjects: grade.grades_subjects?.map((gs) => gs.subject),
-            };
+            return grade;
         } catch (error: any) {
             this.logger.error(error);
             throw error;

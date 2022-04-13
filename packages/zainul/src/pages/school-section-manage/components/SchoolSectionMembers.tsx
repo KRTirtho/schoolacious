@@ -6,6 +6,7 @@ import {
     Heading,
     HStack,
     List,
+    Spinner,
     Table,
     Tbody,
     Td,
@@ -31,6 +32,7 @@ import useTitumirMutation from "hooks/useTitumirMutation";
 import { TeachersToSectionsToGradesSchema, USER_ROLE } from "@schoolacious/types";
 import AddMultipleUserSlide from "components/AddMultipleUserSlide/AddMultipleUserSlide";
 import { SchoolSectionMembersParams } from "pages/configure-grade-section/configure-grade-section";
+import GradeSubjectSelector from "pages/configure-grade-section/components/GradeSubjectSelector";
 
 function SchoolSectionMembers() {
     // gives out the grade/section
@@ -44,13 +46,27 @@ function SchoolSectionMembers() {
         // section.name are non-unique
         [QueryContextKey.SECTION, params?.grade, params?.section],
         async (api) => {
-            if (!(params?.grade && params?.section)) return null;
+            if (!params?.grade || !params?.section || !school) return null;
+            api.setSchoolId(school.short_name);
             api.setGradeId(parseInt(params.grade));
             const { json } = await api.section.get(params.section);
 
             return json;
         },
     );
+
+    const {
+        data: grade,
+        isLoading: isLoadingGrade,
+        isError: isErrorGrade,
+    } = useTitumirQuery([QueryContextKey.GRADE, params?.grade], async (api) => {
+        if (!params?.grade || !school) return null;
+        api.setSchoolId(school.short_name);
+        api.setGradeId(parseInt(params?.grade));
+        const { json } = await api.grade.get();
+
+        return json;
+    });
 
     //  class_teacher's name (joined)
     const class_teacher = useMemo(
@@ -171,6 +187,15 @@ function SchoolSectionMembers() {
                         ))}
                     </Tbody>
                 </Table>
+                {!isLoadingGrade && !isErrorGrade && grade ? (
+                    <GradeSubjectSelector
+                        useTextButton
+                        grade_subjects={grade.grades_subjects}
+                        grade={grade.standard}
+                    />
+                ) : (
+                    <Spinner />
+                )}
             </chakra.div>
 
             {/* Students */}

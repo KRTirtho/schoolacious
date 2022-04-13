@@ -24,6 +24,7 @@ import SchoolCoAdmins from "pages/school-co_admins/school-co_admins";
 import SchoolInvitations from "pages/school-invitations/school-invitations";
 import SchoolJoinRequests from "pages/school-join-requests/school-join-requests";
 import SchoolSubjects from "pages/school-subjects/school-subjects";
+import Meeting from "pages/meeting/meeting";
 
 export default function ApplicationRoutes() {
     return (
@@ -128,6 +129,8 @@ export default function ApplicationRoutes() {
                 <Route path="" element={<Login />} />
                 <Route path="signup" element={<Signup />} />
             </Route>
+
+            <Route path="/meeting" element={<Meeting />}></Route>
 
             <Route path="*" element={<NotFound404 />} />
         </Routes>

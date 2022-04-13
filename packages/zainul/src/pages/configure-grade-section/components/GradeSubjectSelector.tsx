@@ -33,6 +33,7 @@ import { useGetSchoolSubjects } from "services/query-hooks/useGetSchoolSubjects"
 export interface GradeSubjectEditPopoverProps {
     grade_subjects?: GradeToSubjectSchema[] | null;
     grade: number;
+    useTextButton?: boolean;
 }
 
 interface OnSubjectChangeArg {
@@ -44,6 +45,7 @@ interface OnSubjectChangeArg {
 const GradeSubjectSelector: FC<GradeSubjectEditPopoverProps> = ({
     grade_subjects = [],
     grade,
+    useTextButton = false,
 }) => {
     const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -74,6 +76,7 @@ const GradeSubjectSelector: FC<GradeSubjectEditPopoverProps> = ({
         {
             onSuccess() {
                 queryClient.refetchQueries(QueryContextKey.GRADES);
+                queryClient.refetchQueries(QueryContextKey.GRADE);
             },
         },
     );
@@ -104,13 +107,24 @@ const GradeSubjectSelector: FC<GradeSubjectEditPopoverProps> = ({
         <Popover isOpen={isOpen} onClose={onClose} onOpen={onOpen}>
             <PopoverTrigger>
                 <Tooltip label="Edit grade subjects">
-                    <IconButton
-                        aria-label="Manage grade subjects"
-                        size="sm"
-                        icon={<FiEdit3 />}
-                        colorScheme="gray"
-                        onClick={onOpen}
-                    />
+                    {useTextButton ? (
+                        <Button
+                            leftIcon={<FiEdit3 />}
+                            variant="ghost"
+                            isFullWidth
+                            onClick={onOpen}
+                        >
+                            Select Subjects
+                        </Button>
+                    ) : (
+                        <IconButton
+                            aria-label="Manage grade subjects"
+                            size="sm"
+                            icon={<FiEdit3 />}
+                            colorScheme="gray"
+                            onClick={onOpen}
+                        />
+                    )}
                 </Tooltip>
             </PopoverTrigger>
             <PopoverContent>

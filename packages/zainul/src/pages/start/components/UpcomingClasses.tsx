@@ -1,6 +1,6 @@
+import React, { useMemo } from "react";
 import { QueryContextKey } from "configs/enums";
 import useTitumirQuery from "hooks/useTitumirQuery";
-import React from "react";
 import { ClassSchema } from "@schoolacious/types";
 import { chakra, Heading, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
 import Paper from "components/Paper/Paper";
@@ -9,7 +9,6 @@ import { MdOutlineOpenInNew } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { globalToLocalTimeString } from "utils/local-global-time";
 import { uniqWith } from "lodash-es";
-import { useMemo } from "react";
 
 export const UpcomingClasses = () => {
     const { data: upcomingClasses } = useTitumirQuery<ClassSchema[] | null>(

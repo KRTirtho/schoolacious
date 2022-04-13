@@ -86,7 +86,9 @@ function AddSubjectsModal() {
                                     placeholder="Subject Description"
                                 />
                                 <HStack justify="flex-end" mt="2">
-                                    <Button colorScheme="gray">Cancel</Button>
+                                    <Button colorScheme="gray" onClick={onClose}>
+                                        Cancel
+                                    </Button>
                                     <Button type="submit">Apply</Button>
                                 </HStack>
                             </Form>

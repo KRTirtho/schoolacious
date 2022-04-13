@@ -17,6 +17,7 @@
         "@chakra-ui/react": "^1.7.1",
         "@emotion/react": "^11.4.0",
         "@emotion/styled": "^11.3.0",
+        "@jitsi/react-sdk": "^1.0.0",
         "@schoolacious/types": "^0.1.0",
         "date-fns": "^2.22.1",
         "downshift": "^6.1.7",

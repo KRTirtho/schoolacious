@@ -8,7 +8,7 @@ export class UserQueryColumn1625232171644 implements MigrationInterface {
           ADD COLUMN IF NOT EXISTS query_common tsvector
           GENERATED ALWAYS AS (to_tsvector(
             'simple',
-            email || ' ' || first_name || ' ' || last_name
+            'email' || ' ' || 'first_name' || ' ' || 'last_name'
           )) STORED;
           
           CREATE INDEX IF NOT EXISTS query_common_index ON users

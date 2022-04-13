@@ -8,7 +8,7 @@ export class SchoolQueryColumn1630071225879 implements MigrationInterface {
           ADD COLUMN IF NOT EXISTS query_common tsvector
           GENERATED ALWAYS AS (to_tsvector(
             'simple',
-            email || ' ' || name || ' ' || short_name
+            'email' || ' ' || 'name' || ' ' || 'short_name'
           )) STORED;
           
           CREATE INDEX IF NOT EXISTS query_common_index ON schools

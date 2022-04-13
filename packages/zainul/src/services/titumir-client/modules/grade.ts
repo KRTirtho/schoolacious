@@ -57,6 +57,11 @@ export class TitumirGradeModule extends Connector {
         return await this.buildRequest<GradeSchema[]>(url);
     }
 
+    async get(standard?: number): Promise<TitumirResponse<GradeSchema>> {
+        standard ??= this.gradeId;
+        return await this.buildRequest<GradeSchema>(`${standard}`);
+    }
+
     async createSubjects(
         subjects: AddGradeSubjectsBody[],
         grade?: number,

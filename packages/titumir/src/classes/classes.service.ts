@@ -111,7 +111,7 @@ export class ClassesService extends BasicEntityService<Class, CreateClassPayload
         const classes = await this.find(
             { day: today, host: { grade: { school: school_id } } },
             {
-                relations: ["host", "host.section", "host.grade"],
+                relations: ["host", "host.section", "host.grade", "host.user"],
             },
         );
         const studentsOfGrades = await this.ssgService.find(

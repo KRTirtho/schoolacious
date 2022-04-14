@@ -68,12 +68,11 @@ const GradeAccordion: FC<GradeAccordionProps> = ({ grade }) => {
                 {grade.sections?.map((section) => (
                     <Paper
                         _hover={{ filter: "brightness(0.95)" }}
-                        _first={{ roundedTop: 5 }}
-                        _last={{ roundedBottom: 5, pb: 2 }}
-                        rounded={0}
                         colorScheme="tinted"
+                        my={2}
+                        _last={{ mb: 0 }}
                         key={section._id}
-                        pt="2"
+                        py="2"
                         cursor="pointer"
                         onClick={() => navigate(`${grade.standard}/${section.name}`)}
                     >

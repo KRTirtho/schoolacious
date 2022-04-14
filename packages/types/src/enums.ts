@@ -49,7 +49,9 @@ export enum NOTIFICATION_INDICATOR_ICON {
     schoolJoinAccepted = "school-join-accepted",
     schoolJoinRejected = "school-join-rejected",
     addedToSection = "added-to-section",
+    removedFromSection = "removed-from-section",
     classStartWarning = "class-start-warning",
     classStarted = "class-started",
     classEnded = "class-ended",
+    gotInvitation = "got-invitation",
 }

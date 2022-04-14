@@ -14,7 +14,7 @@ export class NotificationController {
     @Get()
     async getNotifications(@CurrentUser() user: User) {
         try {
-            return await this.notificationService.find({ user });
+            return await this.notificationService.find({ receiver: user });
         } catch (error) {}
     }
 

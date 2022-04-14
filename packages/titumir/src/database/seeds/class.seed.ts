@@ -1,19 +1,20 @@
 import { Connection } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import Class from "../entity/classes.entity";
-import Section from "../entity/sections.entity";
+import TeachersToSectionsToGrades from "../entity/teachers_sections_grades.entity";
 
 export class CreateClass implements Seeder {
     async run(factory: Factory, connection: Connection): Promise<void> {
-        const sections = await connection.manager
-            .getRepository(Section)
-            .find({ relations: ["grade", "class_teacher"] });
-
-      for (const section of sections) {
-        factory(Class)().map(async (_class) => {
-          // _class.host = section.;
-
-        })
-      }
+        const subjectTeachers = await connection.manager
+            .getRepository(TeachersToSectionsToGrades)
+            .find();
+        for (const teacher of subjectTeachers) {
+            await factory(Class)()
+                .map(async (_class) => {
+                    _class.host = teacher;
+                    return _class;
+                })
+                .create();
+        }
     }
 }

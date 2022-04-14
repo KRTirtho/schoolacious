@@ -24,6 +24,7 @@
     "jsx": "react",
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
+    "sourceMap": true
   },
   "include": [
     "src",

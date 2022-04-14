@@ -11,7 +11,7 @@
         "check-types": "watchexec -e ts -w src 'tsc --noEmit'",
         "debug": "concurrently -n 'esbuild,tsc' -p '{name}' -c 'bgYellow.black.bold,bgBlue.black.bold' --kill-others -i --default-input-target=2 'node esbuild.config.js' 'npm run check-types' 'npm run debug:watch'",
         "debug:watch": "watchexec -e js -w dist 'node --inspect=0.0.0.0:9229 dist/src/main.js'",
-        "dev": "watchexec -e ts -w src -r 'npx concurrently -n 'tsc' -p '{name}' -c 'bgBlue.black.bold' -i \"tsc --noEmit\" \"npm run build:fast && node --inspect=0.0.0.0:9229 dist/src/main.js\"'",
+        "dev": "watchexec -e ts -w src -r 'npx concurrently -n 'tsc' -p '{name}' -c 'bgBlue.black.bold' -i \"tsc --noEmit\" \"npm run build:fast && node --inspect=0.0.0.0:9229 dist/src/main.js --enable-source-maps\"'",
         "format": "prettier --write 'src/**/*.ts' 'test/**/*.ts'",
         "lint": "eslint \"{src,test}/**/*.ts\" --fix",
         "migrate:create": "npm run typeorm -- migration:create -n",

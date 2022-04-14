@@ -13,8 +13,10 @@ import School from "../database/entity/schools.entity";
 import Section from "../database/entity/sections.entity";
 import StudentsToSectionsToGrades from "../database/entity/students_sections_grades.entity";
 import User from "../database/entity/users.entity";
-import { USER_ROLE } from "@schoolacious/types";
+import { NOTIFICATION_INDICATOR_ICON, USER_ROLE } from "@schoolacious/types";
 import { UserService } from "../user/user.service";
+import Notifications from "../database/entity/notifications.entity";
+import { NotificationService } from "../notification/notification.service";
 
 @Injectable()
 export class StudentSectionGradeService extends BasicEntityService<StudentsToSectionsToGrades> {
@@ -22,6 +24,7 @@ export class StudentSectionGradeService extends BasicEntityService<StudentsToSec
         @InjectRepository(StudentsToSectionsToGrades)
         private ssgRepo: Repository<StudentsToSectionsToGrades>,
         @Inject(forwardRef(() => UserService)) private userService: UserService,
+        private notificationService: NotificationService,
     ) {
         super(ssgRepo);
     }
@@ -53,6 +56,30 @@ export class StudentSectionGradeService extends BasicEntityService<StudentsToSec
             }
         }
         const createdUsers = await this.create(validUserPayload);
+
+        /**
+         * sending notification to all the user who got added in this
+         * section
+         */
+        const notificationsPayload: Partial<Notifications>[] = createdUsers.map(
+            (ssg) => ({
+                description: `You got added to grade-${ssg.grade.standard} section-${ssg.section.name}`,
+                open_link: `/school/configure/grade-sections/${ssg.grade.standard}/${ssg.section.name}`,
+                owner_id: ssg.section._id,
+                receiver: ssg.user,
+                title: `Got added to grade-${ssg.grade.standard} section-${ssg.section.name}`,
+                type_indicator_icon: NOTIFICATION_INDICATOR_ICON.addedToSection,
+                avatar_url: "N/A",
+            }),
+        );
+        const notifications = await this.notificationService.create(notificationsPayload);
+        for (const notification of notifications) {
+            Object.assign(notification, { receiver: undefined });
+            await this.notificationService.sendNotification(
+                notification.receiver._id,
+                notification,
+            );
+        }
         return { users: createdUsers, error: invalidUsers };
     }
 
@@ -63,11 +90,30 @@ export class StudentSectionGradeService extends BasicEntityService<StudentsToSec
         if (user.role !== USER_ROLE.student)
             throw new BadRequestException("user isn't a student");
         // ssg = Student Section Grade
-        const ssg = await this.findOne({ user });
+        const ssg = await this.findOne({ user }, { relations: ["grade", "section"] });
         delete (ssg as any).assigned_at;
         const deleteResult = await this.ssgRepo.delete(ssg);
         if (deleteResult.affected !== 1)
             throw new InternalServerErrorException("failed removing student");
+
+        /**
+         * sending notification to the user who got removed from this
+         * section
+         */
+        const notification = await this.notificationService.create({
+            description: `You were removed from grade-${ssg.grade.standard} section-${ssg.section.name}`,
+            open_link: `/school/configure/grade-sections/${ssg.grade.standard}/${ssg.section.name}`,
+            owner_id: ssg.section._id,
+            receiver: ssg.user,
+            title: `You've been removed from grade-${ssg.grade.standard} section-${ssg.section.name}`,
+            type_indicator_icon: NOTIFICATION_INDICATOR_ICON.removedFromSection,
+            avatar_url: "N/A",
+        });
+        Object.assign(notification, { receiver: undefined });
+        await this.notificationService.sendNotification(
+            notification.receiver._id,
+            notification,
+        );
         return { message: "successfully removed student" };
     }
 }

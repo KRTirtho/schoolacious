@@ -5,11 +5,13 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import Invitations_Joins from "../database/entity/invitations_or_joins.entity";
 import { UserModule } from "../user/user.module";
 import { SchoolModule } from "../school/school.module";
+import { NotificationModule } from "../notification/notification.module";
 
 @Module({
     imports: [
         forwardRef(() => UserModule),
         forwardRef(() => SchoolModule),
+        NotificationModule,
         TypeOrmModule.forFeature([Invitations_Joins]),
     ],
     providers: [InvitationJoinService],

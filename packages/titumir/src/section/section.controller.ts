@@ -23,7 +23,7 @@ import {
 import { FindConditions } from "typeorm";
 import Section from "../database/entity/sections.entity";
 import User from "../database/entity/users.entity";
-import { USER_ROLE } from "@schoolacious/types";
+import { NOTIFICATION_INDICATOR_ICON, USER_ROLE } from "@schoolacious/types";
 import { CurrentUser } from "../decorator/current-user.decorator";
 import { Roles } from "../decorator/roles.decorator";
 import { VerifyGrade } from "../decorator/verify-grade.decorator";
@@ -37,6 +37,8 @@ import { StudentSectionGradeService } from "../student-section-grade/student-sec
 import { TeacherSectionGradeService } from "../teacher-section-grade/teacher-section-grade.service";
 import Subject from "../database/entity/subjects.entity";
 import TeachersToSectionsToGrades from "../database/entity/teachers_sections_grades.entity";
+import Notifications from "../database/entity/notifications.entity";
+import { NotificationService } from "../notification/notification.service";
 
 async function verifyClassTeacher(
     user: User,
@@ -216,12 +218,14 @@ export class SectionController {
                 { grade: user.grade, name },
                 this.sectionService,
             );
-            return await this.studentSGService.addStudents(
+            const students = await this.studentSGService.addStudents(
                 body.map(({ _id }) => _id),
                 user.school,
                 user.grade,
                 sections,
             );
+
+            return students;
         } catch (error: any) {
             this.logger.error(error);
             throw error;

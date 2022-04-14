@@ -21,7 +21,15 @@ export class NotificationService extends BasicEntityService<Notifications> {
         super(notificationsRepo);
     }
 
-    async sendNotification(_id: string, notification: Omit<Notifications, "user">) {
+    /**
+     * Sends notification to the user having the provided `_id`
+     * Notification is sent to all connected devices of the user via WS
+     *
+     * @param _id - any User's id
+     * @param notification - notification to be sent but without the
+     * `receiver` property
+     */
+    async sendNotification(_id: string, notification: Omit<Notifications, "receiver">) {
         try {
             const ids = await this.cacheManager.get<string[]>(_id);
             if (!ids) return;

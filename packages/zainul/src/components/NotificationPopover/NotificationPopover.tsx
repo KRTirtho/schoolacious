@@ -139,6 +139,7 @@ function NotificationPopover() {
                                     date={new Date(created_at)}
                                     status={status}
                                     to={open_link}
+                                    onClose={onClose}
                                 />
                             ),
                         )}
@@ -157,6 +158,7 @@ interface NotificationItemProps {
     date: Date;
     status: NOTIFICATION_STATUS;
     to: string;
+    onClose?: () => void;
 }
 
 export const NotificationItem: FC<NotificationItemProps> = ({
@@ -165,6 +167,7 @@ export const NotificationItem: FC<NotificationItemProps> = ({
     title,
     status,
     to,
+    onClose,
 }) => {
     const bg = useColorModeValue("primary.50", "primary.900");
     const navigate = useNavigate();
@@ -177,10 +180,18 @@ export const NotificationItem: FC<NotificationItemProps> = ({
             bg={status !== NOTIFICATION_STATUS.read ? bg : ""}
             rounded="md"
             shadow="md"
-            onClick={() => navigate(to)}
+            cursor="pointer"
+            bgColor={bg}
+            _hover={{ filter: "brightness(95%)" }}
+            _active={{ filter: "brightness(90%)" }}
+            transition="ease-out"
+            onClick={() => {
+                navigate(to);
+                onClose?.();
+            }}
         >
             <VStack align="flex-start">
-                <Heading size="xl">{title}</Heading>
+                <Heading size="md">{title}</Heading>
                 <Text fontWeight="semibold">{description}</Text>
                 <Text fontSize="sm">{date.toUTCString()}</Text>
             </VStack>

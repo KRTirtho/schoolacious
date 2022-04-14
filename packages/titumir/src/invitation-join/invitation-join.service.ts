@@ -16,11 +16,14 @@ import {
     USER_ROLE,
     INVITATION_OR_JOIN_ROLE,
     INVITATION_OR_JOIN_TYPE,
+    NOTIFICATION_INDICATOR_ICON,
 } from "@schoolacious/types";
 import { SchoolService } from "../school/school.service";
 import { UserService } from "../user/user.service";
 import { isAdministrative } from "../utils/helper-functions.util";
 import { InvitationDTO, JoinDTO } from "./dto/invitation-join.dto";
+import Notifications from "../database/entity/notifications.entity";
+import { NotificationService } from "../notification/notification.service";
 
 export interface InviteJoinPayload {
     role: INVITATION_OR_JOIN_ROLE;
@@ -51,6 +54,7 @@ export class InvitationJoinService extends BasicEntityService<
         private readonly invitationJoinRepo: Repository<Invitations_Joins>,
         private readonly userService: UserService,
         private readonly schoolService: SchoolService,
+        private readonly notificationService: NotificationService,
     ) {
         super(invitationJoinRepo);
     }
@@ -203,6 +207,34 @@ export class InvitationJoinService extends BasicEntityService<
         const deleted = await this.invitationJoinRepo.delete(invitation);
         if (deleted.affected !== 1)
             throw new InternalServerErrorException("failed to complete invitation/join");
+
+        /**
+         * currently sending notification to only the join request action
+         * to only the user not sending any notification to any school
+         * admin/ co-admin since its not decided yet to use a subscription
+         * system for that or not
+         */
+        if (invitation.type === INVITATION_OR_JOIN_TYPE.join) {
+            const notification = await this.notificationService.create({
+                description: `Your join request got ${action.valueOf()}ed to join ${
+                    school.name
+                } as a ${invitation.role}`,
+                open_link: "/school",
+                owner_id: school._id,
+                receiver: invitation.user,
+                title: `${school.name} Join request got ${action.valueOf()}ed`,
+                type_indicator_icon:
+                    action === INVITATION_OR_JOIN_ACTION.accept
+                        ? NOTIFICATION_INDICATOR_ICON.schoolJoinAccepted
+                        : NOTIFICATION_INDICATOR_ICON.schoolJoinRejected,
+                avatar_url: "N/A",
+            });
+            Object.assign(notification, { receiver: undefined });
+            await this.notificationService.sendNotification(
+                notification.receiver._id,
+                notification,
+            );
+        }
         return { message: `${action.valueOf()}ed invitation/join` };
     }
 
